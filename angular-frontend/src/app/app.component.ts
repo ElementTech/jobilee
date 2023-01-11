@@ -20,7 +20,7 @@ export class AppComponent {
               {
                   label:'List',
                   icon:'pi pi-fw pi-list',
-                  routerLink: 'users'
+                  routerLink: 'integrations'
               },
               {
                   separator:true
@@ -39,7 +39,7 @@ export class AppComponent {
             {
                 label:'List',
                 icon:'pi pi-fw pi-list',
-                routerLink: 'users'
+                routerLink: 'integrations'
             },
             {
                 separator:true

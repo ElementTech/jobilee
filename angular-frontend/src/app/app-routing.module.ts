@@ -1,20 +1,20 @@
-import { UserDetailsComponent } from './user-details/user-details.component';
-import { CreateUserComponent } from './create-user/create-user.component';
+import { IntegrationDetailsComponent } from './integration-details/integration-details.component';
+import { CreateIntegrationComponent } from './create-integration/create-integration.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {UserListComponent } from './user-list/user-list.component';
-import { UpdateUserComponent } from './update-user/update-user.component';
+import {IntegrationListComponent } from './integration-list/integration-list.component';
+import { UpdateIntegrationComponent } from './update-integration/update-integration.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'user', pathMatch: 'full' },
-  { path: 'users', component: UserListComponent },
-  { path: 'add', component: CreateUserComponent },
-  { path: 'update/:_id', component: UpdateUserComponent },
-  { path: 'details/:_id', component: UserDetailsComponent },
+  { path: '', redirectTo: 'integration', pathMatch: 'full' },
+  { path: 'integrations', component: IntegrationListComponent },
+  { path: 'add', component: CreateIntegrationComponent },
+  { path: 'update/:_id', component: UpdateIntegrationComponent },
+  { path: 'details/:_id', component: IntegrationDetailsComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, {})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

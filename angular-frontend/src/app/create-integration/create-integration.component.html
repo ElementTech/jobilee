@@ -1,0 +1,21 @@
+<h3>Create Integration</h3>
+<div [hidden]="submitted" style="width: 400px;">
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input pInputText type="text" class="form-control" id="name" required [(ngModel)]="integration.name" name="name">
+    </div>
+
+    <div class="form-group">
+      <label for="name">URL</label>
+      <input pInputText type="text" class="form-control" id="url" required [(ngModel)]="integration.url" name="url">
+    </div>
+
+
+    <button pButton type="submit" class="btn btn-danger">Submit</button>
+  </form>
+</div>
+
+<div [hidden]="!submitted">
+  <h4>Successfully submitted!</h4>
+</div>

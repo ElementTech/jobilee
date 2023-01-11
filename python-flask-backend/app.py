@@ -24,23 +24,15 @@ def index():
 def data(collection):
     # POST a data to database
     if request.method == 'POST':
-        body = request.json
-        db_doc = {k: (str(v) if k == '_id' else v) for k, v in body.items()}
+        db_doc = {k: (str(v) if k == '_id' else v) for k, v in request.json.items()}
         db[collection].insert_one(db_doc)
-        if db_doc:
-            db_doc['_id'] = str(db_doc['_id'])
+        db_doc.update({'_id': str(db_doc['_id'])} if '_id' in db_doc else {})
         return jsonify({'status': 'Data is posted to MongoDB!', **db_doc})
         
     # GET all data from database
     if request.method == 'GET':
         allData = db[collection].find()
-        dataJson = []
-        for data in allData:
-            db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
-            if db_doc:
-                db_doc['_id'] = str(db_doc['_id'])            
-            dataJson.append(db_doc)
-        print(dataJson)
+        dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
         return jsonify(parse_json(dataJson))
 
 @app.route('/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
@@ -50,8 +42,7 @@ def onedata(collection,id):
     if request.method == 'GET':
         data = db[collection].find_one({'_id': ObjectId(id)})
         db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
-        if db_doc:
-            db_doc['_id'] = str(db_doc['_id'])         
+        db_doc.update({'_id': str(db_doc['_id'])} if '_id' in db_doc else {})    
         return jsonify(parse_json(db_doc))
         
     # DELETE a data
@@ -62,8 +53,7 @@ def onedata(collection,id):
 
     # UPDATE a data by id
     if request.method == 'PUT':
-        body = request.json
-        update_doc = {k: v for k, v in body.items() if k != '_id'}
+        update_doc = {k: v for k, v in request.json.items() if k != '_id'}
         db[collection].update_one(
             {'_id': ObjectId(id)},
             { "$set": update_doc }

@@ -1,0 +1,18 @@
+<button (click)="list()" class="btn btn-primary">Integration List</button><br>
+
+<p-card *ngIf="integration" header="Integration" subheader="Details" [style]="{width: '360px'}" styleClass="p-card-shadow">
+  <ng-template pTemplate="header">
+      <img alt="Card" src="assets/showcase/images/integrationcard.png">
+  </ng-template>
+  <div>
+    <div>
+      <label><b>Name: </b></label> {{integration.name}}
+    </div>
+    <div>
+      <label><b>URL: </b></label> {{integration.url}}
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+      <p-button (click)="list()" label="List" icon="pi pi-list"></p-button>
+  </ng-template>
+</p-card>

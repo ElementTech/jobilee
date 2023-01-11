@@ -104,19 +104,6 @@
             "scripts": []
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
@@ -132,7 +119,6 @@
       }
     }
   },
-  "defaultProject": "front-end-simple-crud",
   "cli": {
     "analytics": "4c351bfc-9a4b-435b-b9f2-586b533009e1"
   }
