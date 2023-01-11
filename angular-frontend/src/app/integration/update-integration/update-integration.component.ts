@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Integration } from '../integration';
+import { Integration } from 'src/app/integration';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DBService } from '../db.service';
+import { DBService } from 'src/app/db.service';
 
 @Component({
   selector: 'app-update-integration',

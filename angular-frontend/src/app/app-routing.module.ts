@@ -1,9 +1,9 @@
-import { IntegrationDetailsComponent } from './integration-details/integration-details.component';
-import { CreateIntegrationComponent } from './create-integration/create-integration.component';
+import { IntegrationDetailsComponent } from './integration/integration-details/integration-details.component';
+import { CreateIntegrationComponent } from './integration/create-integration/create-integration.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {IntegrationListComponent } from './integration-list/integration-list.component';
-import { UpdateIntegrationComponent } from './update-integration/update-integration.component';
+import {IntegrationListComponent } from './integration/integration-list/integration-list.component';
+import { UpdateIntegrationComponent } from './integration/update-integration/update-integration.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'integration', pathMatch: 'full' },

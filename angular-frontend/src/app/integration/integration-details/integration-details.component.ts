@@ -1,6 +1,6 @@
-import { Integration } from '../integration';
+import { Integration } from 'src/app/integration';
 import { Component, OnInit, Input } from '@angular/core';
-import { DBService } from '../db.service';
+import { DBService } from 'src/app/db.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({

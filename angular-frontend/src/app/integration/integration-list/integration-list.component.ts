@@ -1,7 +1,7 @@
 import { IntegrationDetailsComponent } from '../integration-details/integration-details.component';
 import { Observable } from "rxjs";
-import { DBService } from "../db.service";
-import { Integration } from "../integration";
+import { DBService } from "src/app/db.service";
+import { Integration } from "src/app/integration";
 import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
 @Component({

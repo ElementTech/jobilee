@@ -11,9 +11,9 @@
         <td>{{integration.name}}</td>
         <td>{{integration.url}}</td>
         <td>
-          <button (click)="updateIntegration(integration._id)" class="btn btn-warning" style="margin-left: 10px">Update</button>
-          <button (click)="deleteIntegration(integration._id)" class="btn btn-danger" style="margin-left: 10px">Delete</button>
-          <button (click)="integrationDetails(integration._id)" class="btn btn-info" style="margin-left: 10px">Details</button>
+          <button pButton (click)="updateIntegration(integration._id)" class="btn btn-warning" style="margin-left: 10px">Update</button>
+          <button pButton (click)="deleteIntegration(integration._id)" class="btn btn-danger" style="margin-left: 10px">Delete</button>
+          <button pButton (click)="integrationDetails(integration._id)" class="btn btn-info" style="margin-left: 10px">Details</button>
         </td>
       </tr>
   </ng-template>
