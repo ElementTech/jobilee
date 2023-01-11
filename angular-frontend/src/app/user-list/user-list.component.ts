@@ -4,7 +4,6 @@ import { UserService } from "../user.service";
 import { User } from "../user";
 import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
-
 @Component({
   selector: "app-user-list",
   templateUrl: "./user-list.component.html",
