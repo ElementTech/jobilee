@@ -1,105 +1,73 @@
+import json
 from flask import Flask, render_template, request, jsonify
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from flask_cors import CORS
+from bson import json_util
 import yaml
 
 app = Flask(__name__)
 config = yaml.load(open('database.yaml'))
 client = MongoClient(config['uri'])
 # db = client.lin_flask
-db = client['knf-dev']
+db = client['jobilee']
 CORS(app)
+
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
 
 @app.route('/')
 def index():
     return render_template('home.html')
 
-@app.route('/users', methods=['POST', 'GET'])
-def data():
-    
+@app.route('/<collection>', methods=['POST', 'GET'])
+def data(collection):
     # POST a data to database
     if request.method == 'POST':
         body = request.json
-        firstName = body['firstName']
-        lastName = body['lastName']
-        emailId = body['emailId'] 
-        # db.users.insert_one({
-        db['users'].insert_one({
-            "firstName": firstName,
-            "lastName": lastName,
-            "emailId":emailId
-        })
-        return jsonify({
-            'status': 'Data is posted to MongoDB!',
-            'firstName': firstName,
-            'lastName': lastName,
-            'emailId':emailId
-        })
-    
+        db_doc = {k: (str(v) if k == '_id' else v) for k, v in body.items()}
+        db[collection].insert_one(db_doc)
+        if db_doc:
+            db_doc['_id'] = str(db_doc['_id'])
+        return jsonify({'status': 'Data is posted to MongoDB!', **db_doc})
+        
     # GET all data from database
     if request.method == 'GET':
-        allData = db['users'].find()
+        allData = db[collection].find()
         dataJson = []
         for data in allData:
-            id = data['_id']
-            firstName = data['firstName']
-            lastName = data['lastName']
-            emailId = data['emailId']
-            dataDict = {
-                'id': str(id),
-                'firstName': firstName,
-                'lastName': lastName,
-                'emailId': emailId
-            }
-            dataJson.append(dataDict)
+            db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
+            if db_doc:
+                db_doc['_id'] = str(db_doc['_id'])            
+            dataJson.append(db_doc)
         print(dataJson)
-        return jsonify(dataJson)
+        return jsonify(parse_json(dataJson))
 
-@app.route('/users/<string:id>', methods=['GET', 'DELETE', 'PUT'])
-def onedata(id):
+@app.route('/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
+def onedata(collection,id):
 
-    # GET a specific data by id
+    # GET all data from database
     if request.method == 'GET':
-        data = db['users'].find_one({'_id': ObjectId(id)})
-        id = data['_id']
-        firstName = data['firstName']
-        lastName = data['lastName']
-        emailId = data['emailId']
-        dataDict = {
-            'id': str(id),
-            'firstName': firstName,
-            'lastName': lastName,
-            'emailId':emailId
-        }
-        print(dataDict)
-        return jsonify(dataDict)
+        data = db[collection].find_one({'_id': ObjectId(id)})
+        db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
+        if db_doc:
+            db_doc['_id'] = str(db_doc['_id'])         
+        return jsonify(parse_json(db_doc))
         
     # DELETE a data
     if request.method == 'DELETE':
-        db['users'].delete_many({'_id': ObjectId(id)})
+        db[collection].delete_many({'_id': ObjectId(id)})
         print('\n # Deletion successful # \n')
         return jsonify({'status': 'Data id: ' + id + ' is deleted!'})
 
     # UPDATE a data by id
     if request.method == 'PUT':
         body = request.json
-        firstName = body['firstName']
-        lastName = body['lastName']
-        emailId = body['emailId']
-
-        db['users'].update_one(
+        update_doc = {k: v for k, v in body.items() if k != '_id'}
+        db[collection].update_one(
             {'_id': ObjectId(id)},
-            {
-                "$set": {
-                    "firstName":firstName,
-                    "lastName":lastName,
-                    "emailId": emailId
-                }
-            }
+            { "$set": update_doc }
         )
-
-        print('\n # Update successful # \n')
         return jsonify({'status': 'Data id: ' + id + ' is updated!'})
 
 if __name__ == '__main__':

@@ -18,9 +18,9 @@
             <td>{{user.lastName}}</td>
             <td>{{user.emailId}}</td>
             <td>
-              <button (click)="updateUser(user.id)" class="btn btn-warning" style="margin-left: 10px">Update</button>
-              <button (click)="deleteUser(user.id)" class="btn btn-danger" style="margin-left: 10px">Delete</button>
-                <button (click)="userDetails(user.id)" class="btn btn-info" style="margin-left: 10px">Details</button>
+              <button (click)="updateUser(user._id)" class="btn btn-warning" style="margin-left: 10px">Update</button>
+              <button (click)="deleteUser(user._id)" class="btn btn-danger" style="margin-left: 10px">Delete</button>
+                <button (click)="userDetails(user._id)" class="btn btn-info" style="margin-left: 10px">Details</button>
             </td>
           </tr>
         </tbody>
