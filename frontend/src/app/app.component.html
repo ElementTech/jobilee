@@ -1,11 +1,14 @@
 <p-menubar [model]="items">
-  <ng-template pTemplate="start">
-    <img src="assets/logo.png" height="40" class="mr-2"> {{title}} 
+  <ng-template pTemplate="start" class="row">
+    <h3 class="flex flex-wrap align-items-center justify-content-center border-right-2 m-0 pr-4 border-500">
+      <img src="assets/logo.png" height="40" class="mr-2"> 
+      {{title}} 
+    </h3>
   </ng-template>
-  <ng-template pTemplate="end">
+  <!-- <ng-template pTemplate="end">
     <input type="text" pInputText placeholder="Search">
-  </ng-template>
+  </ng-template> -->
 </p-menubar>
-<div class="container">
+<div  class="p-8 pt-4">
   <router-outlet></router-outlet>
 </div>

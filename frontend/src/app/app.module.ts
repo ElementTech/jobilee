@@ -15,6 +15,11 @@ import { ButtonModule } from 'primeng/button';
 import {TabViewModule} from 'primeng/tabview';
 import {TableModule} from 'primeng/table';
 import {CardModule} from 'primeng/card';
+import {FieldsetModule} from 'primeng/fieldset';
+import {RadioButtonModule} from 'primeng/radiobutton';
+import {SelectButtonModule} from 'primeng/selectbutton';
+import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +39,11 @@ import {CardModule} from 'primeng/card';
     TabViewModule,
     ButtonModule,
     TableModule,
-    CardModule
+    CardModule,
+    FieldsetModule,
+    RadioButtonModule,
+    SelectButtonModule,
+    AngJsoneditorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

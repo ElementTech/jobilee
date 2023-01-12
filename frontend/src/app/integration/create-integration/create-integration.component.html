@@ -1,20 +1,78 @@
-<h3>Create Integration</h3>
-<div [hidden]="submitted" style="width: 400px;">
-  <form (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input pInputText type="text" class="form-control" id="name" required [(ngModel)]="integration.name" name="name">
+<div>
+  <p-fieldset legend="Create Integration" [toggleable]="false">
+    <div [hidden]="submitted">
+      <form (ngSubmit)="onSubmit()">
+        <div class="grid">
+          <div class="col-6">
+            <h5>Name</h5>
+            <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="integration.name" name="name" placeholder="myapi">
+          </div>
+      
+          <div class="col-6">
+            <h5>URL</h5>
+           
+            <p-table [value]="optionsURL" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th>Name</th>
+                      <th>Description</th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-option>
+                  <tr>
+                      <td>{{option.name}}</td>
+                      <td>{{option.description}}</td>
+                  </tr>
+              </ng-template>
+          </p-table>
+            <input pInputText  class="min-w-full"  type="text" id="url" required [(ngModel)]="integration.url" name="url" placeholder="https://{token}@api.com">
+          </div>
+         </div>
+         <div class="grid">
+          <div class="col">
+            <h5>API Method Type</h5>
+            <p-selectButton [(ngModel)]="integration.type" name="type" [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
+          </div>
+            <p-card header="Construct API" class="col-10">
+              <p class="mt-0">
+                Use the following variables to construct a generic API query in order to trigger flows through your API
+              </p>
+                <p-table [value]="options" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">
+                  <ng-template pTemplate="header">
+                      <tr>
+                          <th>Name</th>
+                          <th>Description</th>
+                      </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-option>
+                      <tr>
+                          <td>{{option.name}}</td>
+                          <td>{{option.description}}</td>
+                      </tr>
+                  </ng-template>
+              </p-table>
+                <div *ngIf="integration.type == 'get'" class="p-inputgroup pt-3">
+                    <span class="p-inputgroup-addon">{{integration.url}}</span>
+                    <input type="text"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters?token={token}&{key}={value}">      
+                </div>
+                <div  class="pt-3" *ngIf="integration.type == 'post'">
+                  <json-editor [options]="editorOptions" [data]="initialData" (change)="showJson($event)"></json-editor>
+
+                </div>
+           
+
+         </p-card>
+        
+        </div>
+
+
+    
+        <button pButton type="submit" class="btn btn-danger">Submit</button>
+      </form>
     </div>
-
-    <div class="form-group">
-      <label for="name">URL</label>
-      <input pInputText type="text" class="form-control" id="url" required [(ngModel)]="integration.url" name="url">
-    </div>
-
-
-    <button pButton type="submit" class="btn btn-danger">Submit</button>
-  </form>
+  </p-fieldset>
 </div>
+
 
 <div [hidden]="!submitted">
   <h4>Successfully submitted!</h4>

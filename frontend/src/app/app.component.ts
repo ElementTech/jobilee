@@ -13,25 +13,25 @@ export class AppComponent {
 
   ngOnInit() {
     this.items = [
-      {
-          label:'Jobs',
-          icon:'pi pi-fw pi-play',
-          items:[
-              {
-                  label:'List',
-                  icon:'pi pi-fw pi-list',
-                  routerLink: 'integrations'
-              },
-              {
-                  separator:true
-              },
-              {
-                  label:'Create',
-                  icon:'pi pi-fw pi-plus',
-                  routerLink: 'add'
-              }
-          ]
-      },
+    //   {
+    //       label:'Jobs',
+    //       icon:'pi pi-fw pi-play',
+    //       items:[
+    //           {
+    //               label:'List',
+    //               icon:'pi pi-fw pi-list',
+    //               routerLink: 'integrations'
+    //           },
+    //           {
+    //               separator:true
+    //           },
+    //           {
+    //               label:'Create',
+    //               icon:'pi pi-fw pi-plus',
+    //               routerLink: 'add'
+    //           }
+    //       ]
+    //   },
       {
         label:'Integrations',
         icon:'pi pi-fw pi-cog',
