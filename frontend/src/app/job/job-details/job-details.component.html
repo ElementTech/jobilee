@@ -5,22 +5,14 @@
     <ng-template pTemplate="header">
         <tr>
             <th>Name</th>
-            <th>URL</th>
-            <th>Type</th>
-            <th>Definition</th>
-            <th>Payload</th>
+            <th>Integration</th>
 
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-job>
         <tr>
             <td>{{job.name}}</td>
-            <td>{{job.url}}</td>
-            <td>{{job.type}}</td>
-            <td>{{job.definition}}</td>
-            <td>
-               <pre  *ngIf="job.type == 'post'"><code [highlight]="job.payload | json" [languages]="['json']"></code></pre>
-            </td>
+            <td>{{job.integration}}</td>
         </tr>
     </ng-template>
   </p-table>

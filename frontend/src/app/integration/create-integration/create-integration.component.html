@@ -27,16 +27,26 @@
           <input pInputText  class="min-w-full"  type="text" id="url" required [(ngModel)]="integration.url" name="url" placeholder="https://user:pass@api.com">
         </div>
         </div>
-        <div class="grid">
-        <div class="col">
-          <h5>API Method Type</h5>
-          <p-selectButton [(ngModel)]="integration.type" name="type" [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
-        </div>
-          <p-card header="Construct API" class="col-10">
-            <p class="mt-0">
-              Use the following variables to construct a generic API query in order to trigger jobs with the API endpoint
-            </p>
+        <hr>
+        <p-fieldset legend="Construct API" [toggleable]="false">
+   
+                <ng-template pTemplate="header">
+                  <div class="mt-3">
+                    <p-selectButton [(ngModel)]="integration.type" name="type"
+                    [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
+                  </div>
+            
+                </ng-template>
+           
+          
+        
               <p-table [value]="options" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="caption">
+                  <div class="table-header">
+                    Use the following variables to construct a generic API query in order to trigger jobs with the API endpoint
+         
+                  </div>
+              </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Name</th>
@@ -58,13 +68,12 @@
                 <json-editor [options]="editorOptions"  [(ngModel)]="integration.payload" [ngModelOptions]=" 
                 {standalone: true}"></json-editor>
               </div>
-        </p-card>
+        </p-fieldset>
       
-      </div>
 
 
   
-      <button pButton type="submit" class="btn btn-danger">Submit</button>
+      <p-button type="submit" label="Submit" icon="pi pi-check" class="fixed" styleClass="p-button-lg" style="bottom:2rem;right:2rem;"></p-button>
     </form>
   </p-fieldset>
 </div>
