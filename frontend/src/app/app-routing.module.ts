@@ -8,9 +8,11 @@ import { CreateJobComponent } from './job/create-job/create-job.component';
 import { JobDetailsComponent } from './job/job-details/job-details.component';
 import { JobListComponent } from './job/job-list/job-list.component';
 import { UpdateJobComponent } from './job/update-job/update-job.component';
+import { RunJobComponent } from './job/run-job/run-job.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'jobs', pathMatch: 'full' },
+  { path: '', redirectTo: 'run', pathMatch: 'full' },
+  { path: 'run', component: RunJobComponent },
   { path: 'jobs', component: JobListComponent },
   { path: 'jobs/add', component: CreateJobComponent },
   { path: 'jobs/update/:_id', component: UpdateJobComponent },

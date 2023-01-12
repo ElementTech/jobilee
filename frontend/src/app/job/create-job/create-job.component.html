@@ -9,7 +9,7 @@
     
         <div class="col-6">
           <h5>Integration</h5>
-          <p-dropdown name="integration"  class="min-w-max" [options]="integrations | async" [(ngModel)]="job.integration" optionLabel="name"></p-dropdown>
+          <p-dropdown name="integration"  class="min-w-max" [options]="integrations | async" [(ngModel)]="job.integration" optionValue="name" optionLabel="name"></p-dropdown>
         </div>
         </div>
         <p-fieldset legend="Parameters" [toggleable]="false">

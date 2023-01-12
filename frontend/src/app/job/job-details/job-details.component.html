@@ -16,4 +16,29 @@
         </tr>
     </ng-template>
   </p-table>
+  <br>
+  <p-fieldset legend="Parameters" [toggleable]="false">
+
+        <p-scrollPanel [style]="{width: '100%', height: '400px'}">
+          <div class="grid">
+            <div *ngFor="let param of job[0].parameters" class="col-6">
+              <p-divider align="left" type="dashed">
+                <div class="inline-flex align-items-center">
+                  <ng-container>
+                    <i *ngIf="param.type == 'text'" class="pi pi-book mr-2"></i>
+                    <i *ngIf="param.type == 'choice'" class="pi pi-qrcode mr-2"></i>
+                    <i *ngIf="param.type == 'multi-choice'" class="pi pi-check-square mr-2"></i>
+                    <b>{{param.name}}</b>
+                  </ng-container>
+                </div>
+              </p-divider>
+              <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [value]="param.default ? param.default : ''" />
+              <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}" [options]="param.choices"></p-dropdown>
+              <p-multiSelect *ngIf="param.type == 'multi-choice'" defaultLabel="{{param.choices}}" placeho [options]="param.choices"></p-multiSelect>
+            </div>
+          </div>
+      
+        </p-scrollPanel>
+
+  </p-fieldset>
 </p-fieldset>

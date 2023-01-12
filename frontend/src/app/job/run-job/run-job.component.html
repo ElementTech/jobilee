@@ -1,0 +1,49 @@
+<p-dataView #dv [value]="jobs | async" [paginator]="true" [rows]="27" filterBy="name" layout="list"
+[sortField]="sortField" [sortOrder]="sortOrder" layout="grid" [loading]="loading">
+<ng-template pTemplate="header">
+    <div class="flex flex-column md:flex-row md:justify-content-between">
+        <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown>
+        <span class="p-input-icon-left mb-2 md:mb-0">
+            <i class="pi pi-search"></i>
+            <input type="search" pInputText placeholder="Search by Name" (input)="dv.filter($event.target.value)">
+        </span>
+        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+    </div>
+</ng-template>
+<ng-template let-product pTemplate="gridItem">
+  <div class="col-12 md:col-2">
+      <div class="product-grid-item card">
+
+          <div class="product-grid-item-content">
+              <!-- <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name"/> -->
+              <div class="product-name">{{product.name}}</div>
+              <!-- <div class="product-description">{{product.description}}</div> -->
+              <!-- <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating> -->
+          </div>
+          <div class="product-grid-item-bottom">
+              <button pButton pRipple type="button" icon="pi pi-history" class="p-button-rounded p-button-outlined p-button-secondary"></button>
+              <button pButton pRipple type="button" icon="pi pi-play" class="p-button-rounded p-button-outlined"></button>
+          </div>
+      </div>
+  </div>
+</ng-template>
+<ng-template let-product pTemplate="listItem">
+    <div class="col-12">
+        <div class="product-list-item">
+            <!-- <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name"/> -->
+            <div class="product-list-detail">
+                <div class="product-name">{{product.name}}</div>
+                <!-- <div class="product-description">{{product.description}}</div> -->
+                <!-- <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating> -->
+            </div>
+            <div class="p-buttonset">
+                <!-- <span class="product-price">${{product.price}}</span> -->
+               <p-button  icon="pi pi-history" class="pr-2" styleClass=" p-button-secondary" label="History"></p-button> 
+               <p-button  icon="pi pi-play" label="Run"></p-button>   <!-- [disabled]="product.inventoryStatus === 'OUTOFSTOCK'" -->
+                <!-- <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span> -->
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+</p-dataView>

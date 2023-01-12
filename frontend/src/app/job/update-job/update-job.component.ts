@@ -14,30 +14,8 @@ export class UpdateJobComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
   public initialData: any;
-
+  integrations: any;
   submitted = false;
-  optionsURL = [
-    {
-      name: "{token}",
-      description: "An optional hidden Token to be Inserted as an Authentication method to the query"
-    }
-  ]
-  options = [
-    {
-      name: "{job}",
-      description: "The Name/ID of the job that will be triggered through the query"
-    },
-    { 
-      name: "{key}",
-      description: "Parameter keys"
-    },
-    {
-      name: "{value}",
-      description: "Parameter values"
-    }
-  ]
-
-
 
   _id: string;
   job: Job;
@@ -50,6 +28,7 @@ export class UpdateJobComponent implements OnInit {
     }
 
   ngOnInit() {
+    this.integrations = this.dbService.getObjectList("integrations");
     this.job = new Job();
 
     this._id = this.route.snapshot.params['_id'];

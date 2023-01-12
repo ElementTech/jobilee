@@ -16,15 +16,30 @@ export class AppComponent {
   ngOnInit() {
     this.model = [
       {
-          label: 'Home',
+          label: 'Actions',
           items: [
-              { label: 'Jobs', icon: 'pi pi-fw pi-home', routerLink: ['/jobs'] }
+              { label: 'Run', icon: 'pi pi-fw pi-play', routerLink: ['/run'] }
           ]
       },
       {
-        label: 'Jobs',
+        label: 'Job',
         items: [
-            { label: 'Add Job', icon: 'pi pi-fw pi-cog', routerLink: ['/jobs/add'] }
+            {
+              label: 'Jobs',
+              icon: 'pi pi-fw pi-share-alt',
+              items: [
+                  {
+                      label: 'List',
+                      icon: 'pi pi-fw pi-list',
+                      routerLink: ['/jobs']
+                  },
+                  {
+                      label: 'Add',
+                      icon: 'pi pi-fw pi-plus',
+                      routerLink: ['/jobs/add']
+                  }
+              ]
+            }
         ]
       },
       {

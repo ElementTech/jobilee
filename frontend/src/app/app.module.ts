@@ -38,6 +38,9 @@ import {DropdownModule} from 'primeng/dropdown';
 import {DividerModule} from 'primeng/divider';
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {MultiSelectModule} from 'primeng/multiselect';
+import { RunJobComponent } from './job/run-job/run-job.component';
+import {DataViewModule} from 'primeng/dataview';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +52,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
     JobDetailsComponent,
     JobListComponent,
     UpdateJobComponent,
-    AppMenuitemComponent
+    AppMenuitemComponent,
+    RunJobComponent
   ],
   imports: [
     BrowserModule,
@@ -74,7 +78,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
     DropdownModule,
     DividerModule,
     ScrollPanelModule,
-    MultiSelectModule
+    MultiSelectModule,
+    DataViewModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

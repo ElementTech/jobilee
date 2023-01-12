@@ -1,1 +1,4 @@
-
+:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect {
+    width: 100%;
+  }
+  
