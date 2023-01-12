@@ -35,6 +35,9 @@ import { AppMenuitemComponent } from './app.menuitem.component';
 import { RippleModule } from 'primeng/ripple';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import {DropdownModule} from 'primeng/dropdown';
+import {DividerModule} from 'primeng/divider';
+import {ScrollPanelModule} from 'primeng/scrollpanel';
+import {MultiSelectModule} from 'primeng/multiselect';
 @NgModule({
   declarations: [
     AppComponent,
@@ -68,7 +71,10 @@ import {DropdownModule} from 'primeng/dropdown';
     SidebarModule,
     TieredMenuModule,
     RippleModule,
-    DropdownModule
+    DropdownModule,
+    DividerModule,
+    ScrollPanelModule,
+    MultiSelectModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

@@ -37,8 +37,6 @@ export class UpdateIntegrationComponent implements OnInit {
     }
   ]
 
-
-
   _id: string;
   integration: Integration;
 

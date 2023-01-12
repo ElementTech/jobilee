@@ -5,3 +5,6 @@
 :host ::ng-deep json-editor jsoneditor-outer {
   height: 400px;
 }
+:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect {
+  width: 100%;
+}

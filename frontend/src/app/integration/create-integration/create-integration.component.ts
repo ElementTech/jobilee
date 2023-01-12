@@ -50,11 +50,7 @@ export class CreateIntegrationComponent implements OnInit {
 
   ngOnInit() {
   }
-  @ViewChild(JsonEditorComponent, { static: false }) editor!: JsonEditorComponent;
-  showJson(d: Event) {
-    console.log(d)
-    this.integration.payload = d;
-  }
+
 
   save() {
     this.dbService

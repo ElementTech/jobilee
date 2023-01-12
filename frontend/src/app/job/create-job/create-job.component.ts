@@ -15,13 +15,33 @@ export class CreateJobComponent implements OnInit {
   public initialData: any;
   integrations: any;
   job: Job = {
+    parameters: [
+      {
+        "name": "string-param",
+        "type": "text",
+        "default": "mytext"
+      },
+      {
+        "name": "choice-param",
+        "type": "choice",
+        "choices": ["1","2","3","4"]
+      },
+      {
+        "name": "multi-choice-param",
+        "type": "multi-choice",
+        "default": "2,4",
+        "choices": ["1","2","3","4"]
+      }
+  ]
   };
   submitted = false;
 
 
   constructor(private dbService: DBService,
     private router: Router) {
-
+      this.editorOptions = new JsonEditorOptions()
+      this.editorOptions.modes = ['code', 'tree'];
+      this.editorOptions.mode = 'code';
 
      }
 
