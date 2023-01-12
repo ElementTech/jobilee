@@ -1,11 +1,11 @@
 
-<div class="layout-wrapper" [ngClass]="'light'">
+<div class="layout-wrapper layout-static">
   <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img src="assets/logo.png" alt="logo">
         <span>Jobilee</span>
     </a>
-    <div #topbarmenu class="layout-topbar-menu" >
+    <!-- <div #topbarmenu class="layout-topbar-menu" >
         <button class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
@@ -18,7 +18,7 @@
             <i class="pi pi-cog"></i>
             <span>Settings</span>
         </button>
-    </div>
+    </div> -->
   </div>
   
   <div class="layout-sidebar">
@@ -27,9 +27,7 @@
           <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
           <li *ngIf="item.separator" class="menu-separator"></li>
       </ng-container>
-
-  </ul>
-  
+    </ul>
   </div>
 
   <div class="layout-main-container">
