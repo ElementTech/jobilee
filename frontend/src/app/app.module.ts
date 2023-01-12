@@ -30,6 +30,10 @@ import { JobDetailsComponent } from './job/job-details/job-details.component';
 import { JobListComponent } from './job/job-list/job-list.component';
 import { UpdateJobComponent } from './job/update-job/update-job.component';
 import {SidebarModule} from 'primeng/sidebar';
+import {TieredMenuModule} from 'primeng/tieredmenu';
+import { AppMenuitemComponent } from './app.menuitem.component';
+import { RippleModule } from 'primeng/ripple';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +44,8 @@ import {SidebarModule} from 'primeng/sidebar';
     CreateJobComponent,
     JobDetailsComponent,
     JobListComponent,
-    UpdateJobComponent
+    UpdateJobComponent,
+    AppMenuitemComponent
   ],
   imports: [
     BrowserModule,
@@ -59,9 +64,12 @@ import {SidebarModule} from 'primeng/sidebar';
     SelectButtonModule,
     AngJsoneditorModule,
     HighlightModule,
-    SidebarModule
+    SidebarModule,
+    TieredMenuModule,
+    RippleModule
   ],
   providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: <HighlightOptions>{

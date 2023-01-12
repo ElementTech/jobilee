@@ -1,6 +1,0 @@
-/* You can add global styles to this file, and also import other style files */
-@import "~jsoneditor/dist/jsoneditor.min.css";
-body{
-    margin: 0 !important;
-}
-@import '~highlight.js/styles/arduino-light.css';

@@ -1,15 +1,45 @@
-<p-menubar [model]="items">
-  <ng-template pTemplate="start" class="row">
-    <h3 class="flex flex-wrap align-items-center justify-content-center border-right-2 m-0 pr-4 border-500">
-      <img src="assets/logo.png" height="40" class="mr-2"> 
-      {{title}} 
-    </h3>
-  </ng-template>
-  <!-- <ng-template pTemplate="end">
-    <input type="text" pInputText placeholder="Search">
-  </ng-template> -->
-</p-menubar>
 
-<div class="p-8 pt-4">
-  <router-outlet></router-outlet>
+<div class="layout-wrapper" [ngClass]="'light'">
+  <div class="layout-topbar">
+    <a class="layout-topbar-logo" routerLink="">
+        <img src="assets/logo.png" alt="logo">
+        <span>Jobilee</span>
+    </a>
+    <div #topbarmenu class="layout-topbar-menu" >
+        <button class="p-link layout-topbar-button">
+            <i class="pi pi-calendar"></i>
+            <span>Calendar</span>
+        </button>
+        <button class="p-link layout-topbar-button">
+            <i class="pi pi-user"></i>
+            <span>Profile</span>
+        </button>
+        <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
+            <i class="pi pi-cog"></i>
+            <span>Settings</span>
+        </button>
+    </div>
+  </div>
+  
+  <div class="layout-sidebar">
+    <ul class="layout-menu">
+      <ng-container *ngFor="let item of model; let i = index;">
+          <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
+          <li *ngIf="item.separator" class="menu-separator"></li>
+      </ng-container>
+
+  </ul>
+  
+  </div>
+
+  <div class="layout-main-container">
+      <div class="layout-main">
+          <router-outlet></router-outlet>
+      </div>
+  </div>
+  <div class="layout-mask"></div>
+  
 </div>
+
+
+

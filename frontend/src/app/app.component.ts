@@ -10,48 +10,46 @@ export class AppComponent {
   title = 'Jobilee';
 
   items: MenuItem[];
+  model: any[] = [];
+
 
   ngOnInit() {
-    this.items = [
-    //   {
-    //       label:'Jobs',
-    //       icon:'pi pi-fw pi-play',
-    //       items:[
-    //           {
-    //               label:'List',
-    //               icon:'pi pi-fw pi-list',
-    //               routerLink: 'integrations'
-    //           },
-    //           {
-    //               separator:true
-    //           },
-    //           {
-    //               label:'Create',
-    //               icon:'pi pi-fw pi-plus',
-    //               routerLink: 'add'
-    //           }
-    //       ]
-    //   },
+    this.model = [
       {
-        label:'Integrations',
-        icon:'pi pi-fw pi-cog',
-        items:[
-            {
-                label:'List',
-                icon:'pi pi-fw pi-list',
-                routerLink: 'integrations'
-            },
-            {
-                separator:true
-            },
-            {
-                label:'Create',
-                icon:'pi pi-fw pi-plus',
-                routerLink: 'integrations/add'
-            }
+          label: 'Home',
+          items: [
+              { label: 'Jobs', icon: 'pi pi-fw pi-home', routerLink: ['/jobs'] }
+          ]
+      },
+      {
+        label: 'Jobs',
+        items: [
+            { label: 'Add Job', icon: 'pi pi-fw pi-cog', routerLink: ['/jobs/add'] }
         ]
+      },
+      {
+          label: 'Settings',
+          items: [
+              {
+                label: 'Integrations',
+                icon: 'pi pi-fw pi-share-alt',
+                items: [
+                    {
+                        label: 'List',
+                        icon: 'pi pi-fw pi-list',
+                        routerLink: ['/integrations']
+                    },
+                    {
+                        label: 'Add',
+                        icon: 'pi pi-fw pi-plus',
+                        routerLink: ['/integrations/add']
+                    }
+                ]
+              }
+          ]
       }
   ];
+
   }
 
 }

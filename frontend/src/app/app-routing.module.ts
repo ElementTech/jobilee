@@ -4,9 +4,17 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {IntegrationListComponent } from './integration/integration-list/integration-list.component';
 import { UpdateIntegrationComponent } from './integration/update-integration/update-integration.component';
+import { CreateJobComponent } from './job/create-job/create-job.component';
+import { JobDetailsComponent } from './job/job-details/job-details.component';
+import { JobListComponent } from './job/job-list/job-list.component';
+import { UpdateJobComponent } from './job/update-job/update-job.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'job', pathMatch: 'full' },
+  { path: '', redirectTo: 'jobs', pathMatch: 'full' },
+  { path: 'jobs', component: JobListComponent },
+  { path: 'jobs/add', component: CreateJobComponent },
+  { path: 'jobs/update/:_id', component: UpdateJobComponent },
+  { path: 'jobs/details/:_id', component: JobDetailsComponent },
   { path: 'integrations', component: IntegrationListComponent },
   { path: 'integrations/add', component: CreateIntegrationComponent },
   { path: 'integrations/update/:_id', component: UpdateIntegrationComponent },
@@ -14,7 +22,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {})],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
