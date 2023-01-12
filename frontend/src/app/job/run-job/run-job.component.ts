@@ -1,4 +1,3 @@
-import { JobDetailsComponent } from '../job-details/job-details.component';
 import { Observable } from "rxjs";
 import { DBService } from "src/app/db.service";
 import { Job } from "src/app/job";
@@ -42,37 +41,11 @@ export class RunJobComponent implements OnInit {
     this.loading = false;
   }
 
-  deleteJob(_id: string) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "This will break jobs that depend on this job.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Delete'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.dbService.deleteObject("jobs",_id)
-        .subscribe(
-          data => {
-            Swal.fire(
-              'Deleted!',
-              'Job has been deleted.',
-              'success'
-            )
-            this.reloadData();
-          },
-          error => console.log(error));
-      }
-    })
-
-  }
-  updateJob(id: string){
-    this.router.navigate(['jobs/update', id]);
-  }
   jobDetails(_id: string){
     this.router.navigate(['jobs/details', _id]);
+  }
+  runJob(_id: string){
+    this.router.navigate(['jobs/run', _id]);
   }
 
 

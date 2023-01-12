@@ -40,6 +40,7 @@ import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {MultiSelectModule} from 'primeng/multiselect';
 import { RunJobComponent } from './job/run-job/run-job.component';
 import {DataViewModule} from 'primeng/dataview';
+import { PlayJobComponent } from './job/play-job/play-job.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {DataViewModule} from 'primeng/dataview';
     JobListComponent,
     UpdateJobComponent,
     AppMenuitemComponent,
-    RunJobComponent
+    RunJobComponent,
+    PlayJobComponent
   ],
   imports: [
     BrowserModule,

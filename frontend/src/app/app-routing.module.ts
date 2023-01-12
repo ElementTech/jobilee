@@ -9,6 +9,7 @@ import { JobDetailsComponent } from './job/job-details/job-details.component';
 import { JobListComponent } from './job/job-list/job-list.component';
 import { UpdateJobComponent } from './job/update-job/update-job.component';
 import { RunJobComponent } from './job/run-job/run-job.component';
+import { PlayJobComponent } from './job/play-job/play-job.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'run', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'jobs/add', component: CreateJobComponent },
   { path: 'jobs/update/:_id', component: UpdateJobComponent },
   { path: 'jobs/details/:_id', component: JobDetailsComponent },
+  { path: 'jobs/run/:_id', component: PlayJobComponent },
   { path: 'integrations', component: IntegrationListComponent },
   { path: 'integrations/add', component: CreateIntegrationComponent },
   { path: 'integrations/update/:_id', component: UpdateIntegrationComponent },

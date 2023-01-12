@@ -10,37 +10,37 @@
         <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
     </div>
 </ng-template>
-<ng-template let-product pTemplate="gridItem">
+<ng-template let-job pTemplate="gridItem">
   <div class="col-12 md:col-2">
-      <div class="product-grid-item card">
+      <div class="job-grid-item card">
 
-          <div class="product-grid-item-content">
-              <!-- <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name"/> -->
-              <div class="product-name">{{product.name}}</div>
-              <!-- <div class="product-description">{{product.description}}</div> -->
-              <!-- <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating> -->
+          <div class="job-grid-item-content">
+              <!-- <img [src]="'assets/showcase/images/demo/job/' + job.image" [alt]="job.name"/> -->
+              <div class="job-name">{{job.name}}</div>
+              <!-- <div class="job-description">{{job.description}}</div> -->
+              <!-- <p-rating [ngModel]="job.rating" [readonly]="true" [cancel]="false"></p-rating> -->
           </div>
-          <div class="product-grid-item-bottom">
-              <button pButton pRipple type="button" icon="pi pi-history" class="p-button-rounded p-button-outlined p-button-secondary"></button>
-              <button pButton pRipple type="button" icon="pi pi-play" class="p-button-rounded p-button-outlined"></button>
+          <div class="job-grid-item-bottom">
+              <button pButton pRipple type="button" (click)="jobDetails(job._id)"  icon="pi pi-history" class="p-button-rounded p-button-outlined p-button-secondary"></button>
+              <button pButton pRipple type="button"  (click)="runJob(job._id)" icon="pi pi-play" class="p-button-rounded p-button-outlined"></button>
           </div>
       </div>
   </div>
 </ng-template>
-<ng-template let-product pTemplate="listItem">
+<ng-template let-job pTemplate="listItem">
     <div class="col-12">
-        <div class="product-list-item">
-            <!-- <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name"/> -->
-            <div class="product-list-detail">
-                <div class="product-name">{{product.name}}</div>
-                <!-- <div class="product-description">{{product.description}}</div> -->
-                <!-- <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating> -->
+        <div class="job-list-item">
+            <!-- <img [src]="'assets/showcase/images/demo/job/' + job.image" [alt]="job.name"/> -->
+            <div class="job-list-detail">
+                <div class="job-name">{{job.name}}</div>
+                <!-- <div class="job-description">{{job.description}}</div> -->
+                <!-- <p-rating [ngModel]="job.rating" [readonly]="true" [cancel]="false"></p-rating> -->
             </div>
             <div class="p-buttonset">
-                <!-- <span class="product-price">${{product.price}}</span> -->
-               <p-button  icon="pi pi-history" class="pr-2" styleClass=" p-button-secondary" label="History"></p-button> 
-               <p-button  icon="pi pi-play" label="Run"></p-button>   <!-- [disabled]="product.inventoryStatus === 'OUTOFSTOCK'" -->
-                <!-- <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span> -->
+                <!-- <span class="job-price">${{job.price}}</span> -->
+               <p-button  icon="pi pi-history" (click)="jobDetails(job._id)" class="pr-2" styleClass=" p-button-secondary" label="History"></p-button> 
+               <p-button  icon="pi pi-play" (click)="runJob(job._id)" label="Run"></p-button>   <!-- [disabled]="job.inventoryStatus === 'OUTOFSTOCK'" -->
+                <!-- <span [class]="'job-badge status-' + job.inventoryStatus.toLowerCase()">{{job.inventoryStatus}}</span> -->
             </div>
         </div>
     </div>
