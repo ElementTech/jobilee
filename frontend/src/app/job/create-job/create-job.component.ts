@@ -1,19 +1,19 @@
 import { DBService } from 'src/app/db.service';
-import { Integration } from 'src/app/integration';
+import { Job } from 'src/app/job';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 @Component({
-  selector: 'app-create-integration',
-  templateUrl: './create-integration.component.html',
-  styleUrls: ['./create-integration.component.css']
+  selector: 'app-create-job',
+  templateUrl: './create-job.component.html',
+  styleUrls: ['./create-job.component.css']
 })
-export class CreateIntegrationComponent implements OnInit {
+export class CreateJobComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
   public initialData: any;
 
-  integration: Integration = {
+  job: Job = {
     type: 'post',
     payload: {"parameter": [{"name": "{key}", "value": "{value}"}]}
   };
@@ -53,13 +53,13 @@ export class CreateIntegrationComponent implements OnInit {
   @ViewChild(JsonEditorComponent, { static: false }) editor!: JsonEditorComponent;
   showJson(d: Event) {
     console.log(d)
-    this.integration.payload = d;
+    this.job.payload = d;
   }
 
   save() {
     this.dbService
-    .createObject("integrations",this.integration).subscribe(data => {
-      this.integration = new Integration();
+    .createObject("jobs",this.job).subscribe(data => {
+      this.job = new Job();
       this.gotoList();
     }, 
     error => console.log(error));
@@ -70,6 +70,6 @@ export class CreateIntegrationComponent implements OnInit {
   }
 
   gotoList() {
-    this.router.navigate(['/integrations']);
+    this.router.navigate(['/jobs']);
   }
 }

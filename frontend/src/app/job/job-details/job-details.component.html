@@ -1,0 +1,27 @@
+
+
+<p-fieldset legend="Job Details" [toggleable]="false">
+  <p-table [value]="job" styleClass="p-datatable-sm">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Type</th>
+            <th>Definition</th>
+            <th>Payload</th>
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-job>
+        <tr>
+            <td>{{job.name}}</td>
+            <td>{{job.url}}</td>
+            <td>{{job.type}}</td>
+            <td>{{job.definition}}</td>
+            <td>
+               <pre  *ngIf="job.type == 'post'"><code [highlight]="job.payload | json" [languages]="['json']"></code></pre>
+            </td>
+        </tr>
+    </ng-template>
+  </p-table>
+</p-fieldset>

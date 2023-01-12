@@ -1,18 +1,27 @@
-<button (click)="list()" class="btn btn-primary">Integration List</button><br>
 
-<p-card *ngIf="integration" header="Integration" subheader="Details" [style]="{width: '360px'}" styleClass="p-card-shadow">
-  <ng-template pTemplate="header">
-      <img alt="Card" src="assets/showcase/images/integrationcard.png">
-  </ng-template>
-  <div>
-    <div>
-      <label><b>Name: </b></label> {{integration.name}}
-    </div>
-    <div>
-      <label><b>URL: </b></label> {{integration.url}}
-    </div>
-  </div>
-  <ng-template pTemplate="footer">
-      <p-button (click)="list()" label="List" icon="pi pi-list"></p-button>
-  </ng-template>
-</p-card>
+
+<p-fieldset legend="Integration Details" [toggleable]="false">
+  <p-table [value]="integration" styleClass="p-datatable-sm">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Type</th>
+            <th>Definition</th>
+            <th>Payload</th>
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-integration>
+        <tr>
+            <td>{{integration.name}}</td>
+            <td>{{integration.url}}</td>
+            <td>{{integration.type}}</td>
+            <td>{{integration.definition}}</td>
+            <td>
+               <pre  *ngIf="integration.type == 'post'"><code [highlight]="integration.payload | json" [languages]="['json']"></code></pre>
+            </td>
+        </tr>
+    </ng-template>
+  </p-table>
+</p-fieldset>

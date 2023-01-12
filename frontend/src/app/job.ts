@@ -1,4 +1,4 @@
-export class Integration {
+export class Job {
     _id?: string;
     name?: string;
     url?: string;

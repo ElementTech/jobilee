@@ -20,13 +20,27 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {SelectButtonModule} from 'primeng/selectbutton';
 import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor'
 
+import {
+  HighlightModule,
+  HIGHLIGHT_OPTIONS,
+  HighlightOptions,
+} from 'ngx-highlightjs';
+import { CreateJobComponent } from './job/create-job/create-job.component';
+import { JobDetailsComponent } from './job/job-details/job-details.component';
+import { JobListComponent } from './job/job-list/job-list.component';
+import { UpdateJobComponent } from './job/update-job/update-job.component';
+import {SidebarModule} from 'primeng/sidebar';
 @NgModule({
   declarations: [
     AppComponent,
     CreateIntegrationComponent,
     IntegrationDetailsComponent,
     IntegrationListComponent,
-    UpdateIntegrationComponent
+    UpdateIntegrationComponent,
+    CreateJobComponent,
+    JobDetailsComponent,
+    JobListComponent,
+    UpdateJobComponent
   ],
   imports: [
     BrowserModule,
@@ -43,9 +57,23 @@ import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor'
     FieldsetModule,
     RadioButtonModule,
     SelectButtonModule,
-    AngJsoneditorModule
+    AngJsoneditorModule,
+    HighlightModule,
+    SidebarModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: <HighlightOptions>{
+        lineNumbers: true,
+        coreLibraryLoader: () => import('highlight.js/lib/core'),
+        lineNumbersLoader: () => import('highlightjs-line-numbers.js'),
+        languages: {
+          json: () => import('highlight.js/lib/languages/json')
+        },
+      },
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

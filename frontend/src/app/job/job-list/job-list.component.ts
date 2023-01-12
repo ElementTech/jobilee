@@ -1,17 +1,17 @@
-import { IntegrationDetailsComponent } from '../integration-details/integration-details.component';
+import { JobDetailsComponent } from '../job-details/job-details.component';
 import { Observable } from "rxjs";
 import { DBService } from "src/app/db.service";
-import { Integration } from "src/app/integration";
+import { Job } from "src/app/job";
 import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2'
 @Component({
-  selector: "app-integration-list",
-  templateUrl: "./integration-list.component.html",
-  styleUrls: ["./integration-list.component.css"]
+  selector: "app-job-list",
+  templateUrl: "./job-list.component.html",
+  styleUrls: ["./job-list.component.css"]
 })
-export class IntegrationListComponent implements OnInit {
-  integrations: Observable<Integration[]>;
+export class JobListComponent implements OnInit {
+  jobs: Observable<Job[]>;
   loading: boolean = true;
   constructor(private dbService: DBService,
     private router: Router) {}
@@ -28,14 +28,14 @@ export class IntegrationListComponent implements OnInit {
   }
 
   reloadData() {
-    this.integrations = this.dbService.getObjectList("integrations");
+    this.jobs = this.dbService.getObjectList("jobs");
     this.loading = false;
   }
 
-  deleteIntegration(_id: string) {
+  deleteJob(_id: string) {
     Swal.fire({
       title: 'Are you sure?',
-      text: "This will break jobs that depend on this integration.",
+      text: "This will break jobs that depend on this job.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -43,12 +43,12 @@ export class IntegrationListComponent implements OnInit {
       confirmButtonText: 'Delete'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.dbService.deleteObject("integrations",_id)
+        this.dbService.deleteObject("jobs",_id)
         .subscribe(
           data => {
             Swal.fire(
               'Deleted!',
-              'Integration has been deleted.',
+              'Job has been deleted.',
               'success'
             )
             this.reloadData();
@@ -58,10 +58,10 @@ export class IntegrationListComponent implements OnInit {
     })
 
   }
-  updateIntegration(id: string){
-    this.router.navigate(['integrations/update', id]);
+  updateJob(id: string){
+    this.router.navigate(['jobs/update', id]);
   }
-  integrationDetails(_id: string){
-    this.router.navigate(['integrations/details', _id]);
+  jobDetails(_id: string){
+    this.router.navigate(['jobs/details', _id]);
   }
 }

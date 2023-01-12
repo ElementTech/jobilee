@@ -6,11 +6,11 @@ import {IntegrationListComponent } from './integration/integration-list/integrat
 import { UpdateIntegrationComponent } from './integration/update-integration/update-integration.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'integration', pathMatch: 'full' },
+  { path: '', redirectTo: 'job', pathMatch: 'full' },
   { path: 'integrations', component: IntegrationListComponent },
-  { path: 'add', component: CreateIntegrationComponent },
-  { path: 'update/:_id', component: UpdateIntegrationComponent },
-  { path: 'details/:_id', component: IntegrationDetailsComponent },
+  { path: 'integrations/add', component: CreateIntegrationComponent },
+  { path: 'integrations/update/:_id', component: UpdateIntegrationComponent },
+  { path: 'integrations/details/:_id', component: IntegrationDetailsComponent },
 ];
 
 @NgModule({

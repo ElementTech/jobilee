@@ -26,10 +26,12 @@
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "jsoneditor": "^9.9.2",
+    "ngx-highlightjs": "^7.0.1",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",
     "primeng": "^15.0.1",
     "rxjs": "~6.6.0",
+    "sweetalert2": "^11.7.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
   },

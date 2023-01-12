@@ -47,7 +47,7 @@ export class AppComponent {
             {
                 label:'Create',
                 icon:'pi pi-fw pi-plus',
-                routerLink: 'add'
+                routerLink: 'integrations/add'
             }
         ]
       }

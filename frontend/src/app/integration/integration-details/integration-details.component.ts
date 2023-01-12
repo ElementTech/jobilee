@@ -9,22 +9,19 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./integration-details.component.css']
 })
 export class IntegrationDetailsComponent implements OnInit {
-
   _id: string;
-  integration: Integration;
+  integration: Integration[];
 
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService) { }
 
   ngOnInit() {
-    this.integration = new Integration();
+    this.integration = [new Integration()];
 
     this._id = this.route.snapshot.params['_id'];
-    console.log("gh"+this._id);
     this.dbService.getObject("integrations",this._id)
       .subscribe(data => {
-        console.log(data)
-        this.integration = data;
+        this.integration = [data];
       }, error => console.log(error));
   }
 

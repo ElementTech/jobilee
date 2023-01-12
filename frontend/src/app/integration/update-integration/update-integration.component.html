@@ -1,16 +1,70 @@
-<h3>Update Integration</h3>
-<div  style="width: 500px;">
-  <form (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input pInputText type="text" class="form-control" id="name" required [(ngModel)]="integration.name" name="name">
-    </div>
+<div>
+  <p-fieldset legend="Update Integration" [toggleable]="false">
+    <form (ngSubmit)="onSubmit()">
+      <div class="grid">
+        <div class="col-6">
+          <h5>Name</h5>
+          <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="integration.name" name="name" placeholder="myapi">
+        </div>
+    
+        <div class="col-6">
+          <h5>URL</h5>
+          
+          <!-- <p-table [value]="optionsURL" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-option>
+                <tr>
+                    <td>{{option.name}}</td>
+                    <td>{{option.description}}</td>
+                </tr>
+            </ng-template>
+        </p-table> -->
+          <input pInputText  class="min-w-full"  type="text" id="url" required [(ngModel)]="integration.url" name="url" placeholder="https://user:pass@api.com">
+        </div>
+        </div>
+        <div class="grid">
+        <div class="col">
+          <h5>API Method Type</h5>
+          <p-selectButton [(ngModel)]="integration.type" name="type" [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
+        </div>
+          <p-card header="Construct API" class="col-10">
+            <p class="mt-0">
+              Use the following variables to construct a generic API query in order to trigger jobs with the API endpoint
+            </p>
+              <p-table [value]="options" styleClass="p-datatable-sm" [tableStyle]="{'min-width': '50rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-option>
+                    <tr>
+                        <td>{{option.name}}</td>
+                        <td>{{option.description}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+              <div class="p-inputgroup pt-3">
+                  <span class="p-inputgroup-addon">{{integration.url}}</span>
+                  <input type="text" [(ngModel)]="integration.definition" name="definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters?{key}={value}">      
+              </div>
+              <div *ngIf="integration.type == 'post'" class="pt-3">
+                <json-editor [options]="editorOptions"  [(ngModel)]="integration.payload" [ngModelOptions]=" 
+                {standalone: true}"></json-editor>
+              </div>
+        </p-card>
+      
+      </div>
 
-    <div class="form-group">
-      <label for="name">URL</label>
-      <input pInputText type="text" class="form-control" id="url" required [(ngModel)]="integration.url" name="url">
-    </div>
 
-    <button pButton type="submit" class="btn btn-success">Submit</button>
-  </form>
+  
+      <button pButton type="submit" class="btn btn-danger">Submit</button>
+    </form>
+  </p-fieldset>
 </div>

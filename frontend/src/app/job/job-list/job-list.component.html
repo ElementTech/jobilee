@@ -1,10 +1,10 @@
-<p-table #dt [value]="integrations | async" dataKey="id" [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-sm"
+<p-table #dt [value]="jobs | async" dataKey="id" [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-sm"
 [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading"
 [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
 [filterDelay]="0" [globalFilterFields]="['name','country.name','representative.name','status']">
 <ng-template pTemplate="caption">
   <div class="table-header flex flex-wrap align-items-center justify-content-between">
-      List of Integrations
+      List of Jobs
       <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Global Search" />
@@ -52,19 +52,19 @@
         <th>Actions</th>
       </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-integration>
+  <ng-template pTemplate="body" let-job>
       <tr class="p-selectable-row">
         <td>
-          <span class="p-column-title">{{integration.name}}</span>
-          {{integration.name}}
+          <span class="p-column-title">{{job.name}}</span>
+          {{job.name}}
         </td>
         <td>
-          <span class="p-column-title">{{integration.url}}</span>
-          {{integration.url}}
+          <span class="p-column-title">{{job.url}}</span>
+          {{job.url}}
         </td>
         <td>
-          <span class="p-column-title">{{integration.type}}</span>
-          {{integration.type}}
+          <span class="p-column-title">{{job.type}}</span>
+          {{job.type}}
         </td>
         <!-- <td>
           <span class="p-column-title">Status</span>
@@ -72,15 +72,15 @@
         </td> -->
         
         <td>
-          <button pButton (click)="updateIntegration(integration._id)" class="btn btn-warning" style="margin-left: 10px">Update</button>
-          <button pButton (click)="deleteIntegration(integration._id)" class="btn btn-danger" style="margin-left: 10px">Delete</button>
-          <button pButton (click)="integrationDetails(integration._id)" class="btn btn-info" style="margin-left: 10px">Details</button>
+          <button pButton (click)="updateJob(job._id)" class="btn btn-warning" style="margin-left: 10px">Update</button>
+          <button pButton (click)="deleteJob(job._id)" class="btn btn-danger" style="margin-left: 10px">Delete</button>
+          <button pButton (click)="jobDetails(job._id)" class="btn btn-info" style="margin-left: 10px">Details</button>
         </td>
       </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage">
     <tr>
-        <td colspan="8">No integrations found.</td>
+        <td colspan="8">No jobs found.</td>
     </tr>
 </ng-template>
 </p-table>

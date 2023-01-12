@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Integration } from 'src/app/integration';
+import { Job } from 'src/app/job';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DBService } from 'src/app/db.service';
 import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 
 @Component({
-  selector: 'app-update-integration',
-  templateUrl: './update-integration.component.html',
-  styleUrls: ['./update-integration.component.css']
+  selector: 'app-update-job',
+  templateUrl: './update-job.component.html',
+  styleUrls: ['./update-job.component.css']
 })
-export class UpdateIntegrationComponent implements OnInit {
+export class UpdateJobComponent implements OnInit {
 
 
   public editorOptions: JsonEditorOptions;
@@ -40,7 +40,7 @@ export class UpdateIntegrationComponent implements OnInit {
 
 
   _id: string;
-  integration: Integration;
+  job: Job;
 
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService) { 
@@ -50,30 +50,30 @@ export class UpdateIntegrationComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.integration = new Integration();
+    this.job = new Job();
 
     this._id = this.route.snapshot.params['_id'];
     
-    this.dbService.getObject("integrations",this._id)
+    this.dbService.getObject("jobs",this._id)
       .subscribe(data => {
-        this.integration = data;
+        this.job = data;
       }, error => console.log(error));
   }
 
-  updateIntegration() {
-    this.dbService.updateObject("integrations",this._id, this.integration)
+  updateJob() {
+    this.dbService.updateObject("jobs",this._id, this.job)
       .subscribe(data => {
         console.log(data);
-        this.integration = new Integration();
+        this.job = new Job();
         this.gotoList();
       }, error => console.log(error));
   }
 
   onSubmit() {
-    this.updateIntegration();    
+    this.updateJob();    
   }
 
   gotoList() {
-    this.router.navigate(['/integrations']);
+    this.router.navigate(['/jobs']);
   }
 }
