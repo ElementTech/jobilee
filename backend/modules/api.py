@@ -1,17 +1,13 @@
 import json
-from flask import Flask, render_template, request, jsonify
-from pymongo import MongoClient
+from flask import request, jsonify
 from bson.objectid import ObjectId
 from flask_cors import CORS
-from bson import json_util
-import yaml
 
-def parse_json(data):
-    return json.loads(json_util.dumps(data))
+from utilities.utilities import *
+# Import Libraries 
+from app import app
 
-@app.route('/')
-def index():
-    return render_template('home.html')
+db = get_db_client()
 
 @app.route('/<collection>', methods=['POST', 'GET'])
 def data(collection):
