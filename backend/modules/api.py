@@ -7,8 +7,6 @@ from utilities.utilities import *
 # Import Libraries 
 from app import app
 
-db = get_db_client()
-
 @app.route('/<collection>', methods=['POST', 'GET'])
 def data(collection):
     # POST a data to database

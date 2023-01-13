@@ -30,7 +30,7 @@ export class PlayJobComponent implements OnInit {
   }
 
   run(){
-    this.runService.runJob(this._id).subscribe(result=>{
+    this.runService.runJob(this._id,this.job.parameters).subscribe(result=>{
       console.log(result)
     })
   }

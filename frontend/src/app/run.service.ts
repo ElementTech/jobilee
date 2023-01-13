@@ -11,8 +11,8 @@ export class RunService {
 
   constructor(private http: HttpClient) { }
 
-  runJob(_id: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/run/${_id}`,{});
+  runJob(_id: string,chosen_params: Object): Observable<any> {
+    return this.http.post(`${this.baseUrl}/run/${_id}`,chosen_params);
   }
 
 
