@@ -13,6 +13,11 @@ export class UpdateIntegrationComponent implements OnInit {
 
 
   public initialData: any;
+  authenticationOptions = [
+    "None",
+    "Basic",
+    "Bearer"
+  ];
 
   submitted = false;
   optionsURL = [
@@ -39,6 +44,31 @@ export class UpdateIntegrationComponent implements OnInit {
       description: "Parameter values"
     }
   ]
+  setAuthData(event){
+    console.log(event.value)
+    if (event.value == "None")
+    {
+      this.integration.authenticationData = []
+    }
+    if (event.value == "Basic")
+    {
+      this.integration.authenticationData = [{"key":"Username", "value": ""},{"key":"Password", "value": ""}]
+    }
+    if (event.value == "Bearer")
+    {
+      this.integration.authenticationData = [{"key":"Token", "value": ""}]
+    }
+  }
+  addHeader()
+  {
+   this.integration.headers.push({'key':'','value':''});
+   this.integration.headers = [...this.integration.headers]
+  }
+  removeHeader(i)
+  {
+   this.integration.headers.splice(i,1)
+   this.integration.headers = [...this.integration.headers]
+  }
   setTable(event)
   {
     switch (event.value) {

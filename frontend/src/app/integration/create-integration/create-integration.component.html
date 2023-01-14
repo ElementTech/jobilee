@@ -68,14 +68,28 @@
                     <div class="col">
                       <p-tabView>
                           <p-tabPanel header="Request Options" >
-                            <div class="field-checkbox">
-                              <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="ignoreSSL" inputId="binary"></p-checkbox>
-                              <label for="binary">Ignore SSL</label>
+                            <div class="grid">
+                              <div class="field-checkbox col-6">
+                                <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="ignoreSSL" inputId="binary"></p-checkbox>
+                                <label for="binary">Ignore SSL</label>
+                              </div>
+                              <div class="field-checkbox col-6">
+                                <p-checkbox [(ngModel)]="integration.splitMultiChoice" [binary]="true" name="splitMultiChoice" inputId="binary"></p-checkbox>
+                                <label for="binary">Split Multi Choice Parameters</label>
+                                &nbsp;
+                                <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
+                              </div>
                             </div>
-                          
+               
                   
                             <p-panel header="Headers" styleClass="min-w-full" [toggleable]="false">
+                              <ng-template pTemplate="header">
+                                  <span  pTooltip="If [Content-Type=application/json], parameters will be passed as body. Otherwise - as encoded URL query." tooltipPosition="top" class="pi pi-question-circle"></span>
+                                  &nbsp;
+                              </ng-template>
                               <ng-template pTemplate="icons">
+                                      
+                                    
                                       <button type='button' pButton class="p-panel-header-icon p-link" (click)="addHeader()">
                                           <span class="pi pi-plus"></span>
                                       </button>

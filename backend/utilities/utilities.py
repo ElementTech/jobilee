@@ -6,21 +6,39 @@ import yaml
 import urllib3
 import requests
 import urllib.request 
-import urllib.parse 
+import urllib.parse
 
 db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
-http = urllib3.PoolManager()
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
-def prepare_params(job_params, chosen_params):
+def prepare_params(job_params, chosen_params, splitMultiChoice):
     for p in job_params:
         if not p['name'] in chosen_params:
             if p['type'] == 'text':
                 chosen_params['name'] = p['default'] if 'default' in p else ''
             if p['type'] == 'choice' or p['type'] == 'multi-choice':
                 chosen_params['name'] = p['default'] if 'default' in p else p['choices'][0]
+ 
+    for x, y in list(chosen_params.items()):
+        for p in job_params:
+            if p['name'] == x:
+                if p['type'] == "multi-choice":
+                    temp = y
+                    if isinstance(temp, list):
+                        while "," in temp: temp.remove(",")   
+                        if splitMultiChoice:
+                            chosen_params[x] = temp
+                        else:
+                            chosen_params[x] = ','.join(temp)               
+                    else:
+                        if splitMultiChoice:
+                            chosen_params[x] = temp.split(",")
+                        else:
+                            chosen_params[x] = temp
+    
+    print(chosen_params)
     return chosen_params
 
 def replace_template(template, key_value_pairs):
@@ -48,24 +66,41 @@ def replace_parameters(template, parameter_holder, key_value_pairs):
             parameter_holder = {k: v for d in new_parameters for k, v in d.items()}
     return parameter_holder
 
+def querify(chosen_params,splitMultiChoice):
+    return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'') 
+
 def process_request(job, integration,chosen_params):
-    chosen_params = prepare_params(job['parameters'], chosen_params)
-    url = integration["url"]+(integration['definition'].replace(f'{{job}}',job['name']))
-    payload=chosen_params
+    chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
+    url = integration["url"]+(integration['definition'].replace(f'{{job}}',job['apiID']))
+    payload=querify(chosen_params,integration['splitMultiChoice'])
+    headers = {d['key']: d['value'] for d in integration['headers']} 
 
     if integration["type"] == "post":
-        payload = replace_parameters(integration['parameter'],integration['payload'],chosen_params)
+        if headers.get('Content-Type') == "application/json":
+            payload = replace_parameters(integration['parameter'],integration['payload'],chosen_params) if headers.get('Content-Type') == "application/json" else payload
     
-    if integration["type"] == "get":    
-        query_string = urllib.parse.urlencode( chosen_params ) 
-        url = url + "?" + query_string 
-
-    print(url)
-    r = http.request(
-        integration["type"],
-        url,
-        fields=payload,
+    http = urllib3.PoolManager(
+        cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
     )
+    if integration['authentication'] == "Basic":
+        headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
+    if integration['authentication'] == "Bearer":
+        headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
+
+    if headers.get('Content-Type') == "application/json":
+        r = http.request(
+            method=integration["type"],
+            url=url,
+            headers=headers,
+            body=json.dumps(payload).encode('utf-8'),
+        )
+    else:
+        r = http.request(
+            method=integration["type"],
+            url=url,
+            headers=headers,
+            fields=payload if integration['type'] == 'GET' else ((itm.split('=')[0],itm.split('=')[1]) for itm in payload.split("&"))
+        )        
     return r
 
 def trigger_job_api(id,chosen_params):

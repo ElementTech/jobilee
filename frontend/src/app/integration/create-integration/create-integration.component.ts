@@ -15,6 +15,7 @@ export class CreateIntegrationComponent implements OnInit {
   integration: Integration = {
     type: 'post',
     authentication: 'None',
+    splitMultiChoice: true,
     authenticationData: [],
     headers: [{"key":"Content-Type", "value": "application/json"}],
     payload: {"parameter": ['{parameter}']},

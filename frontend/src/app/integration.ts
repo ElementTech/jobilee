@@ -3,6 +3,7 @@ export class Integration {
     name?: string;
     url?: string;
     ignoreSSL?: boolean;
+    splitMultiChoice?: boolean;
     authentication?: string;
     headers?: Array<Object>;
     authenticationData?: Array<Object>;

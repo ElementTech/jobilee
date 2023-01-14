@@ -25,14 +25,14 @@ export class CreateJobComponent implements OnInit {
       {
         "name": "choice-param",
         "type": "choice",
-        "default": "3",
-        "choices": ["1","2","3","4"]
+        "default": "b",
+        "choices": ["a","b","c","d"]
       },
       {
         "name": "multi-choice-param",
         "type": "multi-choice",
-        "default": "2,4",
-        "choices": ["1","2","3","4"]
+        "default": "f,h",
+        "choices": ["e","f","g","h"]
       }
   ]
   };
