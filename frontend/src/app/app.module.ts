@@ -44,6 +44,7 @@ import { PlayJobComponent } from './job/play-job/play-job.component';
 import {ToolbarModule} from 'primeng/toolbar';
 import {PanelModule} from 'primeng/panel';
 import {CheckboxModule} from 'primeng/checkbox';
+import { JobFormComponent } from './components/job-form/job-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +58,8 @@ import {CheckboxModule} from 'primeng/checkbox';
     UpdateJobComponent,
     AppMenuitemComponent,
     RunJobComponent,
-    PlayJobComponent
+    PlayJobComponent,
+    JobFormComponent
   ],
   imports: [
     BrowserModule,

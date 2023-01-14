@@ -26,7 +26,7 @@ export class AppComponent {
         items: [
             {
               label: 'Jobs',
-              icon: 'pi pi-fw pi-share-alt',
+              icon: 'pi pi-fw pi-cog',
               items: [
                   {
                       label: 'List',
