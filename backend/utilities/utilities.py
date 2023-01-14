@@ -1,12 +1,18 @@
 from bson import json_util, ObjectId
 import json
-from collections.abc import MutableMapping
 from pymongo import MongoClient
 import yaml
 import urllib3
-import requests
 import urllib.request 
 import urllib.parse
+
+class FakeDict(dict):
+    def __init__(self, items):
+        if items != []:
+            self['something'] = 'something'
+        self._items = items
+    def items(self):
+        return self._items
 
 db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
 
@@ -43,7 +49,11 @@ def prepare_params(job_params, chosen_params, splitMultiChoice):
 def replace_template(template, key_value_pairs):
     param_list = []
     for k, v in key_value_pairs.items():
-        param_list.append(json.loads(json.dumps(template).replace(f"{{key}}",k).replace(f"{{value}}",v)))
+        if isinstance(v, list):
+            for p in v:
+                param_list.append(json.loads(json.dumps(template).replace(f"{{key}}",k).replace(f"{{value}}",p)))
+        else:
+            param_list.append(json.loads(json.dumps(template).replace(f"{{key}}",k).replace(f"{{value}}",v)))
 
     return param_list
 
@@ -62,7 +72,7 @@ def replace_parameters(template, parameter_holder, key_value_pairs):
     elif isinstance(parameter_holder, str):
         if parameter_holder == f'{{parameter}}':
             new_parameters = replace_template(template, key_value_pairs)
-            parameter_holder = {k: v for d in new_parameters for k, v in d.items()}
+            parameter_holder = new_parameters
     return parameter_holder
 
 def querify(chosen_params,splitMultiChoice):
@@ -76,7 +86,7 @@ def process_request(job, integration,chosen_params):
 
     if integration["type"] == "post":
         if headers.get('Content-Type') == "application/json":
-            payload = replace_parameters(integration['parameter'],integration['payload'],chosen_params) if headers.get('Content-Type') == "application/json" else payload
+            payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
     
     http = urllib3.PoolManager(
         cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
@@ -85,7 +95,7 @@ def process_request(job, integration,chosen_params):
         headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
     if integration['authentication'] == "Bearer":
         headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
-
+   
     if headers.get('Content-Type') == "application/json":
         r = http.request(
             method=integration["type"],
