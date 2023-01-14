@@ -45,6 +45,7 @@ import {ToolbarModule} from 'primeng/toolbar';
 import {PanelModule} from 'primeng/panel';
 import {CheckboxModule} from 'primeng/checkbox';
 import { JobFormComponent } from './components/job-form/job-form.component';
+import { IntegrationFormComponent } from './components/integration-form/integration-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +60,8 @@ import { JobFormComponent } from './components/job-form/job-form.component';
     AppMenuitemComponent,
     RunJobComponent,
     PlayJobComponent,
-    JobFormComponent
+    JobFormComponent,
+    IntegrationFormComponent
   ],
   imports: [
     BrowserModule,
