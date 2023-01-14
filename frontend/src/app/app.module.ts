@@ -43,7 +43,7 @@ import {DataViewModule} from 'primeng/dataview';
 import { PlayJobComponent } from './job/play-job/play-job.component';
 import {ToolbarModule} from 'primeng/toolbar';
 import {PanelModule} from 'primeng/panel';
-
+import {CheckboxModule} from 'primeng/checkbox';
 @NgModule({
   declarations: [
     AppComponent,
@@ -85,7 +85,8 @@ import {PanelModule} from 'primeng/panel';
     MultiSelectModule,
     DataViewModule,
     ToolbarModule,
-    PanelModule
+    PanelModule,
+    CheckboxModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

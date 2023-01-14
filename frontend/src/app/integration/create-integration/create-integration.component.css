@@ -1,10 +1,14 @@
 
-:host ::ng-deep json-editor,
-:host ::ng-deep json-editor .jsoneditor,
-:host ::ng-deep json-editor > div,
-:host ::ng-deep json-editor jsoneditor-outer {
+:host ::ng-deep json-editor.api,
+:host ::ng-deep json-editor.api .jsoneditor,
+:host ::ng-deep json-editor.api > div,
+:host ::ng-deep json-editor.api jsoneditor-outer {
   height: 400px;
 }
+
+
+
 :host ::ng-deep .p-panel-content {
   padding: 0 !important;
 }
+
