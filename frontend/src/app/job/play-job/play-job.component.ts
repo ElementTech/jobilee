@@ -68,6 +68,8 @@ export class PlayJobComponent implements OnInit {
     this.runService.runJob(this._id,params).subscribe(result=>{
       console.log(result)
       this.result=result
+    },error=>{
+      
     })
   }
 }
