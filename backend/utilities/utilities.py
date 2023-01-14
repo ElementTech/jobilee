@@ -38,7 +38,6 @@ def prepare_params(job_params, chosen_params, splitMultiChoice):
                         else:
                             chosen_params[x] = temp
     
-    print(chosen_params)
     return chosen_params
 
 def replace_template(template, key_value_pairs):
