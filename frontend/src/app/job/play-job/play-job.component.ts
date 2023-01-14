@@ -62,11 +62,12 @@ export class PlayJobComponent implements OnInit {
     })
 
   }
-
+  result: any;
   run(){
     const params = this.job.parameters.map(p=>{ return {"key": p.name, "value": p.default}}).reduce((obj, item) => Object.assign(obj, { [item.key]: item.value }), {});
     this.runService.runJob(this._id,params).subscribe(result=>{
       console.log(result)
+      this.result=result
     })
   }
 }
