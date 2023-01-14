@@ -1,8 +1,15 @@
 
-<p-toolbar>
+<p-toolbar >
     <div class="p-toolbar-group-start">
         <button pButton label="Run" (click)="run()" icon="pi pi-play"></button>
     </div>
+    
+    <div class="p-toolbar-group-start">
+      <p-button label="{{job.name}}" [routerLink]="['/','jobs','details', job._id]" styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
+    </div>
+    <div class="p-toolbar-group-end">
+      <p-button icon="pi pi-times" (click)="deleteJob(job._id)" styleClass="p-button-danger"></p-button>
+  </div>
 </p-toolbar>
 <div class="grid pt-3">
     <div class="col-6">

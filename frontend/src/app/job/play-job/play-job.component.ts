@@ -4,6 +4,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import { RunService } from "src/app/run.service";
 import { JsonEditorOptions } from "@maaxgr/ang-jsoneditor";
+import Swal from "sweetalert2";
 @Component({
   selector: "app-play-job",
   templateUrl: "./play-job.component.html",
@@ -33,6 +34,33 @@ export class PlayJobComponent implements OnInit {
 
   list(){
     this.router.navigate(['jobs']);
+  }
+  deleteJob(_id: string) {
+    
+    Swal.fire({
+      title: 'Are you sure?',
+      // text: "This will break jobs that depend on this job.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dbService.deleteObject("jobs",_id)
+        .subscribe(
+          data => {
+            Swal.fire(
+              'Deleted!',
+              'Job has been deleted.',
+              'success'
+            )
+            this.router.navigate(['jobs']);
+          },
+          error => console.log(error));
+      }
+    })
+
   }
 
   run(){

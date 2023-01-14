@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 import { Integration } from 'src/app/integration';
+import { getStringAfterSubstring, getStringBeforeSubstring } from 'src/main';
 @Component({
   selector: 'app-create-job',
   templateUrl: './create-job.component.html',
@@ -47,8 +48,21 @@ export class CreateJobComponent implements OnInit {
      }
 
   ngOnInit() {
-    this.integrations = this.dbService.getObjectList("integrations");
+    this.dbService.getObjectList("integrations").subscribe(data=>{
+      this.integrations = data
+    })
   }
+
+  getURL(integrationName) {
+      return this.integrations?.find(item => item.name === integrationName)?.url
+  }
+  getSuffix(integrationName) {
+    return getStringAfterSubstring(this.integrations?.find(item => item.name === integrationName)?.definition,"{job}")
+  }
+  getPrefix(integrationName) {
+    return getStringBeforeSubstring(this.integrations?.find(item => item.name === integrationName)?.definition,"{job}")
+  }
+
 
 
   save() {
@@ -68,3 +82,4 @@ export class CreateJobComponent implements OnInit {
     this.router.navigate(['/jobs']);
   }
 }
+

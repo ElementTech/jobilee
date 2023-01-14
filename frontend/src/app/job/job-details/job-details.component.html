@@ -5,6 +5,7 @@
     <ng-template pTemplate="header">
         <tr>
             <th>Name</th>
+            <th>API ID</th>
             <th>Integration</th>
 
         </tr>
@@ -12,6 +13,7 @@
     <ng-template pTemplate="body" let-job>
         <tr>
             <td>{{job.name}}</td>
+            <td>{{job.apiID}}</td>
             <td>{{job.integration}}</td>
         </tr>
     </ng-template>

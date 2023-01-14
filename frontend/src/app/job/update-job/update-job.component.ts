@@ -3,6 +3,7 @@ import { Job } from 'src/app/job';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DBService } from 'src/app/db.service';
 import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
+import { getStringAfterSubstring, getStringBeforeSubstring } from 'src/main';
 
 @Component({
   selector: 'app-update-job',
@@ -28,7 +29,9 @@ export class UpdateJobComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.integrations = this.dbService.getObjectList("integrations");
+    this.dbService.getObjectList("integrations").subscribe(data=>{
+      this.integrations = data
+    })
     this.job = new Job();
 
     this._id = this.route.snapshot.params['_id'];
@@ -37,6 +40,15 @@ export class UpdateJobComponent implements OnInit {
       .subscribe(data => {
         this.job = data;
       }, error => console.log(error));
+  }
+    getURL(integrationName) {
+      return this.integrations?.find(item => item.name === integrationName)?.url
+  }
+  getSuffix(integrationName) {
+    return getStringAfterSubstring(this.integrations?.find(item => item.name === integrationName)?.definition,"{job}")
+  }
+  getPrefix(integrationName) {
+    return getStringBeforeSubstring(this.integrations?.find(item => item.name === integrationName)?.definition,"{job}")
   }
 
   updateJob() {

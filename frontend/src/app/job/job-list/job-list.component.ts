@@ -35,7 +35,7 @@ export class JobListComponent implements OnInit {
   deleteJob(_id: string) {
     Swal.fire({
       title: 'Are you sure?',
-      text: "This will break jobs that depend on this job.",
+      // text: "This will break jobs that depend on this job.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',

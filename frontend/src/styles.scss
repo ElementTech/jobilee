@@ -5,3 +5,9 @@
 
 $gutter: 1rem; //for primeflex grid system
 @import "assets/styles/layout/layout.scss";
+
+.submitBtn {
+   bottom:2rem;
+   right:2rem;
+   z-index: 1000;
+}

@@ -6,11 +6,21 @@
           <h5>Name</h5>
           <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="job.name" name="name" placeholder="myapi">
         </div>
-    
         <div class="col-6">
           <h5>Integration</h5>
-          <p-dropdown name="integration"  class="min-w-max" [options]="integrations | async" [(ngModel)]="job.integration" optionValue="name" optionLabel="name"></p-dropdown>
+          <p-dropdown name="integration"  class="min-w-max" [options]="integrations"  [(ngModel)]="job.integration" optionValue="name" optionLabel="name"></p-dropdown>
         </div>
+        <div class="col-6">
+ 
+          <h5>API ID</h5>
+          <div class="p-inputgroup">
+              <span class="p-inputgroup-addon min-w-min">{{getURL(job.integration)}}{{getPrefix(job.integration)}}</span>  
+              <input pInputText class="min-w-min" type="text" id="apiID" required [(ngModel)]="job.apiID" name="apiID" placeholder="id">
+              <span class="p-inputgroup-addon" *ngIf="getSuffix(job.integration) != ''">{{getSuffix(job.integration)}}</span>      
+          </div>
+        </div>
+    
+  
         </div>
         <p-fieldset legend="Parameters" [toggleable]="false">
           <div class="grid">
@@ -47,7 +57,7 @@
           </div>
         </p-fieldset>
   
-        <p-button type="submit" label="Submit" icon="pi pi-check" class="fixed" styleClass="p-button-lg" style="bottom:2rem;right:2rem;z-index: 1000;"></p-button>
+        <p-button type="submit" label="Submit" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
     </form>
   </p-fieldset>
 </div>
