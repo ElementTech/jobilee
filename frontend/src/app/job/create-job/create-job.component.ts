@@ -24,6 +24,7 @@ export class CreateJobComponent implements OnInit {
       {
         "name": "choice-param",
         "type": "choice",
+        "default": "3",
         "choices": ["1","2","3","4"]
       },
       {

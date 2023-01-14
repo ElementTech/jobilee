@@ -4,5 +4,6 @@ export class Integration {
     url?: string;
     type?: string;
     payload?: Object;
+    parameter?: Object
     definition?: string;
 }

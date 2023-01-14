@@ -1,10 +1,15 @@
 from bson import json_util, ObjectId
-import json 
+import json
+from collections.abc import MutableMapping
 from pymongo import MongoClient
 import yaml
+import urllib3
 import requests
+import urllib.request 
+import urllib.parse 
 
 db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
+http = urllib3.PoolManager()
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))
@@ -12,45 +17,56 @@ def parse_json(data):
 def prepare_params(job_params, chosen_params):
     for p in job_params:
         if not p['name'] in chosen_params:
-            if p['type'] == 'text' or p['type'] == 'multi-choice':
+            if p['type'] == 'text':
                 chosen_params['name'] = p['default'] if 'default' in p else ''
-            if p['type'] == 'choice':
-                chosen_params['name'] = p['choices'][0]
+            if p['type'] == 'choice' or p['type'] == 'multi-choice':
+                chosen_params['name'] = p['default'] if 'default' in p else p['choices'][0]
     return chosen_params
 
-def replace_keys_values(existing_json, key_value_json):
-    # check if existing_json is a list or a dict
-    if isinstance(existing_json, list):
-        # iterate over the list
-        for i in range(len(existing_json)):
-            existing_json[i] = replace_keys_values(existing_json[i], key_value_json)
-    elif isinstance(existing_json, dict):
-        # iterate over the dict
-        for key in existing_json:
-            existing_json[key] = replace_keys_values(existing_json[key], key_value_json)
-    else:
-        # check if existing_json is a string
-        if isinstance(existing_json, str):
-            # check if existing_json contains "{key}" or "{value}"
-            if "{key}" in existing_json:
-                existing_json = existing_json.replace("{key}", key)
-            if "{value}" in existing_json:
-                existing_json = existing_json.replace("{value}", json.dumps(key_value_json.get(key)))
-    return existing_json
+def replace_template(template, key_value_pairs):
+    param_list = []
+    for k, v in key_value_pairs.items():
+        param_list.append(json.loads(json.dumps(template).replace(f"{{key}}",k).replace(f"{{value}}",v)))
 
-def prepare_payload(payload, job_params, chosen_params):
-    chosen_params = prepare_params(job_params, chosen_params)
-    return replace_keys_values(payload, chosen_params)
+    return param_list
+
+def replace_parameters(template, parameter_holder, key_value_pairs):
+    if isinstance(parameter_holder, list):
+        if parameter_holder.count('{parameter}') > 0:
+            new_parameters = replace_template(template, key_value_pairs)
+            parameter_holder.remove('{parameter}')
+            parameter_holder.extend(new_parameters)
+        else:
+            for i in parameter_holder:
+                replace_parameters(template, i, key_value_pairs)
+    elif isinstance(parameter_holder, dict):
+        for k, v in parameter_holder.items():
+            replace_parameters(template, v, key_value_pairs)
+    elif isinstance(parameter_holder, str):
+        if parameter_holder == f'{{parameter}}':
+            new_parameters = replace_template(template, key_value_pairs)
+            parameter_holder = {k: v for d in new_parameters for k, v in d.items()}
+    return parameter_holder
 
 def process_request(job, integration,chosen_params):
-    # url = integration["url"].replace(b'{job}',job['name'])
-    # if integration["type"] == "post":
-    #     response = requests.post(url, json=prepare_payload(integration['payload'],job['parameters'],chosen_params))
-    # if integration["type"] == "get":     
-    #     response = requests.get(url, params=prepare_params(job['parameters'],chosen_params))
+    chosen_params = prepare_params(job['parameters'], chosen_params)
+    url = integration["url"]+(integration['definition'].replace(f'{{job}}',job['name']))
+    payload=chosen_params
 
-    # return response.json()
-    return prepare_payload(integration['payload'],job['parameters'],chosen_params)
+    if integration["type"] == "post":
+        payload = replace_parameters(integration['parameter'],integration['payload'],chosen_params)
+    
+    if integration["type"] == "get":    
+        query_string = urllib.parse.urlencode( chosen_params ) 
+        url = url + "?" + query_string 
+
+    print(url)
+    r = http.request(
+        integration["type"],
+        url,
+        fields=payload,
+    )
+    return r
 
 def trigger_job_api(id,chosen_params):
     data = db["jobs"].find_one({'_id': ObjectId(id)})

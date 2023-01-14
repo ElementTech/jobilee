@@ -10,12 +10,12 @@ import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 })
 export class CreateIntegrationComponent implements OnInit {
 
-  public editorOptions: JsonEditorOptions;
   public initialData: any;
 
   integration: Integration = {
     type: 'post',
-    payload: {"parameter": [{"name": "{key}", "value": "{value}"}]}
+    payload: {"parameter": ['{parameter}']},
+    parameter: {"name": "{key}", "value": "{value}"}
   };
   submitted = false;
   optionsURL = [
@@ -30,6 +30,10 @@ export class CreateIntegrationComponent implements OnInit {
       description: "The Name/ID of the job that will be triggered through the query"
     },
     { 
+      name: "{parameter}",
+      description: "Defines a Parameter Object. This will be inserted inside the main payload into an array. If payload is only equal to the string \"{parameter}\", the parameters will be merged into a single key=value object."
+    },
+    { 
       name: "{key}",
       description: "Parameter keys"
     },
@@ -41,17 +45,51 @@ export class CreateIntegrationComponent implements OnInit {
 
   constructor(private dbService: DBService,
     private router: Router) {
-      this.editorOptions = new JsonEditorOptions()
-      this.editorOptions.modes = ['code', 'tree'];
-      this.editorOptions.mode = 'code';
-  
-
      }
 
   ngOnInit() {
   }
+  setTable(event)
+  {
+    switch (event.value) {
+      case 'get':
+        this.options = [
+          {
+            name: "{job}",
+            description: "The Name/ID of the job that will be triggered through the query"
+          }
+        ]        
+        break;
+      case 'post':
+        this.options = [
+          {
+            name: "{job}",
+            description: "The Name/ID of the job that will be triggered through the query"
+          },
+          { 
+            name: "{parameter}",
+            description: "Defines a Parameter Object. This will be inserted inside the main payload into an array. If payload is only equal to the string \"{parameter}\", the parameters will be merged into a single key=value object."
+          },
+          { 
+            name: "{key}",
+            description: "Parameter keys"
+          },
+          {
+            name: "{value}",
+            description: "Parameter values"
+          }
+        ]
+      default:
+        break;
+    }
+  }
 
-
+  makeOptions = () => {
+    let editorOptions = new JsonEditorOptions()
+    editorOptions.modes = ['code', 'tree'];
+    editorOptions.mode = 'code';
+    return editorOptions
+  }
   save() {
     this.dbService
     .createObject("integrations",this.integration).subscribe(data => {

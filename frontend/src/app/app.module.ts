@@ -42,6 +42,8 @@ import { RunJobComponent } from './job/run-job/run-job.component';
 import {DataViewModule} from 'primeng/dataview';
 import { PlayJobComponent } from './job/play-job/play-job.component';
 import {ToolbarModule} from 'primeng/toolbar';
+import {PanelModule} from 'primeng/panel';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -82,7 +84,8 @@ import {ToolbarModule} from 'primeng/toolbar';
     ScrollPanelModule,
     MultiSelectModule,
     DataViewModule,
-    ToolbarModule
+    ToolbarModule,
+    PanelModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

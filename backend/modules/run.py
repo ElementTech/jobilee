@@ -3,8 +3,10 @@ from flask_cors import CORS
 from utilities.utilities import *
 from bson.objectid import ObjectId
 # Import Libraries 
+import jsonpickle
 from app import app
 
 @app.route('/run/<string:id>', methods=['POST'])
 def run(id):
-    return jsonify(parse_json(trigger_job_api(id,request.json)))
+    resp = trigger_job_api(id,request.json)
+    return resp.data, resp.status

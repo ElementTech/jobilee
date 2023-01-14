@@ -32,7 +32,7 @@
    
                 <ng-template pTemplate="header">
                   <div class="mt-3">
-                    <p-selectButton [(ngModel)]="integration.type" name="type"
+                    <p-selectButton [(ngModel)]="integration.type" name="type" (onChange)="setTable($event)"
                     [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
                   </div>
             
@@ -62,17 +62,19 @@
             </p-table>
               <div class="p-inputgroup pt-3">
                   <span class="p-inputgroup-addon">{{integration.url}}</span>
-                  <input type="text" [(ngModel)]="integration.definition" name="definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters?{key}={value}">      
+                  <input type="text" [(ngModel)]="integration.definition" name="definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
               </div>
-              <div *ngIf="integration.type == 'post'" class="pt-3">
-                <json-editor [options]="editorOptions"  [(ngModel)]="integration.payload" [ngModelOptions]=" 
-                {standalone: true}"></json-editor>
+              <div *ngIf="integration.type == 'post'" class="pt-3 grid">
+                <p-panel header="Payload"  class="col" >
+                  <json-editor [options]="makeOptions()" #payload name="payload"  [(ngModel)]="integration.payload" [ngModelOptions]=" 
+                  {standalone: true}"></json-editor>
+                </p-panel>
+                <p-panel header="{parameter}"  class="col" >
+                  <json-editor [options]="makeOptions()" #parameter name="parameter"  [(ngModel)]="integration.parameter"  [ngModelOptions]=" 
+                  {standalone: true, name: 'parameter'}"></json-editor>
+                </p-panel>
               </div>
         </p-fieldset>
-      
-
-
-  
       <p-button type="submit" label="Update" icon="pi pi-check" class="fixed" styleClass="p-button-lg" style="bottom:2rem;right:2rem;"></p-button>
     </form>
   </p-fieldset>

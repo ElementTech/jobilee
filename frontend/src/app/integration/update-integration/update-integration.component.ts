@@ -12,7 +12,6 @@ import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 export class UpdateIntegrationComponent implements OnInit {
 
 
-  public editorOptions: JsonEditorOptions;
   public initialData: any;
 
   submitted = false;
@@ -28,6 +27,10 @@ export class UpdateIntegrationComponent implements OnInit {
       description: "The Name/ID of the job that will be triggered through the query"
     },
     { 
+      name: "{parameter}",
+      description: "Defines a Parameter Object. This will be inserted inside the main payload into an array. If payload is only equal to the string \"{parameter}\", the parameters will be merged into a single key=value object."
+    },
+    { 
       name: "{key}",
       description: "Parameter keys"
     },
@@ -36,15 +39,45 @@ export class UpdateIntegrationComponent implements OnInit {
       description: "Parameter values"
     }
   ]
-
+  setTable(event)
+  {
+    switch (event.value) {
+      case 'get':
+        this.options = [
+          {
+            name: "{job}",
+            description: "The Name/ID of the job that will be triggered through the query"
+          }
+        ]        
+        break;
+      case 'post':
+        this.options = [
+          {
+            name: "{job}",
+            description: "The Name/ID of the job that will be triggered through the query"
+          },
+          { 
+            name: "{parameter}",
+            description: "Defines a Parameter Object. This will be inserted inside the main payload into an array. If payload is only equal to the string \"{parameter}\", the parameters will be merged into a single key=value object."
+          },
+          { 
+            name: "{key}",
+            description: "Parameter keys"
+          },
+          {
+            name: "{value}",
+            description: "Parameter values"
+          }
+        ]
+      default:
+        break;
+    }
+  }
   _id: string;
   integration: Integration;
 
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService) { 
-      this.editorOptions = new JsonEditorOptions()
-      this.editorOptions.modes = ['code', 'tree'];
-      this.editorOptions.mode = 'code';
     }
 
   ngOnInit() {
@@ -65,6 +98,13 @@ export class UpdateIntegrationComponent implements OnInit {
         this.integration = new Integration();
         this.gotoList();
       }, error => console.log(error));
+  }
+
+  makeOptions = () => {
+    let editorOptions = new JsonEditorOptions()
+    editorOptions.modes = ['code', 'tree'];
+    editorOptions.mode = 'code';
+    return editorOptions
   }
 
   onSubmit() {

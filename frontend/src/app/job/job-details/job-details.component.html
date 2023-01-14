@@ -33,8 +33,8 @@
                 </div>
               </p-divider>
               <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [value]="param.default ? param.default : ''" />
-              <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}" [options]="param.choices"></p-dropdown>
-              <p-multiSelect *ngIf="param.type == 'multi-choice'" defaultLabel="{{param.choices}}" placeho [options]="param.choices"></p-multiSelect>
+              <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" placeholder="{{param.choices[0]}}" [options]="param.choices"></p-dropdown>
+              <p-multiSelect *ngIf="param.type == 'multi-choice'" defaultLabel="{{param.choices}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-multiSelect>
             </div>
           </div>
       
