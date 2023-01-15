@@ -3,6 +3,7 @@ import { Integration } from 'src/app/integration';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-integration-form',
   templateUrl: './integration-form.component.html',
@@ -83,22 +84,24 @@ export class IntegrationFormComponent implements OnInit {
    this.integration.headers.push({'key':'','value':''});
    this.integration.headers = [...this.integration.headers]
   }
-  removeHeader(i)
+  removeHeader(i,head)
   {
-   this.integration.headers.splice(i,1)
-   this.integration.headers = [...this.integration.headers]
+    if ((head["key"] == "Content-Type") && (head["value"] == "application/json") && (this.integration.mode == 'payload') && (this.integration.type == 'post'))
+    {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'If Payload mode is enabled, the [Content-Type=application/json] header must be present.',
+      })
+    } else {
+      this.integration.headers.splice(i,1)
+      this.integration.headers = [...this.integration.headers]
+    }
+
   }
   setTable(event)
   {
-    console.log(event.value)
     switch (event.value) {
-      case 'payload':
-        if (!this.integration.headers.some(elem =>{
-          return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
-           })) {
-          this.integration.headers.push({"key":"Content-Type", "value": "application/json"});
-          this.integration.headers = [...this.integration.headers]
-        }
       case 'get':
       case 'query':
         this.options = [
@@ -110,6 +113,12 @@ export class IntegrationFormComponent implements OnInit {
         break;
       case 'post':
       case 'payload':
+        if (!this.integration.headers.some(elem =>{
+          return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
+           })) {
+          this.integration.headers.push({"key":"Content-Type", "value": "application/json"});
+          this.integration.headers = [...this.integration.headers]
+        }
         this.options = [
           {
             name: "{job}",

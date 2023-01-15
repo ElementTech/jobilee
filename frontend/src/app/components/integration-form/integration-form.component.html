@@ -68,8 +68,8 @@
                     <div class="col">
                       <p-tabView>
                           <p-tabPanel header="Request Options" >
-                            <div class="field-checkbox">
-                              <p-selectButton (onChange)="setTable($event)"  styleClass="pb-2" *ngIf="integration.type == 'post'" name="mode" [(ngModel)]="integration.mode"
+                            <div class="field-checkbox" *ngIf="integration.type == 'post'">
+                              <p-selectButton (onChange)="setTable($event)"  styleClass="pb-2"  name="mode" [(ngModel)]="integration.mode"
                                [options]="[{label: 'Payload Mode', value: 'payload'},{label: 'URL Query Mode', value: 'query'}]"></p-selectButton>
                               &nbsp;
                               <span  pTooltip="Payload Mode will send the payload as a JSON. Query mode will encode the parameters into the URL itself" tooltipPosition="top" class="pi pi-question-circle"></span>
@@ -105,7 +105,7 @@
                                     <div class="p-inputgroup"  *ngFor="let head of integration.headers; let i = index">
                                       <input pInputText [(ngModel)]="head.key"  type="text"  name="headerKey{{i}}">
                                       <input pInputText [(ngModel)]="head.value"  type="text"  name="headerValue{{i}}">
-                                      <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(i)"></p-button>
+                                      <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(i,head)"></p-button>
                                   </div>
                             </ng-template>
                             </p-panel>
