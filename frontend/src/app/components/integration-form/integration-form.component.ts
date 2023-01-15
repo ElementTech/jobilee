@@ -110,6 +110,12 @@ export class IntegrationFormComponent implements OnInit {
             description: "The Name/ID of the job that will be triggered through the query"
           }
         ]        
+        if (this.integration.headers.some(elem =>{
+          return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
+           })) {
+          this.integration.headers.splice(this.integration.headers.indexOf({"key":"Content-Type", "value": "application/json"}),1)
+          this.integration.headers = [...this.integration.headers]
+        }
         break;
       case 'post':
       case 'payload':

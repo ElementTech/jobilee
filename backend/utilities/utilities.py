@@ -84,9 +84,8 @@ def process_request(job, integration,chosen_params):
     payload=querify(chosen_params,integration['splitMultiChoice'])
     headers = {d['key']: d['value'] for d in integration['headers']} 
 
-    if integration["type"] == "post":
-        if headers.get('Content-Type') == "application/json":
-            payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
+    if integration["type"] == "post" and integration['mode'] == 'payload':
+        payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
     
     http = urllib3.PoolManager(
         cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
@@ -96,7 +95,7 @@ def process_request(job, integration,chosen_params):
     if integration['authentication'] == "Bearer":
         headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
    
-    if headers.get('Content-Type') == "application/json":
+    if integration["type"] == "post" and integration['mode'] == 'payload':
         r = http.request(
             method=integration["type"],
             url=url,
