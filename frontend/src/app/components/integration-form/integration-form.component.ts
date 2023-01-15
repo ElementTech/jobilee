@@ -16,6 +16,7 @@ export class IntegrationFormComponent implements OnInit {
   @Input() formType: "Create" | "Update";
   @Input() integration: Integration = {
     type: 'post',
+    mode: 'payload',
     authentication: 'None',
     splitMultiChoice: true,
     authenticationData: [],
@@ -89,8 +90,17 @@ export class IntegrationFormComponent implements OnInit {
   }
   setTable(event)
   {
+    console.log(event.value)
     switch (event.value) {
+      case 'payload':
+        if (!this.integration.headers.some(elem =>{
+          return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
+           })) {
+          this.integration.headers.push({"key":"Content-Type", "value": "application/json"});
+          this.integration.headers = [...this.integration.headers]
+        }
       case 'get':
+      case 'query':
         this.options = [
           {
             name: "{job}",
@@ -99,6 +109,7 @@ export class IntegrationFormComponent implements OnInit {
         ]        
         break;
       case 'post':
+      case 'payload':
         this.options = [
           {
             name: "{job}",

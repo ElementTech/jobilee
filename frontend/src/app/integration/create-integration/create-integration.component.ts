@@ -11,6 +11,7 @@ export class CreateIntegrationComponent {
   integration: Integration = {
     type: 'post',
     authentication: 'None',
+    mode: 'payload',
     splitMultiChoice: true,
     authenticationData: [],
     headers: [{"key":"Content-Type", "value": "application/json"}],

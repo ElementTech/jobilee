@@ -68,7 +68,14 @@
                     <div class="col">
                       <p-tabView>
                           <p-tabPanel header="Request Options" >
+                            <div class="field-checkbox">
+                              <p-selectButton (onChange)="setTable($event)"  styleClass="pb-2" *ngIf="integration.type == 'post'" name="mode" [(ngModel)]="integration.mode"
+                               [options]="[{label: 'Payload Mode', value: 'payload'},{label: 'URL Query Mode', value: 'query'}]"></p-selectButton>
+                              &nbsp;
+                              <span  pTooltip="Payload Mode will send the payload as a JSON. Query mode will encode the parameters into the URL itself" tooltipPosition="top" class="pi pi-question-circle"></span>
+                            </div>
                             <div class="grid">
+                 
                               <div class="field-checkbox col-6">
                                 <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="ignoreSSL" inputId="binary"></p-checkbox>
                                 <label for="binary">Ignore SSL</label>
@@ -118,7 +125,7 @@
                     </div>
                   </div>
  
-              <div *ngIf="integration.type == 'post'" class="pt-3 grid">
+              <div *ngIf="integration.type == 'post' && integration.mode == 'payload'" class="pt-3 grid">
                 <p-panel header="Payload"  class="col" >
                   <json-editor [options]="makeOptions()" class="api"  [(ngModel)]="integration.payload" [ngModelOptions]=" 
                   {standalone: true}"></json-editor>
