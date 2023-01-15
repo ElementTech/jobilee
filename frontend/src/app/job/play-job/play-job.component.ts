@@ -66,10 +66,18 @@ export class PlayJobComponent implements OnInit {
   run(){
     const params = this.job.parameters.map(p=>{ return {"key": p.name, "value": p.default}}).reduce((obj, item) => Object.assign(obj, { [item.key]: item.value }), {});
     this.runService.runJob(this._id,params).subscribe(result=>{
-      console.log(result)
-      this.result=result
+      Swal.fire({
+        icon: 'success',
+        title: 'Job Triggered Succesfully',
+        text: result,
+        timer: 2000
+      })
     },error=>{
-      
+      Swal.fire({
+        icon: 'error',
+        title: 'Job Trigger Failed',
+        text: JSON.stringify(error.message),
+      })
     })
   }
 }

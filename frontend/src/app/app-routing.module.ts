@@ -12,8 +12,8 @@ import { RunJobComponent } from './job/run-job/run-job.component';
 import { PlayJobComponent } from './job/play-job/play-job.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'run', pathMatch: 'full' },
-  { path: 'run', component: RunJobComponent },
+  { path: '', redirectTo: 'catalog', pathMatch: 'full' },
+  { path: 'catalog', component: RunJobComponent },
   { path: 'jobs', component: JobListComponent },
   { path: 'jobs/add', component: CreateJobComponent },
   { path: 'jobs/update/:_id', component: UpdateJobComponent },

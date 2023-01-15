@@ -18,7 +18,7 @@ export class AppComponent {
       {
           label: 'Actions',
           items: [
-              { label: 'Run', icon: 'pi pi-fw pi-play', routerLink: ['/run'] }
+              { label: 'Catalog', icon: 'pi pi-fw pi-play', routerLink: ['/catalog'] }
           ]
       },
       {

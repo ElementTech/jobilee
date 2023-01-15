@@ -1,10 +1,16 @@
 
 <div class="layout-wrapper layout-static">
-  <div class="layout-topbar">
-    <a class="layout-topbar-logo" routerLink="">
+  <div class="layout-topbar flex">
+    <a class="layout-topbar-logo flex-none" routerLink="">
         <img src="assets/logo.png" alt="logo">
         <span>Jobilee</span>
+        
     </a>
+    <div class="flex-1">
+      <app-breadcrumb></app-breadcrumb>
+
+    </div>
+
     <!-- <div #topbarmenu class="layout-topbar-menu" >
         <button class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>

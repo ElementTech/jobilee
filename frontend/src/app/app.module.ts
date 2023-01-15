@@ -46,6 +46,9 @@ import {PanelModule} from 'primeng/panel';
 import {CheckboxModule} from 'primeng/checkbox';
 import { JobFormComponent } from './components/job-form/job-form.component';
 import { IntegrationFormComponent } from './components/integration-form/integration-form.component';
+import {StepsModule} from 'primeng/steps';
+import {BreadcrumbModule} from 'primeng/breadcrumb';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,7 +64,8 @@ import { IntegrationFormComponent } from './components/integration-form/integrat
     RunJobComponent,
     PlayJobComponent,
     JobFormComponent,
-    IntegrationFormComponent
+    IntegrationFormComponent,
+    BreadcrumbComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +79,9 @@ import { IntegrationFormComponent } from './components/integration-form/integrat
     ButtonModule,
     TableModule,
     CardModule,
+    StepsModule,
     FieldsetModule,
+    BreadcrumbModule,
     RadioButtonModule,
     SelectButtonModule,
     AngJsoneditorModule,

@@ -4,6 +4,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 import Swal from 'sweetalert2';
+import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-integration-form',
   templateUrl: './integration-form.component.html',
@@ -61,8 +62,11 @@ export class IntegrationFormComponent implements OnInit {
   constructor(private dbService: DBService,
     private router: Router) {
      }
-
+  items: MenuItem[];
   ngOnInit() {
+    this.items = [
+      {label: 'Trigger'},
+  ];
   }
   setAuthData(event){
     console.log(event.value)
