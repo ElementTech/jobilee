@@ -25,8 +25,9 @@ export class BreadcrumbComponent implements OnInit {
         const tree: UrlTree = this.router.parseUrl(this.router.url);
         const g: UrlSegmentGroup = tree.root.children[PRIMARY_OUTLET];
         const s: UrlSegment[] = g.segments;
+      
         s.forEach(element => {
-          this.menuItems.push({label:element.path,url:((this.menuItems.length > 0 ? this.menuItems[this.menuItems.length-1].url : "") +"/"+element.path)})
+          this.menuItems.push({label:element.path,url:"#/" +((this.menuItems.length > 0 ? this.menuItems[this.menuItems.length-1].url : "") +"/"+element.path)})
           this.menuItems = [...this.menuItems]
         });
       
