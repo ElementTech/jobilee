@@ -1,5 +1,5 @@
 import { DBService } from 'src/app/db.service';
-import { Integration } from 'src/app/integration';
+import { Integration, Step } from 'src/app/integration';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
@@ -25,21 +25,28 @@ export class IntegrationFormComponent implements OnInit {
   }
   @Input() _id: string;
   @Input() formType: "Create" | "Update";
-  stepTemplate = {
+  stepTemplate: Step = {
     type: 'post',
+    parsing: false,
     mode: 'payload',
     authentication: 'None',
-    outputs: {"result": "{result}"},
+    retryCount: 0,
+    outputs: { "result": "{result}" },
+    retryUntil: { "result": "Success" },
     splitMultiChoice: true,
     authenticationData: [],
-    headers: [{"key":"Content-Type", "value": "application/json"}],
-    payload: {"parameter": ['{parameter}']},
+    headers: [{ "key": "Content-Type", "value": "application/json" }],
+    payload: { "parameter": ['{parameter}'] },
     ignoreSSL: false,
-    parameter: {"name": "{key}", "value": "{value}"}
+    parameter: { "name": "{key}", "value": "{value}" },
   }
   @Input() integrationSteps: Integration = {
     steps: [this.stepTemplate]
   };
+  onInput(event,step) {
+    // maybe, you can add some validations
+    this.integrationSteps.steps[step].retryCount = event.value
+  }
   authenticationOptions = [
     "None",
     "Basic",
@@ -96,7 +103,7 @@ export class IntegrationFormComponent implements OnInit {
   ngOnInit() {
     this.items = [
       {label: 'Trigger'},
-  ];
+    ];
   }
   setAuthData(event,step){
     console.log(event.value)

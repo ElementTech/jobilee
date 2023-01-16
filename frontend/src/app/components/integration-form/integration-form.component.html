@@ -55,7 +55,7 @@
               </ng-template>
               <p-fieldset legend="Construct API" [toggleable]="false">
      
-                <ng-template pTemplate="header">
+                <ng-template pTemplate="header" >
                   <div class="mt-3">
                     <p-selectButton [(ngModel)]="integration.type" name="type" (onChange)="setTable($event,step)"
                     [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
@@ -64,8 +64,10 @@
                 </ng-template>
 
                 <p-tabView>
-                  <p-tabPanel header="API Definition">
-              
+                  <p-tabPanel>
+                    <ng-template pTemplate="header">
+                      API Definition
+                    </ng-template>
                     <div class="p-inputgroup pb-3">
                       <span class="p-inputgroup-addon">{{integrationSteps.url}}</span>
                       <input type="text" [(ngModel)]="integration.definition" name="definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
@@ -105,16 +107,23 @@
                                 </div>
                                 <div class="grid">
                      
-                                  <div class="field-checkbox col-6">
+                                  <div class="field-checkbox col">
                                     <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="ignoreSSL" inputId="binary"></p-checkbox>
                                     <label for="binary">Ignore SSL</label>
                                   </div>
-                                  <div class="field-checkbox col-6">
+                                  <div class="field-checkbox col">
+                                    <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                    &nbsp;
+
                                     <p-checkbox [(ngModel)]="integration.splitMultiChoice" [binary]="true" name="splitMultiChoice" inputId="binary"></p-checkbox>
                                     <label for="binary">Split Multi Choice Parameters</label>
-                                    &nbsp;
-                                    <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
                                   </div>
+                                  <div class="field-checkbox col">
+                                    <label for="retry">Retry</label>
+                                    <p-inputNumber [(ngModel)]="integrationSteps.retry" (onInput)="onInput($event,step)" mode="decimal" name="retry" [showButtons]="true" inputId="retry" [min]="0" >
+                                    </p-inputNumber>
+                                  </div>
+                        
                                 </div>
                    
                       
@@ -164,15 +173,76 @@
                         </p-panel>
                       </div>
                   </p-tabPanel>
-                  <p-tabPanel header="Output Parsing">
-                    <div class="grid">
-                      <json-editor class="col api" [options]="makeOptions()" [(ngModel)]="integration.outputs" [ngModelOptions]=" 
-                      {standalone: true}"></json-editor>
+                  <p-tabPanel>
+                    <ng-template pTemplate="header" >
+                      <p-checkbox [(ngModel)]="integration.parsing" [binary]="true" name="parsing" inputId="binary"></p-checkbox> &nbsp;
+                      Response Parsing
+                      &nbsp;
+                      <span  pTooltip="When enabled, put {var} placeholders in the expected response JSON. These will be available to next API steps." tooltipPosition="top" class="pi pi-question-circle"></span>
+                    </ng-template>
+                    
+                    <div class="grid" *ngIf="integration.parsing">
+                      <div class="col">
+                        <p-panel header="Expected Response">
+                          <ng-template  pTemplate="header">
+                            <span  pTooltip="Wrap the values of the expected response JSON that you would like to parse in { }" tooltipPosition="top" class="pi pi-question-circle"></span>
+                            &nbsp;
+                          </ng-template>
+                          <ng-template pTemplate="icons">
+                            <div class="flex justify-content-end">
+                              <button
+                                type="button"
+                                pButton
+                                class="p-button-rounded p-button-outlined"
+                                icon="pi pi-filter-slash"
+                                (click)="integration.outputs = {}"
+                              ></button>
+                              <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu>
+                            </div>
+                          </ng-template>
+                        <json-editor class="api" [options]="makeOptions()" [(ngModel)]="integration.outputs" [ngModelOptions]=" 
+                        {standalone: true}"></json-editor>
+                        </p-panel>
+                      </div>
+          
                       <p-divider layout="vertical">  <i class="pi pi-arrow-right"></i></p-divider>
                       <div class="col">
-                        {{error}}
                         <p-panel header="Outputs">
-                          <p-listbox [readonly]="true" [options]="extractCurlyStrings(integration.outputs)" ></p-listbox>
+                          <p-listbox [readonly]="true" [options]="extractCurlyStrings(integration.outputs)" >
+
+
+                            <ng-template let-output pTemplate="item">
+                              <div class="pt-2 mb-2">
+                                {{output}}
+                              </div>
+                            </ng-template>
+                          </p-listbox>
+                          
+                        </p-panel>
+                      </div>
+
+                      <p-divider layout="vertical">  <i class="pi pi-arrow-right"></i></p-divider>
+                      <div class="col">
+                        <p-panel header="Follow Until">
+                          <ng-template  pTemplate="header">
+                            <span  pTooltip="Will retry the API until the output equals your string/array/object. Leave empty for just making sure the value exists." tooltipPosition="top" class="pi pi-question-circle"></span>
+                            &nbsp;
+
+                          </ng-template>
+                          <ng-template pTemplate="icons">
+                            <div class="flex justify-content-end">
+                              <button
+                                type="button"
+                                pButton
+                                class="p-button-rounded p-button-outlined"
+                                icon="pi pi-filter-slash"
+                                (click)="integration.retryUntil = {}"
+                              ></button>
+                              <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu>
+                            </div>
+                          </ng-template>
+                          <json-editor [options]="makeOptions()"  class="api" name="retryUntil"  [(ngModel)]="integration.retryUntil" [ngModelOptions]=" 
+                          {standalone: true}"></json-editor>
                         </p-panel>
                       </div>
                     </div>

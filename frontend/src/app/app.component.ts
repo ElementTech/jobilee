@@ -22,7 +22,7 @@ export class AppComponent {
           ]
       },
       {
-        label: 'Job',
+        label: 'Jobs',
         items: [
             {
               label: 'Jobs',

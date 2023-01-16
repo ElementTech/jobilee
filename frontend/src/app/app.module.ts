@@ -54,6 +54,7 @@ import { TagModule } from 'primeng/tag';
 import { ChipModule } from 'primeng/chip';
 import {ToastModule} from 'primeng/toast';
 import {ListboxModule} from 'primeng/listbox';
+import {InputNumberModule} from 'primeng/inputnumber';
 @NgModule({
   declarations: [
     AppComponent,
@@ -107,7 +108,8 @@ import {ListboxModule} from 'primeng/listbox';
     TagModule,
     ChipModule,
     ListboxModule,
-    ToastModule
+    ToastModule,
+    InputNumberModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

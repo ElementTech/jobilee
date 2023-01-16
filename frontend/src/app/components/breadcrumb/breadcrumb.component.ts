@@ -27,7 +27,7 @@ export class BreadcrumbComponent implements OnInit {
         const s: UrlSegment[] = g.segments;
       
         s.forEach(element => {
-          this.menuItems.push({label:element.path,url:"#/" +((this.menuItems.length > 0 ? this.menuItems[this.menuItems.length-1].url : "") +"/"+element.path)})
+          this.menuItems.push({label:element.path,routerLink:((this.menuItems.length > 0 ? this.menuItems[this.menuItems.length-1].url : "") +"/"+element.path)})
           this.menuItems = [...this.menuItems]
         });
       

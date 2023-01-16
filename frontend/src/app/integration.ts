@@ -2,10 +2,16 @@ export class Integration {
     _id?: string;
     name?: string;
     url?: string;
-    output?: any;
-    steps: Array<any>;
+    steps: Step[];
+}
+
+export class Step {
+    outputs?: Object;
+    retryCount?: Number;
+    parsing?: boolean;
     ignoreSSL?: boolean;
     splitMultiChoice?: boolean;
+    retryUntil?: Object;
     mode?: string;
     authentication?: string;
     headers?: Array<Object>;
