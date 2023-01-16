@@ -9,15 +9,18 @@ export class CreateIntegrationComponent {
 
 
   integration: Integration = {
-    type: 'post',
-    authentication: 'None',
-    mode: 'payload',
-    splitMultiChoice: true,
-    authenticationData: [],
-    headers: [{"key":"Content-Type", "value": "application/json"}],
-    payload: {"parameter": ['{parameter}']},
-    ignoreSSL: false,
-    parameter: {"name": "{key}", "value": "{value}"}
+    steps: [{
+      type: 'post',
+      outputs: {"result": "{result}"},
+      authentication: 'None',
+      mode: 'payload',
+      splitMultiChoice: true,
+      authenticationData: [],
+      headers: [{"key":"Content-Type", "value": "application/json"}],
+      payload: {"parameter": ['{parameter}']},
+      ignoreSSL: false,
+      parameter: {"name": "{key}", "value": "{value}"}
+    }]
   };
   
 }

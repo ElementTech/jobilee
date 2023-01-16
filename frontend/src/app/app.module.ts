@@ -19,7 +19,7 @@ import {FieldsetModule} from 'primeng/fieldset';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {SelectButtonModule} from 'primeng/selectbutton';
 import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor'
-
+import {MatStepperModule} from '@angular/material/stepper';
 import {
   HighlightModule,
   HIGHLIGHT_OPTIONS,
@@ -49,6 +49,11 @@ import { IntegrationFormComponent } from './components/integration-form/integrat
 import {StepsModule} from 'primeng/steps';
 import {BreadcrumbModule} from 'primeng/breadcrumb';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import {MatButtonModule} from '@angular/material/button'
+import { TagModule } from 'primeng/tag';
+import { ChipModule } from 'primeng/chip';
+import {ToastModule} from 'primeng/toast';
+import {ListboxModule} from 'primeng/listbox';
 @NgModule({
   declarations: [
     AppComponent,
@@ -96,7 +101,13 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
     DataViewModule,
     ToolbarModule,
     PanelModule,
-    CheckboxModule
+    CheckboxModule,
+    MatStepperModule,
+    MatButtonModule,
+    TagModule,
+    ChipModule,
+    ListboxModule,
+    ToastModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

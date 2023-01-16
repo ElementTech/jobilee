@@ -1,7 +1,7 @@
 
 
 <p-fieldset legend="Integration Details" [toggleable]="false">
-  <p-table [value]="integration" styleClass="p-datatable-sm">
+  <p-table [value]="[integration | async]" styleClass="p-datatable-sm">
     <ng-template pTemplate="header">
         <tr>
             <th>Name</th>
@@ -16,13 +16,13 @@
         <tr>
             <td>{{integration.name}}</td>
             <td>{{integration.url}}</td>
-            <td>{{integration.type}}</td>
-            <td>{{integration.definition}}</td>
+            <td>{{integration['steps'][0].type}}</td>
+            <td>{{integration['steps'][0].definition}}</td>
             <td>
-               <pre  *ngIf="integration.type == 'post'"><code [highlight]="integration.payload | json" [languages]="['json']"></code></pre>
+               <pre  *ngIf="integration['steps'][0].type == 'post'"><code [highlight]="integration['steps'][0].payload | json" [languages]="['json']"></code></pre>
             </td>
             <td>
-              <pre  *ngIf="integration.type == 'post'"><code [highlight]="integration.parameter | json" [languages]="['json']"></code></pre>
+              <pre  *ngIf="integration['steps'][0].type == 'post'"><code [highlight]="integration['steps'][0].parameter | json" [languages]="['json']"></code></pre>
            </td>
         </tr>
     </ng-template>

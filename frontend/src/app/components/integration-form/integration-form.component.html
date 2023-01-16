@@ -1,3 +1,4 @@
+
 <div>
 
   <p-fieldset legend="{{formType}} Integration" [toggleable]="false">
@@ -5,7 +6,7 @@
       <div class="grid">
         <div class="col-6">
           <h5>Name</h5>
-          <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="integration.name" name="name" placeholder="myapi">
+          <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="integrationSteps.name" name="name" placeholder="myapi">
         </div>
     
         <div class="col-6">
@@ -25,119 +26,172 @@
                 </tr>
             </ng-template>
         </p-table> -->
-          <input pInputText  class="min-w-full"  type="text" id="url" required [(ngModel)]="integration.url" name="url" placeholder="https://api.com">
+          <input pInputText  class="min-w-full"  type="text" id="url" required [(ngModel)]="integrationSteps.url" name="url" placeholder="https://api.com">
         </div>
         </div>
         <hr>
-
-        <p-fieldset legend="Construct API" [toggleable]="false">
-   
+        <p-panel>
+          <ng-template pTemplate="header" class="flex justify-content-between">
+            <span class="p-buttonset flex-none">
+              <button type="button" pButton (click)="goBack(stepper)">Back</button>
+            
+              <button type="button" pButton (click)="goForward(stepper)">Next</button>
+           </span>
+          
+              <div class="flex flex-grow-1"></div>
+            <span class="p-buttonset flex-none">
+              <button type="button" (click)="integrationSteps.steps.push(stepTemplate);goForward(stepper)"  icon="pi pi-plus-circle" pButton >&nbsp;Add Step</button>
+            </span>
+          </ng-template>
+          <mat-stepper orientation="vertical"  #stepper>
+      
+            <ng-template matStepperIcon="edit">
+              <span class="pi pi-bolt"></span>
+            </ng-template>
+            <mat-step *ngFor="let integration of integrationSteps.steps; let step = index">
+      
+              <ng-template matStepLabel labelPosition="right">
+                  <button type="button" (click)="integrationSteps.steps.splice(step,1)" class="p-button-danger p-button-text float-right" icon="pi pi-minus-circle" pButton >&nbsp;Delete</button>
+              </ng-template>
+              <p-fieldset legend="Construct API" [toggleable]="false">
+     
                 <ng-template pTemplate="header">
                   <div class="mt-3">
-                    <p-selectButton [(ngModel)]="integration.type" name="type" (onChange)="setTable($event)"
+                    <p-selectButton [(ngModel)]="integration.type" name="type" (onChange)="setTable($event,step)"
                     [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
                   </div>
             
                 </ng-template>
-                <div class="p-inputgroup pb-3">
-                  <span class="p-inputgroup-addon">{{integration.url}}</span>
-                  <input type="text" [(ngModel)]="integration.definition" name="definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
-                </div>
 
-                  <div class="grid">
-                    <div class="col">
-                      <p-table [value]="options" styleClass="p-datatable-sm descTable">
-                        <ng-template pTemplate="caption">
-                          <div class="table-header">
-                            Use the following variables to construct a generic API query in order to trigger jobs with the API endpoint
-                
-                          </div>
-                      </ng-template>
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-option>
-                            <tr>
-                                <td>{{option.name}}</td>
-                                <td>{{option.description}}</td>
-                            </tr>
-                        </ng-template>
-                      </p-table>
+                <p-tabView>
+                  <p-tabPanel header="API Definition">
+              
+                    <div class="p-inputgroup pb-3">
+                      <span class="p-inputgroup-addon">{{integrationSteps.url}}</span>
+                      <input type="text" [(ngModel)]="integration.definition" name="definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
                     </div>
-                    <div class="col">
-                      <p-tabView>
-                          <p-tabPanel header="Request Options" >
-                            <div class="field-checkbox" *ngIf="integration.type == 'post'">
-                              <p-selectButton (onChange)="setTable($event)"  styleClass="pb-2"  name="mode" [(ngModel)]="integration.mode"
-                               [options]="[{label: 'Payload Mode', value: 'payload'},{label: 'URL Query Mode', value: 'query'}]"></p-selectButton>
-                              &nbsp;
-                              <span  pTooltip="Payload Mode will send the payload as a JSON. Query mode will encode the parameters into the URL itself" tooltipPosition="top" class="pi pi-question-circle"></span>
-                            </div>
-                            <div class="grid">
-                 
-                              <div class="field-checkbox col-6">
-                                <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="ignoreSSL" inputId="binary"></p-checkbox>
-                                <label for="binary">Ignore SSL</label>
-                              </div>
-                              <div class="field-checkbox col-6">
-                                <p-checkbox [(ngModel)]="integration.splitMultiChoice" [binary]="true" name="splitMultiChoice" inputId="binary"></p-checkbox>
-                                <label for="binary">Split Multi Choice Parameters</label>
-                                &nbsp;
-                                <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
-                              </div>
-                            </div>
-               
-                  
-                            <p-panel header="Headers" styleClass="min-w-full" [toggleable]="false">
-                              <ng-template pTemplate="header">
-                                  <span  pTooltip="If [Content-Type=application/json], parameters will be passed as body. Otherwise - as encoded URL query." tooltipPosition="top" class="pi pi-question-circle"></span>
-                                  &nbsp;
-                              </ng-template>
-                              <ng-template pTemplate="icons">
-                                      
-                                    
-                                      <button type='button' pButton class="p-panel-header-icon p-link" (click)="addHeader()">
-                                          <span class="pi pi-plus"></span>
-                                      </button>
-                              </ng-template>
-                              <ng-template pTemplate="content">
-                                    <div class="p-inputgroup"  *ngFor="let head of integration.headers; let i = index">
-                                      <input pInputText [(ngModel)]="head.key"  type="text"  name="headerKey{{i}}">
-                                      <input pInputText [(ngModel)]="head.value"  type="text"  name="headerValue{{i}}">
-                                      <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(i,head)"></p-button>
-                                  </div>
-                            </ng-template>
-                            </p-panel>
-                            
+      
+                      <div class="grid">
+                        <div class="col">
+                          <p-table [value]="options" styleClass="p-datatable-sm descTable">
+                            <ng-template pTemplate="caption">
+                              <div class="table-header">
+                                Use the following variables to construct a generic API query in order to trigger jobs with the API endpoint
                     
-                          </p-tabPanel>
-                          <p-tabPanel header="Authentication">
-                             <p-selectButton name="authentication"[options]="authenticationOptions" (onChange)="setAuthData($event)" [(ngModel)]="integration.authentication"></p-selectButton>
-                              <div class="p-inputgroup pt-2"  *ngFor="let auth of integration.authenticationData; let i = index">
-                                  <div class="p-inputgroup">
-                                    <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
-                                    <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'"  name="authValue{{i}}">
-                                </div>
                               </div>
-                          </p-tabPanel>
-                      </p-tabView>
+                          </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-option>
+                                <tr>
+                                    <td>{{option.name}}</td>
+                                    <td>{{option.description}}</td>
+                                </tr>
+                            </ng-template>
+                          </p-table>
+                        </div>
+                        <div class="col">
+                          <p-tabView>
+                              <p-tabPanel header="Request Options" >
+                                <div class="field-checkbox" *ngIf="integration.type == 'post'">
+                                  <p-selectButton (onChange)="setTable($event,step)"  styleClass="pb-2"  name="mode" [(ngModel)]="integration.mode"
+                                   [options]="[{label: 'Payload Mode', value: 'payload'},{label: 'URL Query Mode', value: 'query'}]"></p-selectButton>
+                                  &nbsp;
+                                  <span  pTooltip="Payload Mode will send the payload as a JSON. Query mode will encode the parameters into the URL itself" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                </div>
+                                <div class="grid">
+                     
+                                  <div class="field-checkbox col-6">
+                                    <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="ignoreSSL" inputId="binary"></p-checkbox>
+                                    <label for="binary">Ignore SSL</label>
+                                  </div>
+                                  <div class="field-checkbox col-6">
+                                    <p-checkbox [(ngModel)]="integration.splitMultiChoice" [binary]="true" name="splitMultiChoice" inputId="binary"></p-checkbox>
+                                    <label for="binary">Split Multi Choice Parameters</label>
+                                    &nbsp;
+                                    <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                  </div>
+                                </div>
+                   
+                      
+                                <p-panel header="Headers" styleClass="min-w-full" [toggleable]="false">
+                                  <ng-template pTemplate="header">
+                                      <span  pTooltip="If [Content-Type=application/json], parameters will be passed as body. Otherwise - as encoded URL query." tooltipPosition="top" class="pi pi-question-circle"></span>
+                                      &nbsp;
+                                  </ng-template>
+                                  <ng-template pTemplate="icons">
+                                          
+                                        
+                                          <button type='button' pButton class="p-panel-header-icon p-link" (click)="addHeader(step)">
+                                              <span class="pi pi-plus"></span>
+                                          </button>
+                                  </ng-template>
+                                  <ng-template pTemplate="content">
+                                        <div class="p-inputgroup"  *ngFor="let head of integration.headers; let i = index">
+                                          <input pInputText [(ngModel)]="head.key"  type="text"  name="headerKey{{i}}">
+                                          <input pInputText [(ngModel)]="head.value"  type="text"  name="headerValue{{i}}">
+                                          <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(step,i,head)"></p-button>
+                                      </div>
+                                </ng-template>
+                                </p-panel>
+                                
+                        
+                              </p-tabPanel>
+                              <p-tabPanel header="Authentication">
+                                 <p-selectButton name="authentication"[options]="authenticationOptions" (onChange)="setAuthData($event,step)" [(ngModel)]="integration.authentication"></p-selectButton>
+                                  <div class="p-inputgroup pt-2"  *ngFor="let auth of integration.authenticationData; let i = index">
+                                      <div class="p-inputgroup">
+                                        <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
+                                        <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'"  name="authValue{{i}}">
+                                    </div>
+                                  </div>
+                              </p-tabPanel>
+                          </p-tabView>
+                        </div>
+                      </div>
+                      <div *ngIf="integration.type == 'post' && integration.mode == 'payload'" class="pt-3 grid">
+                        <p-panel header="Payload"  class="col" >
+                          <json-editor [options]="makeOptions()" class="api"  [(ngModel)]="integration.payload" [ngModelOptions]=" 
+                          {standalone: true}"></json-editor>
+                        </p-panel>
+                        <p-panel header="{parameter}"  class="col" >
+                          <json-editor [options]="makeOptions()"  class="api"   [(ngModel)]="integration.parameter" [ngModelOptions]=" 
+                          {standalone: true}"></json-editor>
+                        </p-panel>
+                      </div>
+                  </p-tabPanel>
+                  <p-tabPanel header="Output Parsing">
+                    <div class="grid">
+                      <json-editor class="col api" [options]="makeOptions()" [(ngModel)]="integration.outputs" [ngModelOptions]=" 
+                      {standalone: true}"></json-editor>
+                      <p-divider layout="vertical">  <i class="pi pi-arrow-right"></i></p-divider>
+                      <div class="col">
+                        {{error}}
+                        <p-panel header="Outputs">
+                          <p-listbox [readonly]="true" [options]="extractCurlyStrings(integration.outputs)" ></p-listbox>
+                        </p-panel>
+                      </div>
                     </div>
-                  </div>
- 
-              <div *ngIf="integration.type == 'post' && integration.mode == 'payload'" class="pt-3 grid">
-                <p-panel header="Payload"  class="col" >
-                  <json-editor [options]="makeOptions()" class="api"  [(ngModel)]="integration.payload" [ngModelOptions]=" 
-                  {standalone: true}"></json-editor>
-                </p-panel>
-                <p-panel header="{parameter}"  class="col" >
-                  <json-editor [options]="makeOptions()"  class="api"   [(ngModel)]="integration.parameter" [ngModelOptions]=" 
-                  {standalone: true}"></json-editor>
-                </p-panel>
-              </div>
-        </p-fieldset>
+                  </p-tabPanel>
+              </p-tabView>
+              
+
+  
+    
+             </p-fieldset>
+            </mat-step>
+          </mat-stepper>
+      </p-panel>
+      
+
+    
+
+
+
       <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
     </form>
   </p-fieldset>

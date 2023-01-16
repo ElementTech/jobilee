@@ -2,6 +2,8 @@ export class Integration {
     _id?: string;
     name?: string;
     url?: string;
+    output?: any;
+    steps: Array<any>;
     ignoreSSL?: boolean;
     splitMultiChoice?: boolean;
     mode?: string;

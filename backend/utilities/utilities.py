@@ -78,38 +78,39 @@ def replace_parameters(template, parameter_holder, key_value_pairs):
 def querify(chosen_params,splitMultiChoice):
     return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'') 
 
-def process_request(job, integration,chosen_params):
-    chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
-    url = integration["url"]+(integration['definition'].replace(f'{{job}}',job['apiID']))
-    payload=querify(chosen_params,integration['splitMultiChoice'])
-    headers = {d['key']: d['value'] for d in integration['headers']} 
+def process_request(job, integrationSteps,chosen_params):
+    for integration in integrationSteps['steps']:
+        chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
+        url = integrationSteps["url"]+(integration['definition'].replace(f'{{job}}',job['apiID']))
+        payload=querify(chosen_params,integration['splitMultiChoice'])
+        headers = {d['key']: d['value'] for d in integration['headers']} 
 
-    if integration["type"] == "post" and integration['mode'] == 'payload':
-        payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
-    
-    http = urllib3.PoolManager(
-        cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
-    )
-    if integration['authentication'] == "Basic":
-        headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
-    if integration['authentication'] == "Bearer":
-        headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
-   
-    if integration["type"] == "post" and integration['mode'] == 'payload':
-        r = http.request(
-            method=integration["type"],
-            url=url,
-            headers=headers,
-            body=json.dumps(payload).encode('utf-8'),
+        if integration["type"] == "post" and integration['mode'] == 'payload':
+            payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
+        
+        http = urllib3.PoolManager(
+            cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
         )
-    else:
-        r = http.request(
-            method=integration["type"],
-            url=url,
-            headers=headers,
-            fields=payload if integration['type'] == 'GET' else ((itm.split('=')[0],itm.split('=')[1]) for itm in payload.split("&"))
-        )        
-    return r
+        if integration['authentication'] == "Basic":
+            headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
+        if integration['authentication'] == "Bearer":
+            headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
+    
+        if integration["type"] == "post" and integration['mode'] == 'payload':
+            r = http.request(
+                method=integration["type"],
+                url=url,
+                headers=headers,
+                body=json.dumps(payload).encode('utf-8'),
+            )
+        else:
+            r = http.request(
+                method=integration["type"],
+                url=url,
+                headers=headers,
+                fields=payload if integration['type'] == 'GET' else ((itm.split('=')[0],itm.split('=')[1]) for itm in payload.split("&"))
+            )        
+        return r
 
 def trigger_job_api(id,chosen_params):
     data = db["jobs"].find_one({'_id': ObjectId(id)})

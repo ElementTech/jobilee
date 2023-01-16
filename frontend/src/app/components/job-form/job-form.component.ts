@@ -59,10 +59,10 @@ export class JobFormComponent implements OnInit {
       return this.integrations?.find(item => item.name === integrationName)?.url
   }
   getSuffix(integrationName) {
-    return getStringAfterSubstring(this.integrations?.find(item => item.name === integrationName)?.definition,"{job}")
+    return getStringAfterSubstring(this.integrations?.find(item => item.name === integrationName)?.steps[0].definition,"{job}")
   }
   getPrefix(integrationName) {
-    return getStringBeforeSubstring(this.integrations?.find(item => item.name === integrationName)?.definition,"{job}")
+    return getStringBeforeSubstring(this.integrations?.find(item => item.name === integrationName)?.steps[0].definition,"{job}")
   }
 
 

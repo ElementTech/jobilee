@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 import Swal from 'sweetalert2';
 import { MenuItem } from 'primeng/api';
+import { MatStepper } from '@angular/material/stepper';
+
 @Component({
   selector: 'app-integration-form',
   templateUrl: './integration-form.component.html',
@@ -14,24 +16,52 @@ export class IntegrationFormComponent implements OnInit {
 
   public initialData: any;
 
+  goBack(stepper: MatStepper){
+      stepper.previous();
+  }
+  
+  goForward(stepper: MatStepper){
+      stepper.next();
+  }
   @Input() _id: string;
   @Input() formType: "Create" | "Update";
-  @Input() integration: Integration = {
+  stepTemplate = {
     type: 'post',
     mode: 'payload',
     authentication: 'None',
+    outputs: {"result": "{result}"},
     splitMultiChoice: true,
     authenticationData: [],
     headers: [{"key":"Content-Type", "value": "application/json"}],
     payload: {"parameter": ['{parameter}']},
     ignoreSSL: false,
     parameter: {"name": "{key}", "value": "{value}"}
+  }
+  @Input() integrationSteps: Integration = {
+    steps: [this.stepTemplate]
   };
   authenticationOptions = [
     "None",
     "Basic",
     "Bearer"
   ];
+
+  extractCurlyStrings(json: any): string[] {
+    let results: string[] = [];
+    if (!(json == undefined || json == null))  {
+      for (const key of Object.keys(json)) {
+        const value = json[key];
+        if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
+            results.push(value.substring(1, value.length-1));
+        }
+        if (typeof value === 'object') {
+            results = results.concat(this.extractCurlyStrings(value));
+        }
+      }
+    }
+
+    return results;
+  }
 
   submitted = false;
   optionsURL = [
@@ -68,29 +98,29 @@ export class IntegrationFormComponent implements OnInit {
       {label: 'Trigger'},
   ];
   }
-  setAuthData(event){
+  setAuthData(event,step){
     console.log(event.value)
     if (event.value == "None")
     {
-      this.integration.authenticationData = []
+      this.integrationSteps.steps[step].authenticationData = []
     }
     if (event.value == "Basic")
     {
-      this.integration.authenticationData = [{"key":"Username", "value": ""},{"key":"Password", "value": ""}]
+      this.integrationSteps.steps[step].authenticationData = [{"key":"Username", "value": ""},{"key":"Password", "value": ""}]
     }
     if (event.value == "Bearer")
     {
-      this.integration.authenticationData = [{"key":"Token", "value": ""}]
+      this.integrationSteps.steps[step].authenticationData = [{"key":"Token", "value": ""}]
     }
   }
-  addHeader()
+  addHeader(step)
   {
-   this.integration.headers.push({'key':'','value':''});
-   this.integration.headers = [...this.integration.headers]
+   this.integrationSteps.steps[step].headers.push({'key':'','value':''});
+   this.integrationSteps.steps = [...this.integrationSteps.steps]
   }
-  removeHeader(i,head)
+  removeHeader(step,i,head)
   {
-    if ((head["key"] == "Content-Type") && (head["value"] == "application/json") && (this.integration.mode == 'payload') && (this.integration.type == 'post'))
+    if ((head["key"] == "Content-Type") && (head["value"] == "application/json") && (this.integrationSteps.steps[step].mode == 'payload') && (this.integrationSteps.steps[step].type == 'post'))
     {
       Swal.fire({
         icon: 'error',
@@ -98,12 +128,11 @@ export class IntegrationFormComponent implements OnInit {
         text: 'If Payload mode is enabled, the [Content-Type=application/json] header must be present.',
       })
     } else {
-      this.integration.headers.splice(i,1)
-      this.integration.headers = [...this.integration.headers]
+      this.integrationSteps.steps[step].headers.splice(i,1)
     }
 
   }
-  setTable(event)
+  setTable(event,step)
   {
     switch (event.value) {
       case 'get':
@@ -114,20 +143,18 @@ export class IntegrationFormComponent implements OnInit {
             description: "The Name/ID of the job that will be triggered through the query"
           }
         ]        
-        if (this.integration.headers.some(elem =>{
+        if (this.integrationSteps.steps[step].headers.some(elem =>{
           return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
            })) {
-          this.integration.headers.splice(this.integration.headers.indexOf({"key":"Content-Type", "value": "application/json"}),1)
-          this.integration.headers = [...this.integration.headers]
+          this.integrationSteps.steps[step].headers.splice(this.integrationSteps.steps[step].headers.indexOf({"key":"Content-Type", "value": "application/json"}),1)
         }
         break;
       case 'post':
       case 'payload':
-        if (!this.integration.headers.some(elem =>{
+        if (!this.integrationSteps.steps[step].headers.some(elem =>{
           return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
            })) {
-          this.integration.headers.push({"key":"Content-Type", "value": "application/json"});
-          this.integration.headers = [...this.integration.headers]
+          this.integrationSteps.steps[step].headers.push({"key":"Content-Type", "value": "application/json"});
         }
         this.options = [
           {
@@ -162,18 +189,18 @@ export class IntegrationFormComponent implements OnInit {
     if (this.formType == "Create")
     {
       this.dbService
-      .createObject("integrations",this.integration).subscribe(data => {
-        this.integration = new Integration();
+      .createObject("integrations",this.integrationSteps).subscribe(data => {
+        this.integrationSteps = new Integration();
         this.gotoList();
       }, 
       error => console.log(error));
     } 
     else if (this.formType == "Update")
     {
-      this.dbService.updateObject("integrations",this._id, this.integration)
+      this.dbService.updateObject("integrations",this._id, this.integrationSteps)
       .subscribe(data => {
         console.log(data);
-        this.integration = new Integration();
+        this.integrationSteps = new Integration();
         this.gotoList();
       }, error => console.log(error));
     }
