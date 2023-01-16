@@ -40,7 +40,7 @@
           
               <div class="flex flex-grow-1"></div>
             <span class="p-buttonset flex-none">
-              <button type="button" (click)="integrationSteps.steps.push(stepTemplate);goForward(stepper)"  icon="pi pi-plus-circle" pButton >&nbsp;Add Step</button>
+              <button type="button" (click)="pushCopy();goForward(stepper)"  icon="pi pi-plus-circle" pButton >&nbsp;Add Step</button>
             </span>
           </ng-template>
           <mat-stepper orientation="vertical"  #stepper>
@@ -57,7 +57,7 @@
      
                 <ng-template pTemplate="header" >
                   <div class="mt-3">
-                    <p-selectButton [(ngModel)]="integration.type" name="type" (onChange)="setTable($event,step)"
+                    <p-selectButton [(ngModel)]="integration.type" name="{{step}}type" (onChange)="setTable($event,step)"
                     [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
                   </div>
             
@@ -70,7 +70,7 @@
                     </ng-template>
                     <div class="p-inputgroup pb-3">
                       <span class="p-inputgroup-addon">{{integrationSteps.url}}</span>
-                      <input type="text" [(ngModel)]="integration.definition" name="definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
+                      <input type="text" [(ngModel)]="integration.definition" name="{{step}}definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
                     </div>
       
                       <div class="grid">
@@ -100,7 +100,7 @@
                           <p-tabView>
                               <p-tabPanel header="Request Options" >
                                 <div class="field-checkbox" *ngIf="integration.type == 'post'">
-                                  <p-selectButton (onChange)="setTable($event,step)"  styleClass="pb-2"  name="mode" [(ngModel)]="integration.mode"
+                                  <p-selectButton (onChange)="setTable($event,step)"  styleClass="pb-2"  name="{{step}}mode" [(ngModel)]="integration.mode"
                                    [options]="[{label: 'Payload Mode', value: 'payload'},{label: 'URL Query Mode', value: 'query'}]"></p-selectButton>
                                   &nbsp;
                                   <span  pTooltip="Payload Mode will send the payload as a JSON. Query mode will encode the parameters into the URL itself" tooltipPosition="top" class="pi pi-question-circle"></span>
@@ -108,19 +108,19 @@
                                 <div class="grid">
                      
                                   <div class="field-checkbox col">
-                                    <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="ignoreSSL" inputId="binary"></p-checkbox>
+                                    <p-checkbox [(ngModel)]="integration.ignoreSSL" [binary]="true" name="{{step}}ignoreSSL" inputId="binary"></p-checkbox>
                                     <label for="binary">Ignore SSL</label>
                                   </div>
                                   <div class="field-checkbox col">
                                     <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
                                     &nbsp;
 
-                                    <p-checkbox [(ngModel)]="integration.splitMultiChoice" [binary]="true" name="splitMultiChoice" inputId="binary"></p-checkbox>
+                                    <p-checkbox [(ngModel)]="integration.splitMultiChoice" [binary]="true" name="{{step}}splitMultiChoice" inputId="binary"></p-checkbox>
                                     <label for="binary">Split Multi Choice Parameters</label>
                                   </div>
                                   <div class="field-checkbox col">
                                     <label for="retry">Retry</label>
-                                    <p-inputNumber [(ngModel)]="integrationSteps.retry" (onInput)="onInput($event,step)" mode="decimal" name="retry" [showButtons]="true" inputId="retry" [min]="0" >
+                                    <p-inputNumber [(ngModel)]="integration.retryCount"  [value]="integration.retryCount" mode="decimal" name="{{step}}retryCount" [showButtons]="true" inputId="retry" [min]="0" >
                                     </p-inputNumber>
                                   </div>
                         
@@ -141,8 +141,8 @@
                                   </ng-template>
                                   <ng-template pTemplate="content">
                                         <div class="p-inputgroup"  *ngFor="let head of integration.headers; let i = index">
-                                          <input pInputText [(ngModel)]="head.key"  type="text"  name="headerKey{{i}}">
-                                          <input pInputText [(ngModel)]="head.value"  type="text"  name="headerValue{{i}}">
+                                          <input pInputText [(ngModel)]="head.key"  type="text"  name="{{step}}headerKey{{i}}">
+                                          <input pInputText [(ngModel)]="head.value"  type="text"  name="{{step}}headerValue{{i}}">
                                           <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(step,i,head)"></p-button>
                                       </div>
                                 </ng-template>
@@ -151,11 +151,11 @@
                         
                               </p-tabPanel>
                               <p-tabPanel header="Authentication">
-                                 <p-selectButton name="authentication"[options]="authenticationOptions" (onChange)="setAuthData($event,step)" [(ngModel)]="integration.authentication"></p-selectButton>
+                                 <p-selectButton name="{{step}}authentication"[options]="authenticationOptions" (onChange)="setAuthData($event,step)" [(ngModel)]="integration.authentication"></p-selectButton>
                                   <div class="p-inputgroup pt-2"  *ngFor="let auth of integration.authenticationData; let i = index">
                                       <div class="p-inputgroup">
                                         <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
-                                        <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'"  name="authValue{{i}}">
+                                        <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'"  name="{{step}}authValue{{i}}">
                                     </div>
                                   </div>
                               </p-tabPanel>
@@ -175,7 +175,7 @@
                   </p-tabPanel>
                   <p-tabPanel>
                     <ng-template pTemplate="header" >
-                      <p-checkbox [(ngModel)]="integration.parsing" [binary]="true" name="parsing" inputId="binary"></p-checkbox> &nbsp;
+                      <p-checkbox [(ngModel)]="integration.parsing" [binary]="true" name="{{step}}parsing" inputId="binary"></p-checkbox> &nbsp;
                       Response Parsing
                       &nbsp;
                       <span  pTooltip="When enabled, put {var} placeholders in the expected response JSON. These will be available to next API steps." tooltipPosition="top" class="pi pi-question-circle"></span>
@@ -241,7 +241,7 @@
                               <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu>
                             </div>
                           </ng-template>
-                          <json-editor [options]="makeOptions()"  class="api" name="retryUntil"  [(ngModel)]="integration.retryUntil" [ngModelOptions]=" 
+                          <json-editor [options]="makeOptions()"  class="api" name="{{step}}retryUntil"  [(ngModel)]="integration.retryUntil" [ngModelOptions]=" 
                           {standalone: true}"></json-editor>
                         </p-panel>
                       </div>

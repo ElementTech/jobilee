@@ -25,28 +25,9 @@ export class IntegrationFormComponent implements OnInit {
   }
   @Input() _id: string;
   @Input() formType: "Create" | "Update";
-  stepTemplate: Step = {
-    type: 'post',
-    parsing: false,
-    mode: 'payload',
-    authentication: 'None',
-    retryCount: 0,
-    outputs: { "result": "{result}" },
-    retryUntil: { "result": "Success" },
-    splitMultiChoice: true,
-    authenticationData: [],
-    headers: [{ "key": "Content-Type", "value": "application/json" }],
-    payload: { "parameter": ['{parameter}'] },
-    ignoreSSL: false,
-    parameter: { "name": "{key}", "value": "{value}" },
-  }
-  @Input() integrationSteps: Integration = {
-    steps: [this.stepTemplate]
-  };
-  onInput(event,step) {
-    // maybe, you can add some validations
-    this.integrationSteps.steps[step].retryCount = event.value
-  }
+
+  @Input() integrationSteps = new Integration
+
   authenticationOptions = [
     "None",
     "Basic",
@@ -95,15 +76,36 @@ export class IntegrationFormComponent implements OnInit {
       description: "Parameter values"
     }
   ]
-
+  pushCopy(){
+    this.integrationSteps.steps.push({
+      type: 'post',
+      parsing: false,
+      mode: 'payload',
+      authentication: 'None',
+      retryCount: 0,
+      outputs: { "result": "{result}" },
+      retryUntil: { "result": "Success" },
+      splitMultiChoice: true,
+      authenticationData: [],
+      headers: [{ "key": "Content-Type", "value": "application/json" }],
+      payload: { "parameter": ['{parameter}'] },
+      ignoreSSL: false,
+      parameter: { "name": "{key}", "value": "{value}" },
+    })
+  }
   constructor(private dbService: DBService,
     private router: Router) {
+
      }
   items: MenuItem[];
   ngOnInit() {
     this.items = [
       {label: 'Trigger'},
     ];
+    if (this.integrationSteps.steps.length == 0)
+    {
+      this.pushCopy()
+    }
   }
   setAuthData(event,step){
     console.log(event.value)

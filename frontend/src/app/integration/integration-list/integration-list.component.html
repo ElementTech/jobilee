@@ -27,13 +27,7 @@
             <p-columnFilter type="text" field="url" display="menu" class="ml-auto"></p-columnFilter>
         </div>
       </th>
-      <th pSortableColumn="type" style="min-width: 14rem">
-        <div class="flex justify-content-between align-items-center">
-            Type
-            <p-sortIcon field="type"></p-sortIcon>
-            <p-columnFilter type="text" field="type" display="menu" class="ml-auto"></p-columnFilter>
-        </div>
-      </th>
+
       <!-- <th pSortableColumn="status" style="min-width: 10rem">
         <div class="flex justify-content-between align-items-center">
             Status
@@ -62,10 +56,7 @@
           <span class="p-column-title">{{integration.url}}</span>
           {{integration.url}}
         </td>
-        <td>
-          <span class="p-column-title">{{integration.type}}</span>
-          {{integration.type}}
-        </td>
+
         <!-- <td>
           <span class="p-column-title">Status</span>
           <span [class]="'customer-badge status-' + 'renewal'">renewal</span>

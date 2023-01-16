@@ -9,20 +9,9 @@ export class CreateIntegrationComponent {
 
 
   integration: Integration = {
-    steps: [{
-      type: 'post',
-      parsing: false,
-      mode: 'payload',
-      authentication: 'None',
-      outputs: { "result": "{result}" },
-      retryUntil: { "result": "Success" },
-      splitMultiChoice: true,
-      authenticationData: [],
-      headers: [{ "key": "Content-Type", "value": "application/json" }],
-      payload: { "parameter": ['{parameter}'] },
-      ignoreSSL: false,
-      parameter: { "name": "{key}", "value": "{value}" }
-    }]
+    name: "",
+    url: "",
+    steps: []
   };
   
 }
