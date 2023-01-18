@@ -122,7 +122,11 @@
                                     <label for="retry">Retry</label>
                                     <p-inputNumber [(ngModel)]="integration.retryCount"  [value]="integration.retryCount" mode="decimal" name="{{step}}retryCount" [showButtons]="true" inputId="retry" [min]="0" >
                                     </p-inputNumber>
+                                    <label for="retry">Retry Delay</label>
+                                    <p-inputNumber [(ngModel)]="integration.retryDelay"  [value]="integration.retryDelay" mode="decimal" name="{{step}}retryDelay" [showButtons]="true" inputId="retryDelay" [min]="0" >
+                                    </p-inputNumber>
                                   </div>
+                       
                         
                                 </div>
                    

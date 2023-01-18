@@ -82,6 +82,7 @@ export class IntegrationFormComponent implements OnInit {
       parsing: false,
       mode: 'payload',
       authentication: 'None',
+      retryDelay: 5,
       retryCount: 0,
       outputs: { "result": "{result}" },
       retryUntil: { "result": "Success" },

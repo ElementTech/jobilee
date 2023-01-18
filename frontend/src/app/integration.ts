@@ -7,7 +7,8 @@ export class Integration {
 
 export class Step {
     outputs?: Object;
-    retryCount?: any;
+    retryCount?: Number;
+    retryDelay?: Number;
     parsing?: boolean;
     ignoreSSL?: boolean;
     splitMultiChoice?: boolean;

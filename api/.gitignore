@@ -1,0 +1,9 @@
+*.pyc
+__pycache
+.DS_Store
+**google.json
+**.wav
+**.ogg
+**.m4a
+**.mp3
+**.log

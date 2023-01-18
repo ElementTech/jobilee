@@ -69,7 +69,7 @@ export class PlayJobComponent implements OnInit {
       Swal.fire({
         icon: 'success',
         title: 'Job Triggered Succesfully',
-        text: result,
+        text: JSON.stringify(result),
         timer: 2000
       })
     },error=>{
