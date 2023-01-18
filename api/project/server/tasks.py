@@ -13,6 +13,6 @@ celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://lo
 #     time.sleep(int(task_type) * 10)
 #     return True
 
-@celery.task(name="trigger_api_task")
-def trigger_api_task(id,chosen_params):
-    return trigger_job_api(id,chosen_params)
+@celery.task(name="trigger_api_task",bind=True)
+def trigger_api_task(self,id,chosen_params):
+    return trigger_job_api(id,chosen_params,self.request.id)

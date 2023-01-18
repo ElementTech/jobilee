@@ -15,7 +15,7 @@ def home():
 @main_blueprint.route("/tasks/<job_id>", methods=["POST"])
 def run_task(job_id):
     content = request.json
-    task = trigger_api_task.delay(job_id,content)
+    task = trigger_api_task.delay(id=job_id,chosen_params=content)
     return jsonify({"task_id": task.id}), 202
 
 @main_blueprint.route("/tasks/<task_id>", methods=["GET"])

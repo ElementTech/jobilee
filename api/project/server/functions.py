@@ -1,5 +1,6 @@
 from bson import json_util, ObjectId
 import json
+import re
 from pymongo import MongoClient
 import yaml
 import urllib3
@@ -79,9 +80,10 @@ def replace_parameters(template, parameter_holder, key_value_pairs):
 def querify(chosen_params,splitMultiChoice):
     return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'') 
 
-def process_request(job, integrationSteps,chosen_params):
-    outputs = []
+def process_request(job, integrationSteps,chosen_params,task_id):
+    outputs = {}
     for integration in integrationSteps['steps']:
+        message = "Success"
         chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
         url = integrationSteps["url"]+(integration['definition'].replace(f'{{job}}',job['apiID']))
         payload=querify(chosen_params,integration['splitMultiChoice'])
@@ -112,21 +114,78 @@ def process_request(job, integrationSteps,chosen_params):
                 headers=headers,
                 fields=payload if integration['type'] == 'GET' else [(itm.split('=')[0],itm.split('=')[1]) for itm in payload.split("&")],
                 retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
-            )        
-        # if integration['parsing'] and integration['outputs']:
+            )      
+  
+        if integration['parsing']:
+            if integration['outputs']:
+                try:
+                    res_json = json.loads(r.data)
+                    extract_placeholder_values(integration['outputs'], res_json, outputs)
+                except Exception as e:
+                    message = str(e)
+            else:
+                try:
+                    res_json = json.loads(r.data)                    
+                    if not check_placeholder_exists(integration['outputs'], res_json):
+                        raise ValueError('output values are missing in response')
+                except Exception as e:
+                    message = str(e)
 
+        
+        update_doc = {"_id": ObjectId(task_id),"job_id":job['_id'],"steps": []}
+        db["tasks"].update_one({"_id": task_id}, {"$set": update_doc, "$push": {"steps": {
+            "step":integrationSteps['steps'].index(integration),
+            "result":r.status,
+            "message":message,
+            "response":res_json
+        }}}, upsert=True)
 
-        print(r.data)
-        try:
-            print(json.loads(r.data))
-        except:
-            print("bla")
-        print({"step":integrationSteps['steps'].index(integration),"result":r.status})
-        current_task.update_state('PROGRESS', meta={"step":integrationSteps['steps'].index(integration),"result":r.status})
-
-def trigger_job_api(id,chosen_params):
+def trigger_job_api(id,chosen_params,task_id):
     data = db["jobs"].find_one({'_id': ObjectId(id)})
     db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
     integration = db["integrations"].find_one({'name': db_doc["integration"]})
     integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
-    process_request(db_doc,integration_doc,chosen_params)
+    process_request(db_doc,integration_doc,chosen_params,task_id)
+
+def extract_placeholder_values(data, values_data, placeholder_values):
+    for key, value in data.items():
+        if isinstance(value, str):
+            match = re.search(r'{(.*?)}', value)
+            if match:
+                placeholder = match.group(1)
+                placeholder_values[placeholder] = values_data[key]
+        elif isinstance(value, dict):
+            extract_placeholder_values(value, values_data[key], placeholder_values)
+        elif isinstance(value, list):
+            for i in range(len(value)):
+                if isinstance(value[i], str):
+                    match = re.search(r'{(.*?)}', value[i])
+                    if match:
+                        placeholder = match.group(1)
+                        placeholder_values[placeholder] = values_data[key][i]
+                elif isinstance(value[i], dict):
+                    extract_placeholder_values(value[i], values_data[key][i], placeholder_values)
+
+def check_placeholder_exists(data, values_data):
+    for key, value in data.items():
+        if isinstance(value, str):
+            match = re.search(r'{(.*?)}', value)
+            if match:
+                placeholder = match.group(1)
+                if placeholder not in values_data:
+                    return False
+        elif isinstance(value, dict):
+            if not check_placeholder_exists(value, values_data[key]):
+                return False
+        elif isinstance(value, list):
+            for i in range(len(value)):
+                if isinstance(value[i], str):
+                    match = re.search(r'{(.*?)}', value[i])
+                    if match:
+                        placeholder = match.group(1)
+                        if placeholder not in values_data:
+                            return False
+                elif isinstance(value[i], dict):
+                    if not check_placeholder_exists(value[i], values_data[key][i]):
+                        return False
+    return True
