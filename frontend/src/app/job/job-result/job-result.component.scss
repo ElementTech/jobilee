@@ -1,0 +1,140 @@
+::ng-deep .mat-vertical-stepper-content { 
+    visibility: visible !important; 
+    height: 100% !important; 
+  }
+  
+
+:host ::ng-deep {
+
+    
+    .p-dropdown {
+        width: 14rem;
+        font-weight: normal;
+    }
+    
+    .job-name {
+        font-size: 1.1rem;
+        word-break: break-all;
+        font-weight: 700;
+    }
+    
+    .job-description {
+        margin: 0 0 1rem 0;
+    }
+    
+    .job-category-icon {
+        vertical-align: middle;
+        margin-right: .5rem;
+    }
+    
+    .job-category {
+        font-weight: 600;
+        vertical-align: middle;
+    }
+    
+    .job-list-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        width: 100%;
+    
+        img {
+            width: 150px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+            margin-right: 2rem;
+        }
+    
+        .job-list-detail {
+            flex: 1 1 0;
+        }
+    
+        .p-rating {
+            margin: 0 0 .5rem 0;
+        }
+    
+        .job-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: .5rem;
+            align-self: flex-end;
+        }
+    
+        .job-list-action {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .p-button {
+            margin-bottom: .5rem;
+        }
+    }
+    
+    .job-grid-item {
+        margin: .5em;
+        padding-top:1em !important;
+        padding-bottom:.5em !important;
+        padding-right:.5em !important;
+        padding-left:.5em !important;
+        border: 1px solid #dee2e6;
+    
+        .job-grid-item-top,
+        .job-grid-item-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    
+        img {
+            width: 75%;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+            margin: 2rem 0;
+        }
+    
+        .job-grid-item-content {
+            text-align: center;
+        }
+    
+        .job-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+    }
+}
+
+.card {
+    padding: 2rem;
+    border-radius: 4px;
+}
+
+@media screen and (max-width: 576px) {
+	:host ::ng-deep .job-list-item {
+		flex-direction: column;
+		align-items: center;
+
+		img {
+			width: 75%;
+			margin: 2rem 0;
+		}
+
+		.job-list-detail {
+			text-align: center;
+		}
+
+		.job-price {
+			align-self: center;
+		}
+
+		.job-list-action {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.job-list-action {
+			margin-top: 2rem;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+		}
+	}
+}

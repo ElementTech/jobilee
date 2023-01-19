@@ -10,6 +10,8 @@ import { JobListComponent } from './job/job-list/job-list.component';
 import { UpdateJobComponent } from './job/update-job/update-job.component';
 import { RunJobComponent } from './job/run-job/run-job.component';
 import { PlayJobComponent } from './job/play-job/play-job.component';
+import { JobResultComponent } from './job/job-result/job-result.component';
+import { JobHistoryComponent } from './job/job-history/job-history.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'catalog', pathMatch: 'full' },
@@ -19,6 +21,8 @@ const routes: Routes = [
   { path: 'jobs/update/:_id', component: UpdateJobComponent },
   { path: 'jobs/details/:_id', component: JobDetailsComponent },
   { path: 'jobs/run/:_id', component: PlayJobComponent },
+  { path: 'jobs/history/:_id', component: JobHistoryComponent },
+  { path: 'jobs/result/:_id/:task', component: JobResultComponent },
   { path: 'integrations', component: IntegrationListComponent },
   { path: 'integrations/add', component: CreateIntegrationComponent },
   { path: 'integrations/update/:_id', component: UpdateIntegrationComponent },

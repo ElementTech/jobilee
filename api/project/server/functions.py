@@ -133,8 +133,8 @@ def process_request(job, integrationSteps,chosen_params,task_id):
                     message = str(e)
 
         
-        update_doc = {"_id": ObjectId(task_id),"job_id":job['_id'],"steps": []}
-        db["tasks"].update_one({"_id": task_id}, {"$set": update_doc, "$push": {"steps": {
+        update_doc = {"job_id":job['_id'],"update_time":datetime.now(),"integration_id":str(integrationSteps["_id"])}
+        db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc, "$push": {"steps": {
             "step":integrationSteps['steps'].index(integration),
             "result":r.status,
             "message":message,

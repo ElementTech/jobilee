@@ -1,6 +1,6 @@
 import os
 import time
-from celery import Celery
+from celery import Celery, Task
 from project.server.functions import trigger_job_api
 
 celery = Celery(__name__)

@@ -1,7 +1,7 @@
 # project/server/main/views.py
 from project.server.tasks import trigger_api_task
 from celery.result import AsyncResult
-
+import bson
 from flask import render_template, Blueprint, jsonify, request
 
 main_blueprint = Blueprint("main", __name__,)
@@ -14,8 +14,7 @@ def home():
 
 @main_blueprint.route("/tasks/<job_id>", methods=["POST"])
 def run_task(job_id):
-    content = request.json
-    task = trigger_api_task.delay(id=job_id,chosen_params=content)
+    task = trigger_api_task.apply_async(args=[job_id,request.json],task_id=str(bson.ObjectId()))
     return jsonify({"task_id": task.id}), 202
 
 @main_blueprint.route("/tasks/<task_id>", methods=["GET"])

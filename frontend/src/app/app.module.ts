@@ -55,6 +55,8 @@ import { ChipModule } from 'primeng/chip';
 import {ToastModule} from 'primeng/toast';
 import {ListboxModule} from 'primeng/listbox';
 import {InputNumberModule} from 'primeng/inputnumber';
+import { JobResultComponent } from './job/job-result/job-result.component';
+import { JobHistoryComponent } from './job/job-history/job-history.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,7 +73,9 @@ import {InputNumberModule} from 'primeng/inputnumber';
     PlayJobComponent,
     JobFormComponent,
     IntegrationFormComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    JobResultComponent,
+    JobHistoryComponent
   ],
   imports: [
     BrowserModule,

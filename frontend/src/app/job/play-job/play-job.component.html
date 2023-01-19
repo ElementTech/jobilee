@@ -5,7 +5,7 @@
     </div>
     
     <div class="p-toolbar-group-start">
-      <p-button label="{{job.name}}" [routerLink]="['/','jobs','details', job._id]" styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
+      <p-button label="{{job.name}}" [routerLink]="['/','jobs','history', job._id]" styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
     </div>
     <div class="p-toolbar-group-end">
       <p-button icon="pi pi-times" (click)="deleteJob(job._id)" styleClass="p-button-danger"></p-button>

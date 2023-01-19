@@ -1,0 +1,24 @@
+
+<p-toolbar >
+    <div class="p-toolbar-group-start text-white">
+        Run ID: {{this.task_id}}
+    </div>
+    
+    <div class="p-toolbar-group-start">
+      <p-button label="{{(job | async)?.name}}" [routerLink]="['/','jobs','details', _id]" styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
+    </div>
+    <div class="p-toolbar-group-end text-white">
+      Integration: {{(integrationSteps | async)?.name}}
+  </div>
+</p-toolbar>
+<div class="">
+    <mat-stepper orientation="vertical"  #stepper>
+      
+        <ng-template matStepperIcon="edit">
+          <span class="pi pi-bolt"></span>
+        </ng-template>
+        <mat-step *ngFor="let integration of (integrationSteps | async)?.steps; let step = index">
+          {{integration | json}}
+        </mat-step>
+      </mat-stepper>
+</div>

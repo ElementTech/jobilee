@@ -42,7 +42,7 @@ export class RunJobComponent implements OnInit {
   }
 
   jobDetails(_id: string){
-    this.router.navigate(['jobs/details', _id]);
+    this.router.navigate(['jobs/history', _id]);
   }
   runJob(_id: string){
     this.router.navigate(['jobs/run', _id]);

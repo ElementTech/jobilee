@@ -30,4 +30,10 @@ export class DBService {
   getObjectList(col: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/${col}`);
   }
+
+  getObjectListByKey(col: string,key: string, value: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${col}/${key}/${value}`);
+  }  
+
+  
 }
