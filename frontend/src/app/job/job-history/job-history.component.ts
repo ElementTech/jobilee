@@ -24,6 +24,32 @@ export class JobHistoryComponent implements OnInit {
     this._id = this.route.snapshot.params['_id'];
     this.reloadData()
   }
+  getBackground(task)
+  { 
+    if (task.hasOwnProperty('result')) {
+      if (task['result'])
+      {
+        return 'bg-green-200'
+      } else {
+        return 'bg-red-200'
+      }
+    } else {
+      return 'bg-blue-200'
+    }
+  }
+  getIcon(task)
+  { 
+    if (task.hasOwnProperty('result')) {
+      if (task['result'])
+      {
+        return 'pi pi-check green'
+      } else {
+        return 'pi pi-times'
+      }
+    } else {
+      return 'pi pi-question'
+    }
+  }
   reloadData()
   {
     this.tasks = this.dbService.getObjectListByKey("tasks","job_id",this._id)

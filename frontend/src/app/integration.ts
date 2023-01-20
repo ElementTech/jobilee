@@ -15,6 +15,7 @@ export class Step {
     ignoreSSL?: boolean;
     splitMultiChoice?: boolean;
     retryUntil?: Object;
+    failWhen?: Object;
     mode?: string;
     authentication?: string;
     headers?: Array<Object>;

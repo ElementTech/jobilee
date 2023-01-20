@@ -1,14 +1,16 @@
 
 <p-toolbar >
     <div class="p-toolbar-group-start text-white">
-        Run ID: {{this.task_id}}
+      <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-secondary"></p-button>
+
     </div>
     
     <div class="p-toolbar-group-start">
       <p-button label="{{(job | async)?.name}}" [routerLink]="['/','jobs','details', _id]" styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
     </div>
     <div class="p-toolbar-group-end text-white">
-      <!-- Integration: {{(integrationSteps | async)?.name}} -->
+      Run ID: {{this.task_id}}
+
   </div>
 </p-toolbar>
 <div class="">
@@ -16,9 +18,10 @@
       
         <mat-step *ngFor="let step of (task)?.steps" label="test">
           <ng-template matStepLabel>
+            {{step['timeOutLeft'] > 0 ? step['timeOutLeft'] : ''}}
             <p-progressBar 
             [style]="{'height': '15px'}"
-            [ngClass]="{'failure': step['result'] == 1, 'success': step['result'] == 2}"
+            [ngClass]="{'error': step['result'] == 1, 'success': step['result'] == 2, 'failure': step['result'] == 3}"
             [mode]="step['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
             [value]="step['percentDone']"></p-progressBar>
           </ng-template>

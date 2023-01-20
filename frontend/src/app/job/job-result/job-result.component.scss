@@ -10,11 +10,17 @@
     padding: 0 !important;
   }
 
-  ::ng-deep .failure .p-progressbar-value {
+  ::ng-deep .error .p-progressbar-value {
     background: #d93728;
   } 
   ::ng-deep .success .p-progressbar-value {
     background: #28ad1c;
+  } 
+  ::ng-deep .failure .p-progressbar-value {
+    background: #f1f108;
+    .p-progressbar-label{
+            color:black
+    }
   } 
 :host ::ng-deep {
 
