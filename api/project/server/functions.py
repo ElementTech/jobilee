@@ -6,6 +6,7 @@ import yaml
 import urllib3
 import urllib.request 
 import urllib.parse
+import time
 from celery import Celery, current_task
 from datetime import datetime
 
@@ -81,65 +82,146 @@ def replace_parameters(template, parameter_holder, key_value_pairs):
 def querify(chosen_params,splitMultiChoice):
     return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'') 
 
-def process_request(job, integrationSteps,chosen_params,task_id):
-    outputs = {}
-    for integration in integrationSteps['steps']:
-        message = "Success"
-        chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
-        url = integrationSteps["url"]+(integration['definition'].replace(f'{{job}}',job['apiID']))
-        payload=querify(chosen_params,integration['splitMultiChoice'])
-        headers = {d['key']: d['value'] for d in integration['headers']} 
+def replace_placeholders(string, values):
+    for key in values:
+        string = string.replace("{" + key + "}", str(values[key]))
+    return string
 
-        if integration["type"] == "post" and integration['mode'] == 'payload':
-            payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
-        
-        http = urllib3.PoolManager(
-            cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
+def process_step(job, integrationSteps,chosen_params,integration,outputs):
+    message = "Success"
+    chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
+    url = integrationSteps["url"]+(replace_placeholders(integration['definition'].replace(f'{{job}}',job['apiID']),outputs))
+    payload=querify(chosen_params,integration['splitMultiChoice'])
+    headers = {d['key']: d['value'] for d in integration['headers']} 
+
+    if integration["type"] == "post" and integration['mode'] == 'payload':
+        payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
+    
+    http = urllib3.PoolManager(
+        cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
+    )
+    if integration['authentication'] == "Basic":
+        headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
+    if integration['authentication'] == "Bearer":
+        headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
+    if integration["type"] == "post" and integration['mode'] == 'payload':
+        r = http.request(
+            method=integration["type"],
+            url=url,
+            headers=headers,
+            body=json.dumps(payload).encode('utf-8'),
+            retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
         )
-        if integration['authentication'] == "Basic":
-            headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
-        if integration['authentication'] == "Bearer":
-            headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
-        if integration["type"] == "post" and integration['mode'] == 'payload':
-            r = http.request(
-                method=integration["type"],
-                url=url,
-                headers=headers,
-                body=json.dumps(payload).encode('utf-8'),
-                retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
-            )
-        else:
-            r = http.request(
-                method=integration["type"],
-                url=url,
-                headers=headers,
-                fields=payload if integration['type'] == 'GET' else [(itm.split('=')[0],itm.split('=')[1]) for itm in payload.split("&")],
-                retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
-            )      
-  
-        if integration['parsing']:
-            if integration['outputs']:
-                try:
-                    res_json = json.loads(r.data)
-                    extract_placeholder_values(integration['outputs'], res_json, outputs)
-                except Exception as e:
-                    message = str(e)
-            else:
-                try:
-                    res_json = json.loads(r.data)                    
-                    if not check_placeholder_exists(integration['outputs'], res_json):
-                        raise ValueError('output values are missing in response')
-                except Exception as e:
-                    message = str(e)
+    else:
+        r = http.request(
+            method=integration["type"],
+            url=url,
+            headers=headers,
+            fields=payload if integration['type'] == 'GET' else [(itm.split('=')[0],itm.split('=')[1]) for itm in payload.split("&")],
+            retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
+        )          
 
+    parsingOK = True
+    res_json = r.data
+    extracted_outputs = {}
+    if integration['parsing']:
+        if integration['outputs']:
+            try:
+                res_json = json.loads(r.data)
+                extract_placeholder_values(integration['outputs'], res_json, extracted_outputs)
+                if bool(integration.get('retryUntil')):
+                    for k, v in integration['retryUntil'].items():
+                        if k in extracted_outputs:
+                            if v != extracted_outputs[k]:
+                                parsingOK = False
+                        else:
+                            parsingOK = False
+                else:
+                    if extracted_outputs:
+                        for k, v in extracted_outputs.items():
+                            if v is None:
+                                parsingOK = False
+            except Exception as e:
+                print("Error")
+                print(e)
+                parsingOK = False
+                message = str(e)
         
-        update_doc = {"job_id":job['_id'],"update_time":datetime.now(),"integration_id":str(integrationSteps["_id"])}
-        db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc, "$push": {"steps": {
-            "step":integrationSteps['steps'].index(integration),
-            "result":r.status,
-            "message":message,
-            "response":res_json
-        }}}, upsert=True)
+    return {
+        'extracted_outputs': extracted_outputs,
+        'parsingOK': parsingOK,
+        "message": message if r.status in range(200,300) else "Failure",
+        "r":r,
+        "extracted_outputs":extracted_outputs,
+        "res_json":res_json,
+        "url":url
+    }
+
+def update_step_field(task_id,index,key,value):
+    db["tasks"].update_one(
+        {'_id': ObjectId(task_id), 'steps': {'$elemMatch': { 'step':  index }}}, {'$set': {'steps.$.'+key: value}
+    })
+
+def percent(part, whole):
+    return 100-(100 * float(part)/float(whole))
+
+def process_request(job, integrationSteps,chosen_params,task_id):
+
+    outputs = {}
+
+    for step in integrationSteps['steps']:
+        update_doc = {"job_id":job['_id'],"steps":[],"update_time":datetime.now(),"integration_id":str(integrationSteps["_id"])}
+        db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
+    resultAggregator = True
+    for step in integrationSteps['steps']:
+        stepIndex = integrationSteps['steps'].index(step)
+        retriesLeft = (step['retryCount'] if step['retryCount'] >= 0 else 0)
+        retriesDelay = (step['retryDelay'] if step['retryDelay'] >= 0 else 0)
+        res = process_step(job,integrationSteps,chosen_params,step,outputs)
+
+        db["tasks"].update_one(
+            {"_id": ObjectId(task_id)}, 
+            {
+                "$set":
+                {
+                    "update_time":datetime.now()
+                },
+                "$push": {
+                    "steps": {
+                        "url": res["url"],
+                        "step":stepIndex,
+                        "outputs": res['extracted_outputs'],
+                        "result": 0,
+                        "percentDone": 0,
+                        "status":res["r"].status,
+                        "message":res["message"],
+                        "response":res["res_json"]
+                    }
+                }
+            }, 
+            upsert=True)
+
+        while((res["r"].status not in range(200, 300)) or (not res['parsingOK'])):
+            if (retriesLeft > 0) or step['retryUntil']:
+                time.sleep(retriesDelay)
+                res = process_step(job,integrationSteps,chosen_params,step,outputs)
+                retriesLeft -= 1
+                update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
+                update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
+                update_step_field(task_id,stepIndex,"percentDone",percent(retriesLeft,step['retryCount']))
+                update_step_field(task_id,stepIndex,"response",res["res_json"])
+                update_step_field(task_id,stepIndex,"message",res["message"])
+                update_step_field(task_id,stepIndex,"status",res["r"].status)
+                update_step_field(task_id,stepIndex,"outputs",res['extracted_outputs'])
+        update_step_field(task_id,stepIndex,"percentDone",100)
+        outputs.update(res["extracted_outputs"])
+        outcomeNumber = 1 if (res["r"].status not in range(200, 300)) or (not res['parsingOK']) else 2
+        resultAggregator = (resultAggregator and outcomeNumber==2)
+        update_step_field(task_id,stepIndex,"result",outcomeNumber)
+
+    db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set":{"result":
+        resultAggregator
+    }})
 
 def trigger_job_api(id,chosen_params,task_id):
     data = db["jobs"].find_one({'_id': ObjectId(id)})

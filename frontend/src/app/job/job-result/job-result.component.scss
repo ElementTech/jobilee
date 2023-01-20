@@ -1,9 +1,21 @@
-::ng-deep .mat-vertical-stepper-content { 
-    visibility: visible !important; 
-    height: 100% !important; 
+// ::ng-deep .mat-vertical-stepper-content { 
+//     visibility: visible !important; 
+//     height: 100% !important; 
+//   }
+  ::ng-deep .mat-step-label {
+    width: 100%;
   }
-  
 
+  :host ::ng-deep .p-panel-content {
+    padding: 0 !important;
+  }
+
+  ::ng-deep .failure .p-progressbar-value {
+    background: #d93728;
+  } 
+  ::ng-deep .success .p-progressbar-value {
+    background: #28ad1c;
+  } 
 :host ::ng-deep {
 
     

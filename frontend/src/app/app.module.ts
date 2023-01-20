@@ -20,6 +20,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {SelectButtonModule} from 'primeng/selectbutton';
 import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor'
 import {MatStepperModule} from '@angular/material/stepper';
+import {ProgressBarModule} from 'primeng/progressbar';
 import {
   HighlightModule,
   HIGHLIGHT_OPTIONS,
@@ -113,6 +114,7 @@ import { JobHistoryComponent } from './job/job-history/job-history.component';
     ChipModule,
     ListboxModule,
     ToastModule,
+    ProgressBarModule,
     InputNumberModule
   ],
   providers: [

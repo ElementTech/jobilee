@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { from, Observable, timer } from "rxjs";
 import { DBService } from "src/app/db.service";
 import { Job } from "src/app/job";
 import { Component, OnInit } from "@angular/core";
@@ -7,6 +7,7 @@ import Swal from 'sweetalert2'
 import { SelectItem } from 'primeng/api';
 import { JsonEditorOptions } from "@maaxgr/ang-jsoneditor";
 import { RunService } from "src/app/run.service";
+import { delay, filter, flatMap, map, mergeMap, retry, switchMap, takeLast, takeWhile } from "rxjs/operators";
 @Component({
   selector: "app-job-result",
   templateUrl: "./job-result.component.html",
@@ -21,58 +22,56 @@ export class JobResultComponent implements OnInit {
   task: any;
   task_id: any;
   integrationSteps: Observable<any>;
+  retryer: any;
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService, private runService: RunService) { 
-      this.editorOptions = new JsonEditorOptions()
-      this.editorOptions.modes = ['code', 'tree'];
-      this.editorOptions.mode = 'code';
-    }
 
+    }
+    makeOptions = () => {
+      let editorOptions = new JsonEditorOptions()
+      editorOptions.modes = ['code', 'tree'];
+      editorOptions.mode = 'code';
+      return editorOptions
+    }
+  ngOnDestroy()
+  {
+    this.retryer.unsubscribe();
+  }
   ngOnInit() {
 
     this._id = this.route.snapshot.params['_id'];
     this.task_id = this.route.snapshot.params['task'];
     this.job = this.dbService.getObject("jobs",this._id)
-    console.log(this.task_id)
-    this.dbService.getObject("tasks",this.task_id)
-      .subscribe(data => {
-        this.task = data;
-        this.integrationSteps = this.dbService.getObject("integrations",data['integration_id'])
 
-        console.log(this.task)
-      }, error => console.log(error));
+    this.retryer = timer(0, 1000).pipe(                        // <-- poll every 5 seconds
+    switchMap(() => 
+      this.dbService.getObject("tasks",this.task_id)   // <-- first emission from `timer` is 0
+    ),
+    takeWhile(                                // <-- stop polling when a condition from the response is unmet
+      (response: any) => {this.task = response;return (!('result' in response))},
+      true                                    // <-- emit the response that failed the test
+    ),
+    filter((response: any) => 
+      ('result' in response)   // <-- forward only emissions that pass the condition
+    )
+  ).subscribe();
+
   }
+  progressBarClass(value): string {
+    if (value < 70) {
+        return 'redBar';
+    }
 
+    if (value < 90) {
+        return 'yellowBar';
+    }
+
+    return 'greenBar';
+}
   list(){
     this.router.navigate(['jobs']);
   }
-  deleteJob(_id: string) {
-    
-    Swal.fire({
-      title: 'Are you sure?',
-      // text: "This will break jobs that depend on this job.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Delete'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.dbService.deleteObject("jobs",_id)
-        .subscribe(
-          data => {
-            Swal.fire(
-              'Deleted!',
-              'Job has been deleted.',
-              'success'
-            )
-            this.router.navigate(['jobs']);
-          },
-          error => console.log(error));
-      }
-    })
 
-  }
   result: any;
 
   
