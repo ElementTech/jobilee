@@ -48,7 +48,7 @@ export class JobResultComponent implements OnInit {
       this.dbService.getObject("tasks",this.task_id)   // <-- first emission from `timer` is 0
     ),
     takeWhile(                                // <-- stop polling when a condition from the response is unmet
-      (response: any) => {this.task = response;return (!('result' in response))},
+      (response: any) => {this.task = response;console.log(response);return (!('result' in response))},
       true                                    // <-- emit the response that failed the test
     ),
     filter((response: any) => 

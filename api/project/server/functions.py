@@ -110,7 +110,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs):
             url=url,
             headers=headers,
             body=json.dumps(payload).encode('utf-8'),
-            retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
+            # retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
         )
     else:
         r = http.request(
@@ -118,7 +118,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs):
             url=url,
             headers=headers,
             fields=payload if integration['type'] == 'GET' else [(itm.split('=')[0],itm.split('=')[1]) for itm in payload.split("&")],
-            retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
+            # retries=urllib3.util.Retry(total=integration['retryCount'],backoff_factor=integration['retryDelay'])
         )          
 
     parsingOK = True
@@ -177,6 +177,7 @@ def process_request(job, integrationSteps,chosen_params,task_id):
         stepIndex = integrationSteps['steps'].index(step)
         retriesLeft = (step['retryCount'] if step['retryCount'] >= 0 else 0)
         retriesDelay = (step['retryDelay'] if step['retryDelay'] >= 0 else 0)
+
         res = process_step(job,integrationSteps,chosen_params,step,outputs)
 
         db["tasks"].update_one(
@@ -200,19 +201,41 @@ def process_request(job, integrationSteps,chosen_params,task_id):
                 }
             }, 
             upsert=True)
+        # or (not res['parsingOK']))
+        while res["r"].status not in range(200, 300) and (retriesLeft > 0):
+            time.sleep(retriesDelay)
+            res = process_step(job,integrationSteps,chosen_params,step,outputs)
+            retriesLeft -= 1
+            update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
+            update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
+            update_step_field(task_id,stepIndex,"percentDone",percent(retriesLeft,step['retryCount']))
+            update_step_field(task_id,stepIndex,"response",res["res_json"])
+            update_step_field(task_id,stepIndex,"message",res["message"])
+            update_step_field(task_id,stepIndex,"status",res["r"].status)
+            update_step_field(task_id,stepIndex,"outputs",res['extracted_outputs'])
 
-        while((res["r"].status not in range(200, 300)) or (not res['parsingOK'])):
-            if (retriesLeft > 0) or step['retryUntil']:
-                time.sleep(retriesDelay)
+
+
+        if res["r"].status in range(200, 300) and step['parsing']:
+            timeOutLeft = (step['parsingTimeout'] if step['parsingTimeout'] >= 0 else 0)
+            timeOutStartTime = datetime.now()            
+            parsingDelay = (step['parsingDelay'] if step['parsingDelay'] >= 0 else 0)
+            parsingTimeout = (step['parsingTimeout'] if step['parsingTimeout'] >= 0 else 0)            
+            while (not res['parsingOK']) and (timeOutLeft > 0):
+                if res["r"].status not in range(200, 300):
+                    break
+                time.sleep(parsingDelay)
                 res = process_step(job,integrationSteps,chosen_params,step,outputs)
-                retriesLeft -= 1
+                timeOutLeft = parsingTimeout - (datetime.now()-timeOutStartTime).total_seconds()
                 update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
                 update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
-                update_step_field(task_id,stepIndex,"percentDone",percent(retriesLeft,step['retryCount']))
+                update_step_field(task_id,stepIndex,"percentDone",-1)
                 update_step_field(task_id,stepIndex,"response",res["res_json"])
                 update_step_field(task_id,stepIndex,"message",res["message"])
                 update_step_field(task_id,stepIndex,"status",res["r"].status)
-                update_step_field(task_id,stepIndex,"outputs",res['extracted_outputs'])
+                update_step_field(task_id,stepIndex,"outputs",res['extracted_outputs'])                
+
+
         update_step_field(task_id,stepIndex,"percentDone",100)
         outputs.update(res["extracted_outputs"])
         outcomeNumber = 1 if (res["r"].status not in range(200, 300)) or (not res['parsingOK']) else 2

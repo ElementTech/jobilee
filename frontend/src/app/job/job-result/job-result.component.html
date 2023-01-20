@@ -19,6 +19,7 @@
             <p-progressBar 
             [style]="{'height': '15px'}"
             [ngClass]="{'failure': step['result'] == 1, 'success': step['result'] == 2}"
+            [mode]="step['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
             [value]="step['percentDone']"></p-progressBar>
           </ng-template>
           <div class="grid">

@@ -84,6 +84,8 @@ export class IntegrationFormComponent implements OnInit {
       authentication: 'None',
       retryDelay: 5,
       retryCount: 0,
+      parsingTimeout: 300,
+      parsingDelay: 1,
       outputs: { "result": "{result}" },
       retryUntil: { "result": "Success" },
       splitMultiChoice: true,
@@ -103,7 +105,7 @@ export class IntegrationFormComponent implements OnInit {
     this.items = [
       {label: 'Trigger'},
     ];
-    if (this.integrationSteps.steps.length == 0)
+    if (this.integrationSteps.steps?.length == 0)
     {
       this.pushCopy()
     }
