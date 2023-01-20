@@ -1,7 +1,17 @@
 
-.customer-badge.status-renewal {
-    background-color: #eccfff;
-    color: #694382;
+.customer-badge.status-undefined {
+    background-color: #cfd2ff;
+    color: #434482;
+}
+
+.customer-badge.status-true {
+    background-color: #d8ffcf;
+    color: #438244;
+}
+
+.customer-badge.status-false {
+    background-color: #ffcfcf;
+    color: #824343;
 }
 .customer-badge {
     border-radius: 2px;

@@ -1,53 +1,76 @@
-<p-table #dt [value]="(tasks | async)" dataKey="id" [rowHover]="true" styleClass="p-datatable-gridlines p-datatable-sm"
-[rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" 
-[paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-[filterDelay]="0" [globalFilterFields]="['_id']">
-<ng-template pTemplate="caption">
-  <div class="table-header flex flex-wrap align-items-center justify-content-between">
-      Job Run History
-      <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Global Search" />
-      </span>
-  </div>
-</ng-template>
-  <ng-template pTemplate="header">
-      <tr>
-      <th style="width: 4rem">Result</th>
-      <th>Creation Time</th>
-        <th pSortableColumn="name" style="min-width: 14rem">
-          <div class="flex justify-content-between align-items-center">
-              Name
-              <p-sortIcon field="name"></p-sortIcon>
-              <p-columnFilter type="text" field="name" display="menu" class="ml-auto"></p-columnFilter>
+  <p-table #dt2 [value]="(tasks | async)" dataKey="_id"
+      [rowHover]="true"
+      [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" 
+      [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [globalFilterFields]="['_id']" >
+      <ng-template pTemplate="caption">
+          <div class="flex">
+              Job History
+              <span class="p-input-icon-left ml-auto">
+                  <i class="pi pi-search"></i>
+                  <input pInputText type="text" (input)="dt2.filterGlobal($event.target.value, 'contains')" placeholder="Search" />
+              </span>
           </div>
-      </th>
-      <th>Actions</th>
-      </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-task>
-      <tr class="p-selectable-row">
-        <td [ngClass]="getBackground(task)" class="text-center">
-          <span 
-          [ngClass]="getIcon(task)"></span>
-          
-        </td>
-        <td  [routerLink]="['/jobs','result',this._id,task._id]">
-          {{task.creation_time | date:'short' }}
-        </td>
-        <td  [routerLink]="['/jobs','result',this._id,task._id]">
-          {{task._id}}
-        </td>
-        
-        <td>
-          <button pButton (click)="deleteJob(task._id)" class="p-button-danger p-button-sm p-button-outlined">Delete</button>
-        </td>
-      </tr>
+      </ng-template>
+      <ng-template pTemplate="header">
+          <tr>
+              <th  pSortableColumn="result" style="width:10%">Result
+                <p-sortIcon field="result"></p-sortIcon></th>
+              <th pSortableColumn="creation_time" style="width:25%">Creation Time
+                <p-sortIcon field="creation_time"></p-sortIcon></th>
+              <th  pSortableColumn="_id" style="width:25%">ID
+                <p-sortIcon field="_id"></p-sortIcon></th>
+              <th style="width:25%">Actions</th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter field="task.result" matchMode="equals" [showMenu]="false">
+                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown  appendTo="body" [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Result" [showClear]="true">
+                          <ng-template let-option pTemplate="item">
+                              <span [class]="'customer-badge status-' + option.value">{{option.label}}</span>
+                          </ng-template>
+                      </p-dropdown>
+                  </ng-template>
+              </p-columnFilter>
+            </th>
+            <th  appendTo="body">
+               <p-columnFilter   type="date" field="creation_time"></p-columnFilter>
+            </th>
+              <th>
+                  <p-columnFilter type="text" field="_id"></p-columnFilter>
+              </th>
+   
+              <th>
+                <p-columnFilter type="text" field="actions"></p-columnFilter>
+              </th>
 
-  </ng-template>
-  <ng-template pTemplate="emptymessage">
-    <tr>
-        <td colspan="8">No runs found.</td>
-    </tr>
-</ng-template>
-</p-table>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-task>
+
+        <tr class="p-selectable-row" >
+          <td [ngClass]="getBackground(task)" class="text-center"  [routerLink]="['/jobs','result',this._id,task._id]">
+            <span 
+            [ngClass]="getIcon(task)"></span>
+          </td>
+          <td  [routerLink]="['/jobs','result',this._id,task._id]">
+            {{task.creation_time | date:'short' }}
+          </td>
+          <td  [routerLink]="['/jobs','result',this._id,task._id]">
+            {{task._id}}
+          </td>
+          
+          <td>
+            <button pButton (click)="deleteJob(task._id)" class="p-button-danger p-button-sm p-button-outlined">Delete</button>
+          </td>
+        </tr>
+
+
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">No runs found.</td>
+          </tr>
+      </ng-template>
+  </p-table>

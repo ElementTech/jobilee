@@ -15,6 +15,11 @@ export class JobHistoryComponent implements OnInit {
   loading: boolean = true;
   _id: any;
   tasks: Observable<any>;
+  statuses = [
+    {label: 'In Progress', value: undefined},
+    {label: 'Success', value: true},
+    {label: 'Failure', value: false},
+  ]
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService) { 
 
@@ -57,6 +62,8 @@ export class JobHistoryComponent implements OnInit {
       console.log(data)
     })
   }
+
+
   deleteJob(_id: string) {
     Swal.fire({
       title: 'Are you sure?',

@@ -1,8 +1,12 @@
 
 <p-toolbar >
     <div class="p-toolbar-group-start text-white">
-      <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-secondary"></p-button>
-      <p-dialog [maximizable]="true" header="Parameters" position="top-right"  [(visible)]="display">
+      <span class="p-buttonset ">
+        <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-secondary" label="History"></p-button>
+        <p-button type="button" (click)="this.display = !this.display" icon="pi pi-info-circle" label="Parameters"></p-button>
+
+      </span>
+      <p-dialog [maximizable]="true" header="Parameters" position="bottom-right"  [(visible)]="display">
         <p-table [value]="task?.chosen_params |keyvalue" >
           <ng-template pTemplate="header">
               <tr>
@@ -20,7 +24,6 @@
       
       </p-dialog>
     
-      <p-button type="button" (click)="this.display = true" icon="pi pi-info-circle" label="Parameters"></p-button>
     </div>
     
     <div class="p-toolbar-group-start">
