@@ -2,7 +2,25 @@
 <p-toolbar >
     <div class="p-toolbar-group-start text-white">
       <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-secondary"></p-button>
-
+      <p-dialog [maximizable]="true" header="Parameters" position="top-right"  [(visible)]="display">
+        <p-table [value]="task?.chosen_params |keyvalue" >
+          <ng-template pTemplate="header">
+              <tr>
+                  <th>Key</th>
+                  <th>Value</th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-param>
+              <tr>
+                  <td>{{param.key}}</td>
+                  <td>{{param.value}}</td>
+              </tr>
+          </ng-template>
+      </p-table>
+      
+      </p-dialog>
+    
+      <p-button type="button" (click)="this.display = true" icon="pi pi-info-circle" label="Parameters"></p-button>
     </div>
     
     <div class="p-toolbar-group-start">
@@ -18,12 +36,14 @@
       
         <mat-step *ngFor="let step of (task)?.steps" label="test">
           <ng-template matStepLabel>
-            {{step['timeOutLeft'] > 0 ? step['timeOutLeft'] : ''}}
+           
+            {{step['url']}}
             <p-progressBar 
             [style]="{'height': '15px'}"
             [ngClass]="{'error': step['result'] == 1, 'success': step['result'] == 2, 'failure': step['result'] == 3}"
             [mode]="step['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
             [value]="step['percentDone']"></p-progressBar>
+            {{step['timeOutLeft'] > 0 ? step['timeOutLeft'] : ''}}
           </ng-template>
           <div class="grid">
             

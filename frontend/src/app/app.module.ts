@@ -58,6 +58,8 @@ import {ListboxModule} from 'primeng/listbox';
 import {InputNumberModule} from 'primeng/inputnumber';
 import { JobResultComponent } from './job/job-result/job-result.component';
 import { JobHistoryComponent } from './job/job-history/job-history.component';
+import {DialogModule} from 'primeng/dialog';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -112,6 +114,7 @@ import { JobHistoryComponent } from './job/job-history/job-history.component';
     MatButtonModule,
     TagModule,
     ChipModule,
+    DialogModule,
     ListboxModule,
     ToastModule,
     ProgressBarModule,

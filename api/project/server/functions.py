@@ -194,6 +194,15 @@ def update_step_field(task_id,index,key,value):
         {'_id': ObjectId(task_id), 'steps': {'$elemMatch': { 'step':  index }}}, {'$set': {'steps.$.'+key: value}
     })
 
+# def update_time(task_id):
+#     db["tasks"].update_one(
+#     {'_id': ObjectId(task_id), "$set":
+#         {
+#             "update_time":datetime.now()
+#         }
+#     })
+
+
 def percent(part, whole):
     return 100-(100 * float(part)/float(whole))
 
@@ -201,9 +210,8 @@ def process_request(job, integrationSteps,chosen_params,task_id):
 
     outputs = {}
 
-    for step in integrationSteps['steps']:
-        update_doc = {"job_id":job['_id'],"steps":[],"update_time":datetime.now(),"integration_id":str(integrationSteps["_id"])}
-        db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
+    update_doc = {"job_id":job['_id'],"steps":[],"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
+    db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
     resultAggregator = True
     for step in integrationSteps['steps']:
         stepIndex = integrationSteps['steps'].index(step)
@@ -216,7 +224,7 @@ def process_request(job, integrationSteps,chosen_params,task_id):
             {
                 "$set":
                 {
-                    "update_time":datetime.now()
+                    "update_time":datetime.now().isoformat()
                 },
                 "$push": {
                     "steps": {

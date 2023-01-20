@@ -14,6 +14,7 @@ import { delay, filter, flatMap, map, mergeMap, retry, switchMap, takeLast, take
   styleUrls: ["./job-result.component.scss"]
 })
 export class JobResultComponent implements OnInit {
+  display: boolean = true;
 
   _id: string;
   job: Observable<any>;

@@ -4,6 +4,7 @@ from flask import request, jsonify
 from bson.objectid import ObjectId
 from flask_cors import CORS
 from pymongo import MongoClient
+import pymongo
 import yaml
 # Import Libraries 
 from app import app
@@ -52,7 +53,7 @@ def onedata(collection,id=None,key=None,value=None):
             )
             return jsonify({'status': 'Data id: ' + id + ' is updated!'})
     else:
-        allData = db[collection].find({key:value})
+        allData = db[collection].find({key:value}).sort('date', -1)
         dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
         return jsonify(parse_json(dataJson))
 
