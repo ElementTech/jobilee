@@ -16,7 +16,6 @@ export class JobHistoryComponent implements OnInit {
   _id: any;
   tasks: Observable<any>;
   statuses = [
-    {label: 'In Progress', value: undefined},
     {label: 'Success', value: true},
     {label: 'Failure', value: false},
   ]

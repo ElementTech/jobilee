@@ -51,34 +51,40 @@ def prepare_params(job_params, chosen_params, splitMultiChoice):
     
     return chosen_params
 
-def replace_template(template, key_value_pairs):
+def replace_template(parameter, key_value_pairs):
     param_list = []
     for k, v in key_value_pairs.items():
         if isinstance(v, list):
             for p in v:
-                param_list.append(json.loads(json.dumps(template).replace(f"{{key}}",k).replace(f"{{value}}",p)))
+                param_list.append(json.loads(json.dumps(parameter).replace(f"{{key}}",k).replace(f"{{value}}",p)))
+        elif isinstance(v, dict):
+            for key, value in v.items():
+                param_list.extend(replace_template(parameter, {key: value}))
         else:
-            param_list.append(json.loads(json.dumps(template).replace(f"{{key}}",k).replace(f"{{value}}",v)))
+            param_list.append(json.loads(json.dumps(parameter).replace(f"{{key}}",k).replace(f"{{value}}",v)))
 
     return param_list
 
-def replace_parameters(template, parameter_holder, key_value_pairs):
-    if isinstance(parameter_holder, list):
-        if parameter_holder.count('{parameter}') > 0:
-            new_parameters = replace_template(template, key_value_pairs)
-            parameter_holder.remove('{parameter}')
-            parameter_holder.extend(new_parameters)
+def replace_parameters(parameter, payload, chosen_params):
+    if isinstance(payload, list):
+        if payload.count('{parameter}') > 0:
+            new_parameters = replace_template(parameter, chosen_params)
+            payload.remove('{parameter}')
+            payload.extend(new_parameters)
         else:
-            for i in parameter_holder:
-                replace_parameters(template, i, key_value_pairs)
-    elif isinstance(parameter_holder, dict):
-        for k, v in parameter_holder.items():
-            replace_parameters(template, v, key_value_pairs)
-    elif isinstance(parameter_holder, str):
-        if parameter_holder == f'{{parameter}}':
-            new_parameters = replace_template(template, key_value_pairs)
-            parameter_holder = new_parameters
-    return parameter_holder
+            for i in payload:
+                replace_parameters(parameter, i, chosen_params)
+    elif isinstance(payload, dict):
+        for k, v in payload.items():
+            if v == '{parameter}':
+                payload[k] = {k:v for list_item in replace_template(parameter, chosen_params) for (k,v) in list_item.items()}
+            else:
+                replace_parameters(parameter, v, chosen_params)
+    elif isinstance(payload, str):
+        if payload == f'{{parameter}}':
+            new_parameters = replace_template(parameter, chosen_params)
+            payload = new_parameters
+    return payload
 
 def querify(chosen_params,splitMultiChoice):
     return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'') 
@@ -98,15 +104,18 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     headers = {d['key']: d['value'] for d in integration['headers']} 
 
     if integration["type"] == "post" and integration['mode'] == 'payload':
-        payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replace_parameters(integration['parameter'],integration['payload'],chosen_params)])
-    
+        replacedPayload = replace_parameters(integration['parameter'],integration['payload'],chosen_params)
+        try:
+            payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replacedPayload])
+        except:
+            payload = replacedPayload
     http = urllib3.PoolManager(
         cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
     )
     if integration['authentication'] == "Basic":
         headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
     if integration['authentication'] == "Bearer":
-        headers = headers + {'Authorization': 'Bearer ' + integration['authenticationData'][0]['value']}
+        headers.update({'Authorization': 'Bearer {token}'.format(token=integration['authenticationData'][0]['value'])})
 
 
     update_step_field(task_id,stepIndex,"url",url)

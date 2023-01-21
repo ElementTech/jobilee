@@ -53,7 +53,7 @@ def onedata(collection,id=None,key=None,value=None):
             )
             return jsonify({'status': 'Data id: ' + id + ' is updated!'})
     else:
-        allData = db[collection].find({key:value}).sort('date', -1)
+        allData = db[collection].find({key:value}).sort('creation_time', -1)
         dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
         return jsonify(parse_json(dataJson))
 

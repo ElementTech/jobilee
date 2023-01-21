@@ -3,6 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DBService } from 'src/app/db.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { JsonEditorOptions } from '@maaxgr/ang-jsoneditor';
 
 @Component({
   selector: 'app-integration-details',
@@ -19,9 +20,16 @@ export class IntegrationDetailsComponent implements OnInit {
   ngOnInit() {
 
     this._id = this.route.snapshot.params['_id'];
-    this.integration = this.dbService.getObject("integrations",this._id)
+    this.dbService.getObject("integrations",this._id).subscribe(data=>{
+      this.integration = data
+    })
   }
-
+  makeOptions = () => {
+    let editorOptions = new JsonEditorOptions()
+    editorOptions.modes = ['code', 'tree'];
+    editorOptions.mode = 'code';
+    return editorOptions
+  }
   list(){
     this.router.navigate(['integrations']);
   }

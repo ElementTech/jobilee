@@ -2,7 +2,7 @@
       [rowHover]="true"
       [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" 
       [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      [globalFilterFields]="['_id']" >
+      [globalFilterFields]="['_id','result']" >
       <ng-template pTemplate="caption">
           <div class="flex">
               Job History
@@ -24,7 +24,7 @@
           </tr>
           <tr>
             <th>
-              <p-columnFilter field="task.result" matchMode="equals" [showMenu]="false">
+              <p-columnFilter field="result" matchMode="equals" [showMenu]="false">
                   <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                       <p-dropdown  appendTo="body" [ngModel]="value" [options]="statuses" (onChange)="filter($event.value)" placeholder="Result" [showClear]="true">
                           <ng-template let-option pTemplate="item">
