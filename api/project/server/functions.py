@@ -146,11 +146,14 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     if r:
         if r.status not in range(200, 300):
             error = "Failure"
-
+    print(r.data)
     message = error if error else message
     parsingOK = True
     parsingCondition = True
-    res_json = r.data if r else {}
+    try:
+        res_json = json.loads(r.data) if r else {}
+    except:
+        res_json = r.data if r else {}
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
