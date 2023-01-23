@@ -8,10 +8,19 @@ import { SelectItem } from 'primeng/api';
 import { JsonEditorOptions } from "@maaxgr/ang-jsoneditor";
 import { RunService } from "src/app/run.service";
 import { delay, filter, flatMap, map, mergeMap, retry, switchMap, takeLast, takeWhile } from "rxjs/operators";
+import {PrimeIcons} from 'primeng/api';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+import { MatStepper } from "@angular/material/stepper";
 @Component({
   selector: "app-job-result",
   templateUrl: "./job-result.component.html",
-  styleUrls: ["./job-result.component.scss"]
+  styleUrls: ["./job-result.component.scss"],
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: {displayDefaultIndicatorType: false,showError: false},
+    },
+  ]
 })
 export class JobResultComponent implements OnInit {
   display: boolean = true;
@@ -24,6 +33,8 @@ export class JobResultComponent implements OnInit {
   task_id: any;
   integrationSteps: Observable<any>;
   retryer: any;
+  stepper: MatStepper;
+  events1: any[];
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService, private runService: RunService) { 
 
@@ -38,8 +49,37 @@ export class JobResultComponent implements OnInit {
   {
     this.retryer.unsubscribe();
   }
-  ngOnInit() {
+  shouldIIcon(index)
+  {
+    return !(this.task?.steps[index].result == 0)
+  }  
+  shouldISpin(index)
+  {
+    return (this.task?.steps[index].result == 0)
+  }    
+  getIcon(index)
+  {
+    switch (this.task?.steps[index].result) {
+      case 0:
+        return "pi-spinner"
+      case 1:
+        return "pi-times"
+      case 2:
+        return "pi-check"
+      case 3:
+        return "pi-times-circle"
+      default:
+        break;
+    }
 
+  }
+  ngOnInit() {
+    this.events1 = [
+      {status: 'Ordered', date: '15/10/2020 10:30', icon: PrimeIcons.SHOPPING_CART, color: '#9C27B0', image: 'game-controller.jpg'},
+      {status: 'Processing', date: '15/10/2020 14:00', icon: PrimeIcons.COG, color: '#673AB7'},
+      {status: 'Shipped', date: '15/10/2020 16:15', icon: PrimeIcons.ENVELOPE, color: '#FF9800'},
+      {status: 'Delivered', date: '16/10/2020 10:00', icon: PrimeIcons.CHECK, color: '#607D8B'}
+    ];
     this._id = this.route.snapshot.params['_id'];
     this.task_id = this.route.snapshot.params['task'];
     this.job = this.dbService.getObject("jobs",this._id)

@@ -21,6 +21,7 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor'
 import {MatStepperModule} from '@angular/material/stepper';
 import {ProgressBarModule} from 'primeng/progressbar';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {
   HighlightModule,
   HIGHLIGHT_OPTIONS,
@@ -60,6 +61,8 @@ import { JobResultComponent } from './job/job-result/job-result.component';
 import { JobHistoryComponent } from './job/job-history/job-history.component';
 import {DialogModule} from 'primeng/dialog';
 
+import {TimelineModule} from 'primeng/timeline';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -95,6 +98,7 @@ import {DialogModule} from 'primeng/dialog';
     StepsModule,
     FieldsetModule,
     BreadcrumbModule,
+    ProgressSpinnerModule,
     RadioButtonModule,
     SelectButtonModule,
     AngJsoneditorModule,
@@ -108,6 +112,7 @@ import {DialogModule} from 'primeng/dialog';
     MultiSelectModule,
     DataViewModule,
     ToolbarModule,
+    TimelineModule,
     PanelModule,
     CheckboxModule,
     MatStepperModule,

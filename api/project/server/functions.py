@@ -10,6 +10,8 @@ import urllib3.exceptions
 import time
 from celery import Celery, current_task
 from datetime import datetime
+import codecs
+
 
 class FakeDict(dict):
     def __init__(self, items):
@@ -20,7 +22,7 @@ class FakeDict(dict):
         return self._items
 
 db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
-
+reader = codecs.getreader("utf-8")
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
@@ -146,19 +148,16 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     if r:
         if r.status not in range(200, 300):
             error = "Failure"
-    print(r.data)
+
     message = error if error else message
     parsingOK = True
     parsingCondition = True
-    try:
-        res_json = json.loads(r.data) if r else {}
-    except:
-        res_json = r.data if r else {}
+    res_json = r.json() if r else {}
+
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
             try:
-                res_json = json.loads(r.data)
                 extract_placeholder_values(integration['outputs'], res_json, extracted_outputs)
                 if bool(integration.get('retryUntil')):
                     for k, v in integration['retryUntil'].items():

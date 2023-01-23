@@ -37,25 +37,28 @@
 <div class="">
     <mat-stepper orientation="vertical"  #stepper>
       
-        <mat-step *ngFor="let step of (task)?.steps" label="test">
+        <mat-step *ngFor="let step of (task)?.steps"  state="{{step['result']}}">
+          <!-- [ngClass]="{'error': step['result'] == 1, 'success': step['result'] == 2, 'failure': step['result'] == 3}" -->
           <ng-template matStepLabel>
-           
+            <ng-container *ngIf="step['result'] == 0">
+              {{step['timeOutLeft'] > 0 ? step['timeOutLeft']+"s - " : ''}}
+            </ng-container>
             {{step['url']}}
-            <p-progressBar 
-            [style]="{'height': '15px'}"
-            [ngClass]="{'error': step['result'] == 1, 'success': step['result'] == 2, 'failure': step['result'] == 3}"
-            [mode]="step['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
-            [value]="step['percentDone']"></p-progressBar>
-            {{step['timeOutLeft'] > 0 ? step['timeOutLeft'] : ''}}
-          </ng-template>
-          <div class="grid">
             
-            <div class="col">
-              <json-editor [options]="makeOptions()"   [name]="step['step']" [(ngModel)]="step['response']" [ngModelOptions]=" 
-              {standalone: true}"></json-editor>
+           
+          </ng-template>
+
+          <div class="grid">
+            <div class="col-12">
+              <p-progressBar 
+              [style]="{'height': '12px'}"
+           
+              [mode]="step['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
+              [value]="step['percentDone']"></p-progressBar>
             </div>
             <div class="col">
-              <p-panel header="Outputs">
+                <ng-container  *ngIf="(step.outputs | json) != '{}'">
+                  <p-panel header="Outputs">
 
                     <p-table [value]="step.outputs | keyvalue">
                       <ng-template pTemplate="header">
@@ -70,13 +73,41 @@
                               <td>{{o.value}}</td>
                           </tr>
                       </ng-template>
-                   </p-table>
+                  </p-table>
+                </p-panel>
+                </ng-container>
+              
+              <json-editor [options]="makeOptions()"   [name]="step['step']" [(ngModel)]="step['response']" [ngModelOptions]=" 
+              {standalone: true}"></json-editor>
 
-                
-              </p-panel>
+
             </div>
           </div>
 
         </mat-step>
+
+
+  <ng-template matStepperIcon="edit" let-index="index"> 
+    <p-progressSpinner *ngIf="shouldISpin(index)" [style]="{width: '35px', height: '35px'}" styleClass="custom-spinner" strokeWidth="3" fill="var(--surface-ground)" animationDuration="1s"></p-progressSpinner>
+    <span class="pi" *ngIf="shouldIIcon(index)"  [ngClass]="getIcon(index)"></span></ng-template>
+  <ng-template matStepperIcon="done" let-index="index"> 
+    <p-progressSpinner *ngIf="shouldISpin(index)"  [style]="{width: '35px', height: '35px'}" styleClass="custom-spinner" strokeWidth="3" fill="var(--surface-ground)" animationDuration="1s"></p-progressSpinner>
+    <span *ngIf="shouldIIcon(index)"  class="pi" [ngClass]="getIcon(index)"></span></ng-template>
+
+  <ng-template matStepperIcon="1">
+   <span class="pi pi-times"></span>
+  </ng-template>
+  <ng-template matStepperIcon="0">
+    <!-- <span class="pi pi-spinner"></span> -->
+    <p-progressSpinner [style]="{width: '35px', height: '35px'}" styleClass="custom-spinner" strokeWidth="3" fill="var(--surface-ground)" animationDuration="1s"></p-progressSpinner>
+
+   </ng-template>    
+  <ng-template matStepperIcon="2">
+    <span class="pi pi-check"></span>
+  </ng-template>
+  <ng-template matStepperIcon="3">
+    <span class="pi pi-times-circle"></span>
+  
+   </ng-template>  
       </mat-stepper>
 </div>

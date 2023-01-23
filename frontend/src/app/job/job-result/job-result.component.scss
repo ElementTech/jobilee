@@ -1,7 +1,82 @@
-// ::ng-deep .mat-vertical-stepper-content { 
-//     visibility: visible !important; 
-//     height: 100% !important; 
-//   }
+.custom-marker {
+    display: flex;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+::ng-deep {
+    .p-timeline-event-content,
+    .p-timeline-event-opposite {
+        line-height: 1;
+    }
+}
+::ng-deep {
+    .customized-timeline {
+        .p-timeline-event:nth-child(even) {
+            flex-direction: row !important;
+            
+            .p-timeline-event-content {
+                text-align: left !important;
+            }
+        }
+
+        .p-timeline-event-opposite {
+            flex: 0;
+        }
+
+        .p-card {
+            margin-top: 1rem;
+        }
+    }
+}
+
+
+:host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+    animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 6s ease-in-out infinite;
+    stroke: blue!important
+}
+@keyframes custom-progress-spinner-dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -35px;
+    }
+    100% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -124px;
+    }
+}
+::ng-deep .mat-step-icon-state-done:has(*.pi-check)  , ::ng-deep .mat-step-icon-state-edit:has(*.pi-check) {
+    background-color: green
+}
+::ng-deep .mat-step-icon-state-done:has(*.pi-times)  , ::ng-deep .mat-step-icon-state-edit:has(*.pi-times) {
+    background-color: red;
+}
+::ng-deep .mat-step-icon-state-done:has(*.pi-times-circle)  , ::ng-deep .mat-step-icon-state-edit:has(*.pi-times-circle) {
+    background-color: yellow; 
+    color: black;
+}
+::ng-deep .mat-step-header .mat-step-icon-state-1 {
+    background-color: red; 
+ }
+ ::ng-deep .mat-step-header .mat-step-icon-state-2 {
+    background-color: green; 
+ } 
+ ::ng-deep .mat-step-header .mat-step-icon-state-3 {
+    background-color: yellow; 
+    color: black;
+ } 
+
+
+
   ::ng-deep .mat-step-label {
     width: 100%;
   }
@@ -10,13 +85,13 @@
     padding: 0 !important;
   }
 
-  ::ng-deep .error .p-progressbar-value {
+  ::ng-deep .error .p-progressbar-value, .error {
     background: #d93728;
   } 
-  ::ng-deep .success .p-progressbar-value {
+  ::ng-deep .success .p-progressbar-value, .success {
     background: #28ad1c;
   } 
-  ::ng-deep .failure .p-progressbar-value {
+  ::ng-deep .failure .p-progressbar-value, .failure {
     background: #f1f108;
     .p-progressbar-label{
             color:black
