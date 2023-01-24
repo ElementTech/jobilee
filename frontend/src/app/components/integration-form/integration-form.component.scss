@@ -5,10 +5,15 @@
 :host ::ng-deep json-editor.api jsoneditor-outer {
   height: 400px;
 }
-
+:host ::ng-deep .p-inputnumber{
+  height: 30px;
+}
 
 
 :host ::ng-deep .p-panel-content {
   padding: 0 !important;
 }
-
+.up {
+  display: flex;
+  flex: 0 0 auto;
+}

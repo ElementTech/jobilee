@@ -101,6 +101,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     error = ""
     r = {}
     chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
+    outputs.update(chosen_params)
     url = integrationSteps["url"]+(replace_placeholders(integration['definition'].replace(f'{{job}}',job['apiID']),outputs))
     payload=querify(chosen_params,integration['splitMultiChoice'])
     headers = {d['key']: d['value'] for d in integration['headers']} 
@@ -152,12 +153,15 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     message = error if error else message
     parsingOK = True
     parsingCondition = True
-    res_json = r.json() if r else {}
-
+    try:
+        res_json = json.loads(r.data) if r else {}
+    except:
+        res_json = r.data if r else {}
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
             try:
+                res_json = json.loads(r.data)
                 extract_placeholder_values(integration['outputs'], res_json, extracted_outputs)
                 if bool(integration.get('retryUntil')):
                     for k, v in integration['retryUntil'].items():

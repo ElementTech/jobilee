@@ -10,7 +10,7 @@ import { MatStepper } from '@angular/material/stepper';
 @Component({
   selector: 'app-integration-form',
   templateUrl: './integration-form.component.html',
-  styleUrls: ['./integration-form.component.css']
+  styleUrls: ['./integration-form.component.scss']
 })
 export class IntegrationFormComponent implements OnInit {
 
@@ -67,6 +67,10 @@ export class IntegrationFormComponent implements OnInit {
       name: "{parameter}",
       description: "Defines a Parameter Object. This will be inserted inside the main payload into an array. If payload is only equal to the string \"{parameter}\", the parameters will be merged into a single key=value object."
     },
+    // {
+    //   name: "{random:NUMBER}",
+    //   description: "Generate a random alphanumeric string if needed. NUMBER is the length of that string. Eg: {random:10}."
+    // },
     { 
       name: "{key}",
       description: "Parameter keys"
@@ -76,6 +80,13 @@ export class IntegrationFormComponent implements OnInit {
       description: "Parameter values"
     }
   ]
+  makeVariables(step){
+    let out = this.integrationSteps.steps.slice(0,step).map(data=>(this.extractCurlyStrings(data.outputs)))
+    let newOut = out.reduce((acc, val) => acc.concat(val), []).map(data=>{return {"name":"{"+data+"}",description:""}});
+    return this.options.concat(
+      newOut
+    )
+  }
   pushCopy(){
     this.integrationSteps.steps.push({
       type: 'post',
@@ -86,9 +97,9 @@ export class IntegrationFormComponent implements OnInit {
       retryCount: 0,
       parsingTimeout: 300,
       parsingDelay: 1,
-      outputs: { "result": "{result}" },
-      retryUntil: { "result": "SUCCESS" },
-      failWhen: { "result": "FAILURE" },
+      outputs: {},//{ "result": "{result}" },
+      retryUntil: {},//{ "result": "SUCCESS" },
+      failWhen: {},//{ "result": "FAILURE" },
       splitMultiChoice: true,
       authenticationData: [],
       headers: [{ "key": "Content-Type", "value": "application/json" }],
