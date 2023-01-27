@@ -11,7 +11,9 @@ export class CreateIntegrationComponent {
   integration: Integration = {
     name: "",
     url: "",
-    steps: []
+    steps: [],
+    authentication: "None",
+    authenticationData: []
   };
   
 }

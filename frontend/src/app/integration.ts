@@ -3,6 +3,8 @@ export class Integration {
     name?: string;
     url?: string;
     steps: Step[];
+    authentication?: string;
+    authenticationData?: Array<Object>;    
 }
 
 export class Step {
@@ -18,6 +20,7 @@ export class Step {
     failWhen?: Object;
     mode?: string;
     authentication?: string;
+    overrideAuthentication?: boolean;
     headers?: Array<Object>;
     authenticationData?: Array<Object>;
     type?: string;

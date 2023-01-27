@@ -7,9 +7,7 @@
         <div class="col-6">
           <h5>Name</h5>
           <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="integrationSteps.name" name="name" placeholder="myapi">
-        </div>
     
-        <div class="col-6">
           <h5>URL</h5>
           
           <!-- <p-table [value]="optionsURL" styleClass="p-datatable-sm">
@@ -28,6 +26,20 @@
         </p-table> -->
           <input pInputText  class="min-w-full"  type="text" id="url" required [(ngModel)]="integrationSteps.url" name="url" placeholder="https://api.com">
         </div>
+        <div class="col-6">
+          <p-fieldset legend="Authentication" [toggleable]="false">
+            
+            <p-selectButton name="authentication" [options]="authenticationOptions" (onChange)="setGeneralAuthData($event)" [(ngModel)]="integrationSteps.authentication"></p-selectButton>
+            <div class="p-inputgroup pt-2"  *ngFor="let auth of integrationSteps.authenticationData; let i = index">
+                <div class="p-inputgroup">
+                  <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
+                  <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'" id="authValue{{i}}" name="authValue{{i}}">
+              </div>
+            </div>
+          </p-fieldset>
+ 
+        </div>
+
         </div>
         <hr>
         <p-panel>
@@ -194,13 +206,22 @@
                               
                                     </p-tabPanel>
                                     <p-tabPanel header="Authentication">
-                                       <p-selectButton name="{{step}}authentication"[options]="authenticationOptions" (onChange)="setAuthData($event,step)" [(ngModel)]="integration.authentication"></p-selectButton>
+                                      <ng-template pTemplate="header" >
+                                        <p-checkbox [(ngModel)]="integration.overrideAuthentication" [binary]="true" name="{{step}}overrideAuthentication" id="{{step}}overrideAuthentication" ></p-checkbox> &nbsp;
+                                        Authentication Override
+                                        &nbsp;
+                                        <span  pTooltip="Use a different Authentication for this step" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                      </ng-template>
+                                      <div *ngIf="integration.overrideAuthentication">
+                                        <p-selectButton name="{{step}}authentication" [options]="authenticationOptions" (onChange)="setAuthData($event,step)" [(ngModel)]="integration.authentication"></p-selectButton>
                                         <div class="p-inputgroup pt-2"  *ngFor="let auth of integration.authenticationData; let i = index">
                                             <div class="p-inputgroup">
                                               <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
                                               <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'" id="{{step}}authValue{{i}}" name="{{step}}authValue{{i}}">
                                           </div>
                                         </div>
+                                      </div>
+                      
                                     </p-tabPanel>
                                 </p-tabView>
                               </div>

@@ -115,14 +115,15 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     http = urllib3.PoolManager(
         cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
     )
-    if integration['authentication'] == "Basic":
-        headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=integration['authenticationData'][0]['value'],value=integration['authenticationData'][1]['value'])))
-    if integration['authentication'] == "Bearer":
-        headers.update({'Authorization': 'Bearer {token}'.format(token=integration['authenticationData'][0]['value'])})
 
+    authData = integration['authenticationData'] if integration['overrideAuthentication'] else integrationSteps['authenticationData']
+    authType = integration['authentication'] if integration['overrideAuthentication'] else integrationSteps['authentication']
+    if authType == "Basic":
+        headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=authData[0]['value'],value=authData[1]['value'])))
+    if authType == "Bearer":
+        headers.update({'Authorization': 'Bearer {token}'.format(token=authData[0]['value'])})
 
     update_step_field(task_id,stepIndex,"url",url)
-
 
     try:
         if integration["type"] == "post" and integration['mode'] == 'payload':

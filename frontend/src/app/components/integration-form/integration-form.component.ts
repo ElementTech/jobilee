@@ -102,6 +102,7 @@ export class IntegrationFormComponent implements OnInit {
       failWhen: {},//{ "result": "FAILURE" },
       splitMultiChoice: true,
       authenticationData: [],
+      overrideAuthentication: false,
       headers: [{ "key": "Content-Type", "value": "application/json" }],
       payload: { "parameter": ['{parameter}'] },
       ignoreSSL: false,
@@ -120,6 +121,20 @@ export class IntegrationFormComponent implements OnInit {
     if (this.integrationSteps.steps?.length == 0)
     {
       this.pushCopy()
+    }
+  }
+  setGeneralAuthData(event){
+    if (event.value == "None")
+    {
+      this.integrationSteps.authenticationData = []
+    }
+    if (event.value == "Basic")
+    {
+      this.integrationSteps.authenticationData = [{"key":"Username", "value": ""},{"key":"Password", "value": ""}]
+    }
+    if (event.value == "Bearer")
+    {
+      this.integrationSteps.authenticationData = [{"key":"Token", "value": ""}]
     }
   }
   setAuthData(event,step){
