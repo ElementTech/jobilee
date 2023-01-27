@@ -50,7 +50,8 @@
                       [defaultLabel]="param.default" 
                       [ngModelOptions]="{standalone: true}" 
                       [(ngModel)]="param.default" 
-                      [options]="getOptions(param) | async"
+                      [dropdownIcon]="dynamicResults[param.name].length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
+                      [options]="dynamicResults[param.name]"
                       >
                       <!-- [dropdownIcon]="'pi pi-spin pi-spinner'" -->
                     

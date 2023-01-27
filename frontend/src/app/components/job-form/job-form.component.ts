@@ -31,12 +31,55 @@ export class JobFormComponent implements OnInit {
       this.editorOptions.mode = 'code';
     }
 
-  ngOnInit() {
+  async ngOnInit() {
     for (const param of this.job?.parameters)
     {
       if (param.type == "dynamic")
       {
         this.dynamicResults[param.name] = []
+        const prom = new Promise<Array<any>>(async (resolve) => {
+            try {
+                const result = await this.runService.runJob(param.job['id'], param.job['parameters']).toPromise();
+                let response;
+                while (!response || !('result' in response)) {
+                    response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+                    if (!('result' in response)) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
+                let options: any = []
+                if (response['result']){
+                    for (const item of param.job['from']) {
+                      console.log(item)
+                      for (const stepResult of response['steps'])
+                      {
+                        console.log(stepResult)
+                        if (stepResult['step'] == item['step']) {
+                            for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
+                            {
+                              console.log(stepKey, stepValue)
+                              if (item['outputs'].includes(stepKey))
+                              {
+                                options.push(stepValue)
+                              }
+                            }
+                        }
+                      }
+                    }
+                }
+                console.log("options",options)
+                if (options.length == 0) {
+                  resolve(param['default'].split(","))
+                }
+                resolve(options)
+            } catch (error) {
+                console.log(JSON.stringify(error.message));
+                resolve(param['default'].split(","))
+            }
+        });
+        prom.then(data=>{
+          this.dynamicResults[param.name] = data
+        })
       }
     }
     this.dbService.getObjectList("integrations").subscribe(data=>{
@@ -52,60 +95,6 @@ export class JobFormComponent implements OnInit {
   }
   getPrefix(integrationName) {
     return getStringBeforeSubstring(this.integrations?.find(item => item.name === integrationName)?.steps[0].definition,"{job}")
-  }
-
-  alreadyTriggered = {}
-  // this.retryer.unsubscribe();
-  async getOptions(paramDefinition) {
-    const jobDefinition = paramDefinition['job']
-
-    const prom = new Promise<Array<any>>(async (resolve) => {
-      if (!(jobDefinition['id'] in this.alreadyTriggered)) {
-        this.alreadyTriggered[jobDefinition['id']] = true;
-        try {
-            const result = await this.runService.runJob(jobDefinition['id'], jobDefinition['parameters']).toPromise();
-            let response;
-            while (!response || !('result' in response)) {
-                response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
-                if (!('result' in response)) {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-            }
-            let options: any = []
-            if (response['result']){
-                for (const item of jobDefinition['from']) {
-                  console.log(item)
-                  for (const stepResult of response['steps'])
-                  {
-                    console.log(stepResult)
-                    if (stepResult['step'] == item['step']) {
-                        for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
-                        {
-                          console.log(stepKey, stepValue)
-                          if (item['outputs'].includes(stepKey))
-                          {
-                            options.push(stepValue)
-                          }
-                        }
-                    }
-                  }
-                }
-            }
-            if (options.length == 0) {
-              resolve(jobDefinition['default'].split(","))
-            }
-            resolve(options)
-        } catch (error) {
-            console.log(JSON.stringify(error.message));
-            resolve(jobDefinition['default'].split(","))
-        }
-    }
-    });
-    prom.then(data=>{
-      console.log(data)
-      return data
-    })
-    return prom
   }
 
 

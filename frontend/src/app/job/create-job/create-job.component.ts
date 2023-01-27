@@ -31,13 +31,13 @@ export class CreateJobComponent {
         "type": "dynamic",
         "default": "a,b",
         "job": {
-          "id": "63c2bdfa935af1fa39a7279d",
+          "id": "63d421df3aa83db7370e5096",
           "parameters": {
-            "string-param": "override"
+            "size": "1"
           },          
           "from": [{
-            "step": 2,
-            "outputs": ["result","status"],
+            "step": 0,
+            "outputs": ["first_name","email"],
           }]
         }
       }
