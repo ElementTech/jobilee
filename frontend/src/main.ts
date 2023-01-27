@@ -12,18 +12,22 @@ platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
   
 export function getStringBeforeSubstring(str: string, substring: string): string | undefined {
-  const index = str.indexOf(substring);
-  if (index === -1) {
-      return undefined;
+  if (str !== undefined){
+    const index = str.indexOf(substring);
+    if (index === -1) {
+        return undefined;
+    }
+    return str.slice(0, index);
   }
-  return str.slice(0, index);
 }
 
 export function getStringAfterSubstring(str: string, substring: string): string | undefined {
-  const index = str.indexOf(substring);
-  if (index === -1) {
-      return undefined;
+  if (str !== undefined){
+    const index = str.indexOf(substring);
+    if (index === -1) {
+        return undefined;
+    }
+    return str.slice(index + substring.length);
   }
-  return str.slice(index + substring.length);
 }
 

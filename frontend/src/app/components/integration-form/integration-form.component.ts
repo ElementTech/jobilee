@@ -138,7 +138,6 @@ export class IntegrationFormComponent implements OnInit {
     }
   }
   setAuthData(event,step){
-    console.log(event.value)
     if (event.value == "None")
     {
       this.integrationSteps.steps[step].authenticationData = []

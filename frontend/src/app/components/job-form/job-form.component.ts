@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 import { Integration } from 'src/app/integration';
 import { getStringAfterSubstring, getStringBeforeSubstring } from 'src/main';
+import { RunService } from 'src/app/run.service';
+import { filter, switchMap, takeWhile } from 'rxjs/operators';
+import { defer, from, timer } from 'rxjs';
 @Component({
   selector: 'app-job-form',
   templateUrl: './job-form.component.html',
@@ -17,39 +20,25 @@ export class JobFormComponent implements OnInit {
   integrations: any;
   @Input() _id: string;
   @Input() formType: "Create" | "Update";
-  @Input() job: Job = {
-    parameters: [
-      {
-        "name": "string-param",
-        "type": "text",
-        "default": "mytext"
-      },
-      {
-        "name": "choice-param",
-        "type": "choice",
-        "default": "b",
-        "choices": ["a","b","c","d"]
-      },
-      {
-        "name": "multi-choice-param",
-        "type": "multi-choice",
-        "default": "f,h",
-        "choices": ["e","f","g","h"]
-      }
-  ]
-  };
+  @Input() job: Job
   submitted = false;
-
+  dynamicResults = {}
 
   constructor(private dbService: DBService,
-    private router: Router) {
+    private router: Router, private runService: RunService) {
       this.editorOptions = new JsonEditorOptions()
       this.editorOptions.modes = ['code', 'tree'];
       this.editorOptions.mode = 'code';
-
-     }
+    }
 
   ngOnInit() {
+    for (const param of this.job?.parameters)
+    {
+      if (param.type == "dynamic")
+      {
+        this.dynamicResults[param.name] = []
+      }
+    }
     this.dbService.getObjectList("integrations").subscribe(data=>{
       this.integrations = data
     })
@@ -65,6 +54,59 @@ export class JobFormComponent implements OnInit {
     return getStringBeforeSubstring(this.integrations?.find(item => item.name === integrationName)?.steps[0].definition,"{job}")
   }
 
+  alreadyTriggered = {}
+  // this.retryer.unsubscribe();
+  async getOptions(paramDefinition) {
+    const jobDefinition = paramDefinition['job']
+
+    const prom = new Promise<Array<any>>(async (resolve) => {
+      if (!(jobDefinition['id'] in this.alreadyTriggered)) {
+        this.alreadyTriggered[jobDefinition['id']] = true;
+        try {
+            const result = await this.runService.runJob(jobDefinition['id'], jobDefinition['parameters']).toPromise();
+            let response;
+            while (!response || !('result' in response)) {
+                response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+                if (!('result' in response)) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+            let options: any = []
+            if (response['result']){
+                for (const item of jobDefinition['from']) {
+                  console.log(item)
+                  for (const stepResult of response['steps'])
+                  {
+                    console.log(stepResult)
+                    if (stepResult['step'] == item['step']) {
+                        for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
+                        {
+                          console.log(stepKey, stepValue)
+                          if (item['outputs'].includes(stepKey))
+                          {
+                            options.push(stepValue)
+                          }
+                        }
+                    }
+                  }
+                }
+            }
+            if (options.length == 0) {
+              resolve(jobDefinition['default'].split(","))
+            }
+            resolve(options)
+        } catch (error) {
+            console.log(JSON.stringify(error.message));
+            resolve(jobDefinition['default'].split(","))
+        }
+    }
+    });
+    prom.then(data=>{
+      console.log(data)
+      return data
+    })
+    return prom
+  }
 
 
   save() {

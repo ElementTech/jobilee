@@ -25,6 +25,21 @@ export class CreateJobComponent {
         "type": "multi-choice",
         "default": "f,h",
         "choices": ["e","f","g","h"]
+      },
+      {
+        "name": "dynamic-param",
+        "type": "dynamic",
+        "default": "a,b",
+        "job": {
+          "id": "63c2bdfa935af1fa39a7279d",
+          "parameters": {
+            "string-param": "override"
+          },          
+          "from": [{
+            "step": 2,
+            "outputs": ["result","status"],
+          }]
+        }
       }
   ]
   };
