@@ -96,6 +96,7 @@ export class IntegrationFormComponent implements OnInit {
       retryDelay: 5,
       retryCount: 0,
       parsingTimeout: 300,
+      strict: true,
       parsingDelay: 1,
       outputs: {},//{ "result": "{result}" },
       retryUntil: {},//{ "result": "SUCCESS" },

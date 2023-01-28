@@ -258,10 +258,19 @@
                                 <p-panel header="Expected Response">
                                   <ng-template  pTemplate="header">
                                     <span  pTooltip="Wrap the values of the expected response JSON that you would like to parse in { }" tooltipPosition="top" class="pi pi-question-circle"></span>
-                                    &nbsp;
                                   </ng-template>
                                   <ng-template pTemplate="icons">
                                     <div class="flex justify-content-end">
+                                      <div class="flex align-items-center">
+                                        <span  pTooltip="Force the response to match Dict/List as defined below" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                        &nbsp;
+
+                                        <label for="{{step}}parsing" class="text-white">Strict</label>
+                                        &nbsp;
+
+                                        <p-checkbox [(ngModel)]="integration.strict" class="mr-2" [binary]="true" name="{{step}}strict" id="{{step}}strict" ></p-checkbox> &nbsp;
+                                      </div>
+                                      &nbsp;
                                       <button
                                         type="button"
                                         pButton
@@ -269,7 +278,8 @@
                                         icon="pi pi-filter-slash"
                                         (click)="integration.outputs = {}"
                                       ></button>
-                                      <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu>
+                                      
+                                    
                                     </div>
                                   </ng-template>
                                 <json-editor class="api" [options]="makeOptions()" [(ngModel)]="integration.outputs" [ngModelOptions]=" 

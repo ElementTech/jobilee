@@ -22,6 +22,9 @@ import { AngJsoneditorModule } from '@maaxgr/ang-jsoneditor'
 import {MatStepperModule} from '@angular/material/stepper';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
+
 import {
   HighlightModule,
   HIGHLIGHT_OPTIONS,
@@ -94,6 +97,8 @@ import {TimelineModule} from 'primeng/timeline';
     TabViewModule,
     ButtonModule,
     TableModule,
+    MessagesModule,
+    MessageModule,
     CardModule,
     StepsModule,
     FieldsetModule,

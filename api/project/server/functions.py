@@ -11,8 +11,8 @@ import time
 from celery import Celery, current_task
 from datetime import datetime
 import codecs
-
-
+from functools import reduce
+from itertools import chain    
 class FakeDict(dict):
     def __init__(self, items):
         if items != []:
@@ -149,7 +149,11 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
         error = str(ex)
     if r:
         if r.status not in range(200, 300):
-            error = "Failure"
+            try:
+                res_json = json.loads(r.data)
+                error = res_json["message"]
+            except:
+                error = "Failure"
 
     message = error if error else message
     parsingOK = True
@@ -161,39 +165,61 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
-            try:
-                res_json = json.loads(r.data)
-                extract_placeholder_values(integration['outputs'], res_json, extracted_outputs)
-                if bool(integration.get('retryUntil')):
-                    for k, v in integration['retryUntil'].items():
-                        if k in extracted_outputs:
-                            if v != extracted_outputs[k]:
-                                parsingOK = False
-                        else:
-                            parsingOK = False
-                if bool(integration.get('failWhen')):
-                    for k, v in integration['failWhen'].items():
-                        if k in extracted_outputs:
-                            if (v == extracted_outputs[k]) and (extracted_outputs[k] is not None):
-                                parsingCondition = False
-                        else:
-                            parsingOK = False                            
-                else:
-                    if extracted_outputs:
-                        for k, v in extracted_outputs.items():
-                            if v is None:
-                                parsingOK = False
-            except Exception as e:
-                print("Error")
-                print(e)
+            if integration['strict'] and (type(integration['outputs']) is not type(res_json)):
+                message = "Expected outputs as {o} but got {r}".format(o=type(integration['outputs']),r=type(res_json))
                 parsingOK = False
-                message = str(e)
+                parsingCondition = False
+                r.status = 500
+            else:
+                try:
+                    res_json = json.loads(r.data)
+                    if isinstance(res_json, list):
+                        temp_outputs = []
+                        for item in res_json:
+                            temp_extracted_outputs = {}
+                            extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], item, temp_extracted_outputs)
+                            temp_outputs.append(temp_extracted_outputs)
+                        for d in temp_outputs:
+                            for l in d:
+                                if l in extracted_outputs:
+                                    if not isinstance(extracted_outputs[l], list):
+                                        extracted_outputs[l] = [extracted_outputs[l]]
+                                    extracted_outputs[l].append(d[l])
+                                else:
+                                    extracted_outputs[l] = d[l]
+                    else:
+                        extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs)
+                    print(extracted_outputs)
+                    if bool(integration.get('retryUntil')):
+                        for k, v in integration['retryUntil'].items():
+                            if k in extracted_outputs:
+                                if v != extracted_outputs[k]:
+                                    parsingOK = False
+                            else:
+                                parsingOK = False
+                    if bool(integration.get('failWhen')):
+                        for k, v in integration['failWhen'].items():
+                            if k in extracted_outputs:
+                                if (v == extracted_outputs[k]) and (extracted_outputs[k] is not None):
+                                    parsingCondition = False
+                            else:
+                                parsingOK = False                            
+                    else:
+                        if extracted_outputs:
+                            for k, v in extracted_outputs.items():
+                                if v is None:
+                                    parsingOK = False
+                except Exception as e:
+                    print("Error")
+                    print(e)
+                    parsingOK = False
+                    message = str(e)
+                    r.status = 500
         
     update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
     update_step_field(task_id,stepIndex,"response",res_json)
     update_step_field(task_id,stepIndex,"message",message)
     update_step_field(task_id,stepIndex,"status",r.status if r else 500)
-
     return {
         'extracted_outputs': extracted_outputs,
         'parsingCondition': parsingCondition,

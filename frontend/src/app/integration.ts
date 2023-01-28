@@ -13,6 +13,7 @@ export class Step {
     retryDelay?: Number;
     parsing?: boolean;
     parsingTimeout?: Number;
+    strict?: Boolean;
     parsingDelay?: Number;
     ignoreSSL?: boolean;
     splitMultiChoice?: boolean;
