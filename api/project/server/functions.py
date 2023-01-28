@@ -194,22 +194,27 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                     print(extracted_outputs)
                     if bool(integration.get('retryUntil')):
                         for k, v in integration['retryUntil'].items():
-                            if k in extracted_outputs:
-                                if v != extracted_outputs[k]:
+                            if k in extracted_outputs or k in outputs:
+                                if v != extracted_outputs.get(k) and v != outputs.get(k):
+                                    message = "{} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
                                     parsingOK = False
                             else:
+                                message = "{} not found in response or in current run outputs".format(k)
                                 parsingOK = False
                     if bool(integration.get('failWhen')):
                         for k, v in integration['failWhen'].items():
-                            if k in extracted_outputs:
-                                if (v == extracted_outputs[k]) and (extracted_outputs[k] is not None):
+                            if k in extracted_outputs or k in outputs:
+                                if (v == extracted_outputs.get(k) and v == outputs.get(k)) and (extracted_outputs.get(k) is not None):
+                                    message = "{} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
                                     parsingCondition = False
                             else:
+                                message = "{} not found in response or in current run outputs".format(k)
                                 parsingOK = False                            
                     else:
                         if extracted_outputs:
                             for k, v in extracted_outputs.items():
                                 if v is None:
+                                    message = "got an empty value for key {}".format(k)
                                     parsingOK = False
                 except Exception as e:
                     print("Error")

@@ -13,6 +13,7 @@ import { toSelectItem } from "src/main";
 })
 export class PlayJobComponent implements OnInit {
   _id: string;
+  toHide = true;
   job: Job;
   response: any;
   editorOptions: JsonEditorOptions;
@@ -34,6 +35,9 @@ export class PlayJobComponent implements OnInit {
         this.job = data;
         this.regenerateParams()
       }, error => console.log(error));
+  }
+  hiddenCount(){
+    return this.job.parameters.filter(p=>p.hidden).length
   }
   regenerateParams()
   {

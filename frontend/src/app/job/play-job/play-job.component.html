@@ -19,14 +19,20 @@
                     <button type="button" pButton class="p-panel-header-icon p-link" (click)="regenerateParams()">
                         <span pTooltip="Refresh Dynamic Parameters" tooltipPosition="left" class="pi pi-bolt"></span>
                     </button>
+                    <button type="button" pButton class="p-panel-header-icon p-link" (click)="toHide = !toHide">
+                      <span pTooltip="Toggle Hidden Parameters" tooltipPosition="left"  class="pi flex" [ngClass]="{'pi-eye':!toHide,'pi-eye-slash': toHide}">
+                       {{hiddenCount() || ''}}
+
+                      </span>
+                  </button>
             </ng-template>
         <p-card>
           
             <p-scrollPanel [style]="{width: '100%', height: '400px'}">
               <div class="grid">
-                <div *ngFor="let param of job.parameters"  class="col-6">
-                  <p-divider align="left" type="dashed">
-                    <div class="inline-flex align-items-center">
+                <div *ngFor="let param of job.parameters"  class="col-6" [hidden]="param.hidden && toHide">
+                  <p-divider align="left" type="dashed" >
+                    <div class="inline-flex align-items-center" >
                       <ng-container>
                         <i *ngIf="param.type == 'text'" class="pi pi-book mr-2"></i>
                         <i *ngIf="param.type == 'number'" class="pi pi-sort-numeric-up mr-2"></i>
@@ -37,10 +43,10 @@
                       </ng-container>
                     </div>
                   </p-divider>
-                  <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [(ngModel)]="param.default" [value]="param.default ? param.default : ''" />
+                  <input  *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [(ngModel)]="param.default" [value]="param.default ? param.default : ''" />
                   <p-inputNumber *ngIf="param.type == 'number'" styleClass="min-w-full" [(ngModel)]="param.default" [value]="param.default ? param.default : 0" [showButtons]="true" inputId="stacked" mode="decimal">        </p-inputNumber>
-                  <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-dropdown>
-                  <p-multiSelect *ngIf="param.type == 'multi-choice'" appendTo="body" defaultLabel="{{param.choices}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
+                  <p-dropdown *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-dropdown>
+                  <p-multiSelect  *ngIf="param.type == 'multi-choice'" appendTo="body" defaultLabel="{{param.choices}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
                   <p-multiSelect 
                   *ngIf="param.type == 'dynamic'"  appendTo="body"
                   [defaultLabel]="param.default" 
