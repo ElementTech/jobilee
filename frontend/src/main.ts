@@ -4,6 +4,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import JSONEditor from 'jsoneditor'
+import { SelectItem } from 'primeng/api';
 if (environment.production) {
   enableProdMode();
 }
@@ -31,3 +32,6 @@ export function getStringAfterSubstring(str: string, substring: string): string 
   }
 }
 
+export function toSelectItem(arr: Array<string>) {
+  return arr.map((item) => ({ label: item, value: item } as SelectItem));
+}

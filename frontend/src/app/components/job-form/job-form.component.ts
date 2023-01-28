@@ -4,10 +4,11 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 import { Integration } from 'src/app/integration';
-import { getStringAfterSubstring, getStringBeforeSubstring } from 'src/main';
+import { getStringAfterSubstring, getStringBeforeSubstring, toSelectItem } from 'src/main';
 import { RunService } from 'src/app/run.service';
 import { filter, switchMap, takeWhile } from 'rxjs/operators';
 import { defer, from, timer } from 'rxjs';
+import { SelectItem } from 'primeng/api';
 @Component({
   selector: 'app-job-form',
   templateUrl: './job-form.component.html',
@@ -17,6 +18,7 @@ export class JobFormComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
   public initialData: any;
+  toSelectItem = toSelectItem;
   integrations: any;
   @Input() _id: string;
   @Input() formType: "Create" | "Update";
@@ -90,6 +92,7 @@ export class JobFormComponent implements OnInit {
       }
     }
   }
+
 
   async generateDynamicParams(param) {
       try {

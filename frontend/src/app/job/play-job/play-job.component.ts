@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RunService } from "src/app/run.service";
 import { JsonEditorOptions } from "@maaxgr/ang-jsoneditor";
 import Swal from "sweetalert2";
+import { toSelectItem } from "src/main";
 @Component({
   selector: "app-play-job",
   templateUrl: "./play-job.component.html",
@@ -23,7 +24,7 @@ export class PlayJobComponent implements OnInit {
       this.editorOptions.modes = ['code', 'tree'];
       this.editorOptions.mode = 'code';
     }
-
+  toSelectItem = toSelectItem;
   ngOnInit() {
     this.job = new Job();
 

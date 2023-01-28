@@ -60,7 +60,7 @@
                     </p-divider>
                     <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [value]="param.default ? param.default : ''" />
                     <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-dropdown>
-                    <p-multiSelect *ngIf="param.type == 'multi-choice'" [defaultLabel]="param.choices" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-multiSelect>
+                    <p-multiSelect *ngIf="param.type == 'multi-choice'"  [defaultLabel]="param.choices" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
                     <p-multiSelect 
                       *ngIf="param.type == 'dynamic'" 
                       [defaultLabel]="param.default" 
@@ -68,7 +68,7 @@
                       [pTooltip]="dynamicResultsError[param.name]"
                       [(ngModel)]="param.default" 
                       [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name].length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
-                      [options]="dynamicResults[param.name] || param.default.split(',')"
+                      [options]="toSelectItem(dynamicResults[param.name] || param.default.split(','))"
                       >
                     </p-multiSelect>
                   </div>
