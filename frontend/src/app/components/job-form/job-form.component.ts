@@ -33,6 +33,11 @@ export class JobFormComponent implements OnInit {
       "default": "mytext"
     },
     {
+      "name": "number-param",
+      "type": "number",
+      "default": 0
+    },
+    {
       "name": "choice-param",
       "type": "choice",
       "default": "b",
@@ -119,7 +124,8 @@ export class JobFormComponent implements OnInit {
                       {
                         if (item['outputs'].includes(stepKey))
                         {
-                          options.push(stepValue)
+                          
+                          options = options.concat(stepValue)
                         }
                       }
                   }

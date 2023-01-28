@@ -77,7 +77,7 @@ export class PlayJobComponent implements OnInit {
                       {
                         if (item['outputs'].includes(stepKey))
                         {
-                          options.push(stepValue)
+                          options = options.concat(stepValue)
                         }
                       }
                   }

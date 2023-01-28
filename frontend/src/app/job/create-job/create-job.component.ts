@@ -15,6 +15,11 @@ export class CreateJobComponent {
         "default": "mytext"
       },
       {
+        "name": "number-param",
+        "type": "number",
+        "default": 0
+      },
+      {
         "name": "choice-param",
         "type": "choice",
         "default": "b",

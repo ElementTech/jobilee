@@ -57,12 +57,12 @@
               [value]="step['percentDone']"></p-progressBar>
             </div>
             <div class="col">
-                <p-message *ngIf="step.message" class="min-w-full" [severity]="(step.result == 0) ? 'info' : ((step.status >= 200 && step.status < 300) ? 'success' : 'error')" [text]="step.message"></p-message>
+                <p-message *ngIf="step.message" styleClass="min-w-full mb-3" [severity]="(step.result == 0) ? 'info' : ((step.status >= 200 && step.status < 300) ? 'success' : 'error')" [text]="step.message"></p-message>
 
                 <ng-container  *ngIf="(step.outputs | json) != '{}'">
-                  <p-panel header="Outputs">
+                  <p-panel header="Outputs" styleClass="mb-3">
 
-                    <p-table [value]="step.outputs | keyvalue">
+                    <p-table [value]="step.outputs | keyvalue" styleClass="p-datatable-sm" >
                       <ng-template pTemplate="header">
                           <tr>
                               <th>Key</th>
@@ -79,7 +79,7 @@
                 </p-panel>
                 </ng-container>
               
-              <json-editor [options]="makeOptions()"   [name]="step['step']" [(ngModel)]="step['response']" [ngModelOptions]=" 
+              <json-editor [options]="makeOptions()" class="details" [name]="step['step']" [(ngModel)]="step['response']" [ngModelOptions]=" 
               {standalone: true}"></json-editor>
 
 

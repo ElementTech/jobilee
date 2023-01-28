@@ -8,6 +8,10 @@
 :host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect {
   width: 100%;
 }
+:host ::ng-deep .p-inputnumber{
+  height: 30px;
+
+}
 
 :host ::ng-deep {
   .p-multiselect .pi-times:before {
