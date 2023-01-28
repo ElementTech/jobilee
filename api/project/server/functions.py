@@ -218,7 +218,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                     message = str(e)
                     r.status = 500
         else:
-            extracted_outputs['response'] = res_json
+            extracted_outputs['response'] = res_json.strip()
     update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
     update_step_field(task_id,stepIndex,"response",res_json)
     update_step_field(task_id,stepIndex,"message",message)
