@@ -26,14 +26,13 @@ reader = codecs.getreader("utf-8")
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
-def prepare_params(job_params, chosen_params, splitMultiChoice):
+def prepare_params(job_params, chosen_params, splitMultiChoice, payload):
     for p in job_params:
         if not p['name'] in chosen_params:
-            if p['type'] == 'text':
-                chosen_params['name'] = p['default'] if 'default' in p else ''
-            if p['type'] == 'choice' or p['type'] == 'multi-choice' or p['type'] == 'dynamic':
-                chosen_params['name'] = p['default'] if 'default' in p else p['choices'][0]
- 
+            chosen_params['name'] = p['default'] if 'default' in p else p['choices'][0] if p['type'] in ['choice', 'multi-choice', 'dynamic'] else ''
+        if ('payload' in p):
+            if payload and not p['payload']:
+                del chosen_params[p['name']]
     for x, y in list(chosen_params.items()):
         for p in job_params:
             if p['name'] == x:
@@ -100,9 +99,12 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     message = "Success"
     error = ""
     r = {}
-    chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'])
+    chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'],False)
+    chosen_params.update(outputs)
+    url = integrationSteps["url"]+(replace_placeholders(integration['definition'].replace(f'{{job}}',job['apiID']),chosen_params))
+    chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'],True)
     outputs.update(chosen_params)
-    url = integrationSteps["url"]+(replace_placeholders(integration['definition'].replace(f'{{job}}',job['apiID']),outputs))
+
     payload=querify(chosen_params,integration['splitMultiChoice'])
     headers = {d['key']: d['value'] for d in integration['headers']} 
 
@@ -338,6 +340,7 @@ def res_code(res):
             return 3
 
 def trigger_job_api(id,chosen_params,task_id):
+
     try:
         data = db["jobs"].find_one({'_id': ObjectId(id)})
     except:
