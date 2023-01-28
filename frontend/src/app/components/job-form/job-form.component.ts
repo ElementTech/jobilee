@@ -122,7 +122,7 @@ export class JobFormComponent implements OnInit {
                       {
                         if (item['outputs'].includes(stepKey))
                         {
-                          
+                          console.log(item['outputs'],stepValue)
                           options = options.concat(stepValue)
                         }
                       }

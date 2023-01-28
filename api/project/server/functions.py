@@ -29,7 +29,7 @@ def parse_json(data):
 def prepare_params(job_params, chosen_params, splitMultiChoice, payload):
     for p in job_params:
         if not p['name'] in chosen_params:
-            chosen_params['name'] = p['default'] if 'default' in p else p['choices'][0] if p['type'] in ['choice', 'multi-choice', 'dynamic'] else ''
+            chosen_params[p['name']] = p['default'] if 'default' in p else (p['choices'][0] if p['type'] in ['choice', 'multi-choice', 'dynamic'] else '')
         if ('payload' in p):
             if payload and not p['payload']:
                 del chosen_params[p['name']]
@@ -49,7 +49,7 @@ def prepare_params(job_params, chosen_params, splitMultiChoice, payload):
                             chosen_params[x] = temp.split(",")
                         else:
                             chosen_params[x] = temp
-    
+    print(chosen_params)
     return chosen_params
 
 def replace_template(parameter, key_value_pairs):
@@ -163,7 +163,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     try:
         res_json = json.loads(r.data) if r else {}
     except:
-        res_json = r.data if r else {}
+        res_json = r.data.decode('utf-8') if r else {}
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
@@ -217,13 +217,13 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                     parsingOK = False
                     message = str(e)
                     r.status = 500
-        
+        else:
+            extracted_outputs['response'] = res_json
     update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
     update_step_field(task_id,stepIndex,"response",res_json)
     update_step_field(task_id,stepIndex,"message",message)
     update_step_field(task_id,stepIndex,"status",r.status if r else 500)
     return {
-        'extracted_outputs': extracted_outputs,
         'parsingCondition': parsingCondition,
         'parsingOK': parsingOK,
         "message": message,
