@@ -11,7 +11,7 @@ import { defer, from, timer } from 'rxjs';
 @Component({
   selector: 'app-job-form',
   templateUrl: './job-form.component.html',
-  styleUrls: ['./job-form.component.css']
+  styleUrls: ['./job-form.component.scss']
 })
 export class JobFormComponent implements OnInit {
 
@@ -23,6 +23,41 @@ export class JobFormComponent implements OnInit {
   @Input() job: Job
   submitted = false;
   dynamicResults = {}
+  dynamicResultsError = {}
+  examples =[
+    {
+      "name": "string-param",
+      "type": "text",
+      "default": "mytext"
+    },
+    {
+      "name": "choice-param",
+      "type": "choice",
+      "default": "b",
+      "choices": ["a","b","c","d"]
+    },
+    {
+      "name": "multi-choice-param",
+      "type": "multi-choice",
+      "default": "f,h",
+      "choices": ["e","f","g","h"]
+    },
+    {
+      "name": "dynamic-param",
+      "type": "dynamic",
+      "default": "a,b",
+      "job": {
+        "id": "63d421df3aa83db7370e5096",
+        "parameters": {
+          "size": "1"
+        },          
+        "from": [{
+          "step": 0,
+          "outputs": ["first_name","email"],
+        }]
+      }
+    }
+  ]
 
   constructor(private dbService: DBService,
     private router: Router, private runService: RunService) {
@@ -32,59 +67,72 @@ export class JobFormComponent implements OnInit {
     }
 
   async ngOnInit() {
-    for (const param of this.job?.parameters)
-    {
-      if (param.type == "dynamic")
-      {
-        this.dynamicResults[param.name] = []
-        const prom = new Promise<Array<any>>(async (resolve) => {
-            try {
-                const result = await this.runService.runJob(param.job['id'], param.job['parameters']).toPromise();
-                let response;
-                while (!response || !('result' in response)) {
-                    response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
-                    if (!('result' in response)) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
-                }
-                let options: any = []
-                if (response['result']){
-                    for (const item of param.job['from']) {
-                      console.log(item)
-                      for (const stepResult of response['steps'])
-                      {
-                        console.log(stepResult)
-                        if (stepResult['step'] == item['step']) {
-                            for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
-                            {
-                              console.log(stepKey, stepValue)
-                              if (item['outputs'].includes(stepKey))
-                              {
-                                options.push(stepValue)
-                              }
-                            }
-                        }
-                      }
-                    }
-                }
-                console.log("options",options)
-                if (options.length == 0) {
-                  resolve(param['default'].split(","))
-                }
-                resolve(options)
-            } catch (error) {
-                console.log(JSON.stringify(error.message));
-                resolve(param['default'].split(","))
-            }
-        });
-        prom.then(data=>{
-          this.dynamicResults[param.name] = data
-        })
-      }
-    }
+    this.regenerateParams()
     this.dbService.getObjectList("integrations").subscribe(data=>{
       this.integrations = data
     })
+  }
+
+  regenerateParams()
+  {
+    this.dynamicResultsError = []
+    if (this.job?.parameters != undefined)
+    {
+      for (const param of this.job?.parameters)
+      {
+        if (param.type == "dynamic")
+        {
+          this.dynamicResults[param.name] = []
+          this.generateDynamicParams(param)
+  
+        }
+      }
+    }
+  }
+
+  async generateDynamicParams(param) {
+      try {
+          let result = await this.runService.runJob(param['job']['id'], param['job']['parameters']).toPromise();
+          let response;
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          while ((response == undefined) || !('result' in response)) {
+            try {
+              response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+              if ((response == undefined) || !('result' in response)) {
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+              }
+            } catch {
+              response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+            }
+          }
+          let options: any = []
+          if (response['result']){
+              for (const item of param['job']['from']) {
+                for (const stepResult of response['steps'])
+                {
+                  if (stepResult['step'] == item['step']) {
+                      for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
+                      {
+                        if (item['outputs'].includes(stepKey))
+                        {
+                          options.push(stepValue)
+                        }
+                      }
+                  }
+                }
+              }
+          }
+          if (options.length == 0) {
+            this.dynamicResultsError[param.name] = "No Results"
+            this.dynamicResults[param.name] = param['default'].split(",")
+          }
+          param.default = options
+          this.dynamicResults[param.name] = options
+      } catch (error) {
+          console.log(JSON.stringify(error.message));
+          this.dynamicResultsError[param.name] = error.message
+          this.dynamicResults[param.name] = param['default'].split(",")
+      }
   }
 
   getURL(integrationName) {
@@ -111,7 +159,6 @@ export class JobFormComponent implements OnInit {
     {
       this.dbService.updateObject("jobs",this._id, this.job)
       .subscribe(data => {
-        console.log(data);
         this.job = new Job();
         this.gotoList();
       }, error => console.log(error));

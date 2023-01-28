@@ -8,7 +8,10 @@
         </div>
         <div class="col-6">
           <h5>Integration</h5>
-          <p-dropdown name="integration"  class="min-w-max" [options]="integrations"  [(ngModel)]="job.integration" optionValue="name" optionLabel="name"></p-dropdown>
+          <p-dropdown name="integration"  
+          
+          [filter]="true" filterBy="name" 
+          class="min-w-max" [options]="integrations"  [(ngModel)]="job.integration" optionValue="name" optionLabel="name"></p-dropdown>
         </div>
         <div class="col-6">
  
@@ -22,7 +25,20 @@
     
   
         </div>
-        <p-fieldset legend="Parameters" [toggleable]="false">
+        <p-panel header="Parameters" [toggleable]="false">
+          <ng-template pTemplate="icons">
+                  <button type="button" pButton class="p-panel-header-icon p-link" (click)="job.parameters=examples;dynamicResultsError=[];dynamicResults=[];regenerateParams()">
+                    <span pTooltip="Reset"class="pi pi-history"></span>
+                </button>
+                  <button type="button" pButton class="p-panel-header-icon p-link" (click)="regenerateParams()">
+                      <span pTooltip="Refresh Dynamic Parameters"class="pi pi-bolt"></span>
+                  </button>
+                  <button type="button" pButton class="p-panel-header-icon p-link" (click)="job.parameters=[]">
+                    <span pTooltip="Clear"class="pi pi-trash"></span>
+                </button>                  
+          </ng-template>
+
+        
           <div class="grid">
             <json-editor class="col" [options]="editorOptions" [(ngModel)]="job.parameters" [ngModelOptions]=" 
             {standalone: true}"></json-editor>
@@ -49,12 +65,11 @@
                       *ngIf="param.type == 'dynamic'" 
                       [defaultLabel]="param.default" 
                       [ngModelOptions]="{standalone: true}" 
+                      [pTooltip]="dynamicResultsError[param.name]"
                       [(ngModel)]="param.default" 
-                      [dropdownIcon]="dynamicResults[param.name].length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
-                      [options]="dynamicResults[param.name]"
+                      [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name].length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
+                      [options]="dynamicResults[param.name] || param.default.split(',')"
                       >
-                      <!-- [dropdownIcon]="'pi pi-spin pi-spinner'" -->
-                    
                     </p-multiSelect>
                   </div>
                 </div>
@@ -67,7 +82,7 @@
               </p-scrollPanel>
             </div>
           </div>
-        </p-fieldset>
+        </p-panel>
   
         <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
     </form>

@@ -13,7 +13,16 @@
 </p-toolbar>
 <div class="grid pt-3">
     <div class="col">
+
+          <p-panel header="Parameters" [toggleable]="false">
+            {{job.parameters | json}}
+            <ng-template pTemplate="icons">
+                    <button type="button" pButton class="p-panel-header-icon p-link" (click)="regenerateParams()">
+                        <span pTooltip="Refresh Dynamic Parameters" tooltipPosition="left" class="pi pi-bolt"></span>
+                    </button>
+            </ng-template>
         <p-card>
+          
             <p-scrollPanel [style]="{width: '100%', height: '400px'}">
               <div class="grid">
                 <div *ngFor="let param of job.parameters"  class="col-6">
@@ -23,6 +32,7 @@
                         <i *ngIf="param.type == 'text'" class="pi pi-book mr-2"></i>
                         <i *ngIf="param.type == 'choice'" class="pi pi-qrcode mr-2"></i>
                         <i *ngIf="param.type == 'multi-choice'" class="pi pi-check-square mr-2"></i>
+                        <i *ngIf="param.type == 'dynamic'" class="pi pi-bolt mr-2"></i>
                         <b>{{param.name}}</b>
                       </ng-container>
                     </div>
@@ -30,10 +40,22 @@
                   <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [(ngModel)]="param.default" [value]="param.default ? param.default : ''" />
                   <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-dropdown>
                   <p-multiSelect *ngIf="param.type == 'multi-choice'" defaultLabel="{{param.choices}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-multiSelect>
+                  <p-multiSelect 
+                  *ngIf="param.type == 'dynamic'" 
+                  [defaultLabel]="param.default" 
+                  [ngModelOptions]="{standalone: true}" 
+                  [pTooltip]="dynamicResultsError[param.name]"
+                  [(ngModel)]="param.default" 
+                  [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name].length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
+                  [options]="(dynamicResults[param.name] != undefined) ? dynamicResults[param.name] : param.default.split(',')"
+                  >
+                </p-multiSelect>
                 </div>
               </div>
             </p-scrollPanel>
         </p-card>
+          
+          </p-panel>
     </div>
     <!-- <div class="col-6">
       <p-panel header="Response">

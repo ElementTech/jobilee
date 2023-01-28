@@ -15,6 +15,8 @@ export class PlayJobComponent implements OnInit {
   job: Job;
   response: any;
   editorOptions: JsonEditorOptions;
+  dynamicResultsError: any[] = [];
+  dynamicResults: any[] = [];
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService, private runService: RunService) { 
       this.editorOptions = new JsonEditorOptions()
@@ -29,8 +31,71 @@ export class PlayJobComponent implements OnInit {
     this.dbService.getObject("jobs",this._id)
       .subscribe(data => {
         this.job = data;
+        this.regenerateParams()
       }, error => console.log(error));
   }
+  regenerateParams()
+  {
+    this.dynamicResultsError = []
+    if (this.job?.parameters != undefined)
+    {
+      for (const param of this.job?.parameters)
+      {
+        if (param.type == "dynamic")
+        {
+          this.dynamicResults[param.name] = []
+          this.generateDynamicParams(param)
+  
+        }
+      }
+    }
+  }
+
+  async generateDynamicParams(param) {
+      try {
+          let result = await this.runService.runJob(param['job']['id'], param['job']['parameters']).toPromise();
+          let response;
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          while ((response == undefined) || !('result' in response)) {
+            try {
+              response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+              if ((response == undefined) || !('result' in response)) {
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+              }
+            } catch {
+              response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+            }
+          }
+          let options: any = []
+          if (response['result']){
+              for (const item of param['job']['from']) {
+                for (const stepResult of response['steps'])
+                {
+                  if (stepResult['step'] == item['step']) {
+                      for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
+                      {
+                        if (item['outputs'].includes(stepKey))
+                        {
+                          options.push(stepValue)
+                        }
+                      }
+                  }
+                }
+              }
+          }
+          if (options.length == 0) {
+            this.dynamicResultsError[param.name] = "No Results"
+            this.dynamicResults[param.name] = param['default'].split(",")
+          }
+          param.default = options
+          this.dynamicResults[param.name] = options
+      } catch (error) {
+          console.log(JSON.stringify(error.message));
+          this.dynamicResultsError[param.name] = error.message
+          this.dynamicResults[param.name] = param['default'].split(",")
+      }
+  }
+
 
   list(){
     this.router.navigate(['jobs']);
