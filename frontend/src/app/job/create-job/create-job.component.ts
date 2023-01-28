@@ -36,10 +36,9 @@ export class CreateJobComponent {
         "type": "dynamic",
         "default": "a,b",
         "job": {
-          "id": "63d421df3aa83db7370e5096",
-          "name": "Random Users",
+          "id": "Random Users",
           "parameters": {
-            "size": "1"
+            "size": "2"
           },          
           "from": [{
             "step": 0,
@@ -47,7 +46,7 @@ export class CreateJobComponent {
           }]
         }
       }
-  ]
+    ]
   };
 
 }

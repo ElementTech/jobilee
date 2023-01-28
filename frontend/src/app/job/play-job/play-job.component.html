@@ -40,9 +40,9 @@
                   <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [(ngModel)]="param.default" [value]="param.default ? param.default : ''" />
                   <p-inputNumber *ngIf="param.type == 'number'" styleClass="min-w-full" [(ngModel)]="param.default" [value]="param.default ? param.default : 0" [showButtons]="true" inputId="stacked" mode="decimal">        </p-inputNumber>
                   <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-dropdown>
-                  <p-multiSelect *ngIf="param.type == 'multi-choice'" defaultLabel="{{param.choices}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
+                  <p-multiSelect *ngIf="param.type == 'multi-choice'" appendTo="body" defaultLabel="{{param.choices}}" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
                   <p-multiSelect 
-                  *ngIf="param.type == 'dynamic'" 
+                  *ngIf="param.type == 'dynamic'"  appendTo="body"
                   [defaultLabel]="param.default" 
                   [ngModelOptions]="{standalone: true}" 
                   [pTooltip]="dynamicResultsError[param.name]"

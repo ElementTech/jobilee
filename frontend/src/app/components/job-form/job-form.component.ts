@@ -54,10 +54,9 @@ export class JobFormComponent implements OnInit {
       "type": "dynamic",
       "default": "a,b",
       "job": {
-        "id": "63d421df3aa83db7370e5096",
-        "name": "Random Users",
+        "id": "Random Users",
         "parameters": {
-          "size": "1"
+          "size": "2"
         },          
         "from": [{
           "step": 0,
@@ -103,7 +102,6 @@ export class JobFormComponent implements OnInit {
       try {
           let result = await this.runService.runJob(param['job']['id'], param['job']['parameters']).toPromise();
           let response;
-          await new Promise(resolve => setTimeout(resolve, 1000));
           while ((response == undefined) || !('result' in response)) {
             try {
               response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();

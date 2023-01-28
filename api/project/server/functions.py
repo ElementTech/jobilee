@@ -338,7 +338,10 @@ def res_code(res):
             return 3
 
 def trigger_job_api(id,chosen_params,task_id):
-    data = db["jobs"].find_one({'_id': ObjectId(id)})
+    try:
+        data = db["jobs"].find_one({'_id': ObjectId(id)})
+    except:
+        data = db["jobs"].find_one({'name': id})
     db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
     integration = db["integrations"].find_one({'name': db_doc["integration"]})
     integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    

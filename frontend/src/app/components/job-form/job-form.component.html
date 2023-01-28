@@ -62,8 +62,8 @@
                     <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [value]="param.default ? param.default : ''" />
                     <p-inputNumber *ngIf="param.type == 'number'" [value]="param.default ? param.default : 0"  [(ngModel)]="param.default" [ngModelOptions]="{standalone: true}"  [showButtons]="true" mode="decimal">        </p-inputNumber>
                     <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-dropdown>
-                    <p-multiSelect *ngIf="param.type == 'multi-choice'"  [defaultLabel]="param.choices" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
-                    <p-multiSelect 
+                    <p-multiSelect *ngIf="param.type == 'multi-choice'" appendTo="body"  [defaultLabel]="param.choices" [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
+                    <p-multiSelect  appendTo="body"
                       *ngIf="param.type == 'dynamic'" 
                       [defaultLabel]="param.default" 
                       [ngModelOptions]="{standalone: true}" 
