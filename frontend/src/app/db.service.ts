@@ -26,6 +26,9 @@ export class DBService {
   deleteObject(col: string, _id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${col}/${_id}`, { responseType: 'text' });
   }
+  deleteObjects(col: string,key: string, value: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${col}/${key}/${value}`, { responseType: 'text' });
+  }
 
   getObjectList(col: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/${col}`);

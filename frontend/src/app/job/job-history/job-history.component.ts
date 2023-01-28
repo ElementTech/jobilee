@@ -14,19 +14,27 @@ export class JobHistoryComponent implements OnInit {
   jobs: Observable<Job[]>;
   loading: boolean = true;
   _id: any;
-  tasks: Observable<any>;
+  tasks: any;
   statuses = [
     {label: 'Success', value: true},
     {label: 'Failure', value: false},
   ]
+  interval: any;
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService) { 
 
     }
-
+  ngOnDestroy() {
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
+   }
   ngOnInit() {
     this._id = this.route.snapshot.params['_id'];
-    this.reloadData()
+    this.reloadData(); // api call
+    this.interval = setInterval(() => {
+        this.reloadData(); // api call
+    }, 5000);
   }
   getBackground(task)
   { 
@@ -56,12 +64,37 @@ export class JobHistoryComponent implements OnInit {
   }
   reloadData()
   {
-    this.tasks = this.dbService.getObjectListByKey("tasks","job_id",this._id)
-    this.tasks.subscribe(data=>{
-      console.log(data)
+    this.dbService.getObjectListByKey("tasks","job_id",this._id).subscribe(data=>{
+      this.tasks = data
+      this.loading = false
     })
   }
-
+  clearHistory()
+  {
+    Swal.fire({
+      title: 'Are you sure you want to clear the entire history?',
+      // text: "This will break jobs that depend on this job.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.dbService.deleteObjects("tasks","job_id",this._id)
+        .subscribe(
+          data => {
+            Swal.fire(
+              'Deleted!',
+              'Job history has been cleared.',
+              'success'
+            )
+            this.reloadData();
+          },
+          error => console.log(error));
+      }
+    })
+  }
 
   deleteJob(_id: string) {
     Swal.fire({

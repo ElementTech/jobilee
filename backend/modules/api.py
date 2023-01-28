@@ -12,7 +12,7 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
 
-@app.route('/<collection>', methods=['POST', 'GET'])
+@app.route('/<collection>', methods=['POST', 'GET','DELETE'])
 def data(collection):
     # POST a data to database
     if request.method == 'POST':
@@ -28,7 +28,7 @@ def data(collection):
         return jsonify(parse_json(dataJson))
 
 @app.route('/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
-@app.route('/<collection>/<string:key>/<string:value>', methods=['GET'])
+@app.route('/<collection>/<string:key>/<string:value>', methods=['GET','DELETE'])
 def onedata(collection,id=None,key=None,value=None):
     if id:
         # GET all data from database
@@ -53,9 +53,18 @@ def onedata(collection,id=None,key=None,value=None):
             )
             return jsonify({'status': 'Data id: ' + id + ' is updated!'})
     else:
-        allData = db[collection].find({key:value}).sort('creation_time', -1)
-        dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
-        return jsonify(parse_json(dataJson))
+        # GET all data from database
+        if request.method == 'GET':
+            allData = db[collection].find({key:value}).sort('creation_time', -1)
+            dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
+            return jsonify(parse_json(dataJson))
+            
+        # DELETE a data
+        if request.method == 'DELETE':
+            db[collection].delete_many({key:value})
+            print('\n # Deletion successful # \n')
+            return jsonify({'status': 'collection: ' + collection + ' is clear of ' + key + ":" + value})
+    
 
 if __name__ == '__main__':
     app.debug = True

@@ -11,3 +11,11 @@
 :host ::ng-deep .p-panel-content {
   padding: 0 !important;
 }
+:host ::ng-deep {
+  .p-multiselect .pi-times:before {
+    color: red;
+  }
+  .p-multiselect .pi-spinner:before {
+    color: #007AD9;
+  }
+}

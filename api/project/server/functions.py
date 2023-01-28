@@ -31,13 +31,13 @@ def prepare_params(job_params, chosen_params, splitMultiChoice):
         if not p['name'] in chosen_params:
             if p['type'] == 'text':
                 chosen_params['name'] = p['default'] if 'default' in p else ''
-            if p['type'] == 'choice' or p['type'] == 'multi-choice':
+            if p['type'] == 'choice' or p['type'] == 'multi-choice' or p['type'] == 'dynamic':
                 chosen_params['name'] = p['default'] if 'default' in p else p['choices'][0]
  
     for x, y in list(chosen_params.items()):
         for p in job_params:
             if p['name'] == x:
-                if p['type'] == "multi-choice":
+                if p['type'] == "multi-choice" or p['type'] == "dynamic":
                     temp = y
                     if isinstance(temp, list):
                         while "," in temp: temp.remove(",")   
@@ -223,7 +223,6 @@ def percent(part, whole):
     return 100-(100 * float(part)/float(whole))
 
 def process_request(job, integrationSteps,chosen_params,task_id):
-
     outputs = {}
 
     update_doc = {"job_id":job['_id'],"steps":[],"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}

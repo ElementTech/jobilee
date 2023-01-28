@@ -48,12 +48,13 @@ export class JobFormComponent implements OnInit {
       "default": "a,b",
       "job": {
         "id": "63d421df3aa83db7370e5096",
+        "name": "Random Users",
         "parameters": {
           "size": "1"
         },          
         "from": [{
           "step": 0,
-          "outputs": ["first_name","email"],
+          "outputs": ["first_name","last_name"],
         }]
       }
     }

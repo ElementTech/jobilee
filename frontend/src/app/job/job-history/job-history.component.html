@@ -1,5 +1,5 @@
-  <p-table #dt2 [value]="(tasks | async)" dataKey="_id"
-      [rowHover]="true"
+  <p-table #dt2 [value]="tasks" dataKey="_id"
+      [rowHover]="true" [loading]="loading" [lazy]="true"
       [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" 
       [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       [globalFilterFields]="['_id','result']" >
@@ -10,17 +10,19 @@
                   <i class="pi pi-search"></i>
                   <input pInputText type="text" (input)="dt2.filterGlobal($event.target.value, 'contains')" placeholder="Search" />
               </span>
+              &nbsp;
+              <button pButton pRipple type="button" icon="pi pi-trash" (click)="clearHistory()" class="p-button-rounded p-button-danger p-button-sm"></button>
           </div>
       </ng-template>
       <ng-template pTemplate="header">
           <tr>
-              <th  pSortableColumn="result" style="width:10%">Result
+              <th  pSortableColumn="result" style="width:5%">Result
                 <p-sortIcon field="result"></p-sortIcon></th>
-              <th pSortableColumn="creation_time" style="width:25%">Creation Time
-                <p-sortIcon field="creation_time"></p-sortIcon></th>
-              <th  pSortableColumn="_id" style="width:25%">ID
+              <th  pSortableColumn="_id" style="width:45%">ID
                 <p-sortIcon field="_id"></p-sortIcon></th>
-              <th style="width:25%">Actions</th>
+              <th pSortableColumn="creation_time" style="width:45%">Creation Time
+                <p-sortIcon field="creation_time"></p-sortIcon></th>
+              <th style="width:5%">Actions</th>
           </tr>
           <tr>
             <th>
@@ -34,15 +36,15 @@
                   </ng-template>
               </p-columnFilter>
             </th>
-            <th  appendTo="body">
-               <p-columnFilter   type="text" field="creation_time"></p-columnFilter>
-            </th>
+      
               <th>
                   <p-columnFilter type="text" field="_id"></p-columnFilter>
               </th>
-   
+              <th  appendTo="body">
+                <p-columnFilter   type="text" field="creation_time"></p-columnFilter>
+             </th>
               <th>
-                <p-columnFilter type="text" field="actions"></p-columnFilter>
+                <!-- <p-columnFilter type="text" field="actions"></p-columnFilter> -->
               </th>
 
           </tr>
@@ -55,12 +57,11 @@
             [ngClass]="getIcon(task)"></span>
           </td>
           <td  [routerLink]="['/jobs','result',this._id,task._id]">
-            {{task.creation_time | date:'short' }}
-          </td>
-          <td  [routerLink]="['/jobs','result',this._id,task._id]">
             {{task._id}}
           </td>
-          
+          <td  [routerLink]="['/jobs','result',this._id,task._id]">
+            {{task.creation_time | date:'short' }}
+          </td>
           <td>
             <button pButton (click)="deleteJob(task._id)" class="p-button-danger p-button-sm p-button-outlined">Delete</button>
           </td>
