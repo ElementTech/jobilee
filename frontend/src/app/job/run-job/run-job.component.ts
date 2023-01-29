@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { DBService } from "src/app/db.service";
 import { Job } from "src/app/job";
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2'
 import { SelectItem } from 'primeng/api';
@@ -26,7 +26,7 @@ export class RunJobComponent implements OnInit {
       {label: 'Renewal', value: 'renewal'},
       {label: 'Proposal', value: 'proposal'}
   ]
-  ngOnInit() {
+  ngOnInit(): void {
     this.reloadData();
     this.sortOptions = [
       {label: 'Integration: A - Z', value: 'integration'},
@@ -34,6 +34,7 @@ export class RunJobComponent implements OnInit {
       {label: 'Name: A - Z', value: 'name'},
       {label: 'Name: Z - A', value: '!name'}
     ];
+  
   }
 
   reloadData() {

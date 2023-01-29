@@ -1,5 +1,3 @@
-
-
 :host ::ng-deep {
 
     
@@ -95,42 +93,4 @@
             font-weight: 600;
         }
     }
-}
-
-.card {
-    padding: 2rem;
-    border-radius: 4px;
-}
-
-@media screen and (max-width: 576px) {
-	:host ::ng-deep .job-list-item {
-		flex-direction: column;
-		align-items: center;
-
-		img {
-			width: 75%;
-			margin: 2rem 0;
-		}
-
-		.job-list-detail {
-			text-align: center;
-		}
-
-		.job-price {
-			align-self: center;
-		}
-
-		.job-list-action {
-			display: flex;
-			flex-direction: column;
-		}
-
-		.job-list-action {
-			margin-top: 2rem;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-			width: 100%;
-		}
-	}
 }

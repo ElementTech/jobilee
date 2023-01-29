@@ -24,6 +24,7 @@
     "@cds/core": "^6.2.3",
     "@clr/angular": "^13.11.2",
     "@clr/ui": "^13.11.2",
+    "@katoid/angular-grid-layout": "^2.1.0",
     "@maaxgr/ang-jsoneditor": "^14.0.0",
     "ang-jsoneditor": "^2.0.0",
     "bootstrap": "^4.5.3",
