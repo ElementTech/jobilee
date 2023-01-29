@@ -24,6 +24,7 @@
           <div class="job-grid-item-bottom">
               <button pButton pRipple type="button" (click)="jobDetails(job._id)"  icon="pi pi-history" class="p-button-rounded p-button-outlined p-button-secondary"></button>
               <button pButton pRipple type="button"  (click)="runJob(job._id)" icon="pi pi-play" class="p-button-rounded p-button-outlined"></button>
+              <button pButton pRipple type="button"  [routerLink]="['/jobs','update',job._id]" icon="pi pi-wrench" class="p-button-rounded p-button-outlined"></button>
           </div>
       </div>
   </div>

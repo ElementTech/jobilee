@@ -26,6 +26,13 @@ reader = codecs.getreader("utf-8")
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+def flatten(S):
+    if S == []:
+        return S
+    if isinstance(S[0], list):
+        return flatten(S[0]) + flatten(S[1:])
+    return S[:1] + flatten(S[1:])
+
 def prepare_params(job_params, chosen_params, splitMultiChoice, payload):
     for p in job_params:
         if not p['name'] in chosen_params:
@@ -39,10 +46,12 @@ def prepare_params(job_params, chosen_params, splitMultiChoice, payload):
                 if p['type'] == "multi-choice" or p['type'] == "dynamic":
                     temp = y
                     if isinstance(temp, list):
-                        while "," in temp: temp.remove(",")   
+                        temp = flatten(temp)
+                        while "," in temp: temp.remove(",") 
                         if splitMultiChoice:
                             chosen_params[x] = temp
                         else:
+                            print(temp)
                             chosen_params[x] = ','.join(temp)               
                     else:
                         if splitMultiChoice:
@@ -156,14 +165,16 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                 error = res_json["message"]
             except:
                 error = "Failure"
+    else:
+        r = {"status":500,"data":{"message":"empty"}}
 
     message = error if error else message
     parsingOK = True
     parsingCondition = True
     try:
-        res_json = json.loads(r.data) if r else {}
+        res_json = json.loads(r.data)
     except:
-        res_json = r.data.decode('utf-8') if r else {}
+        res_json = r.data.decode('utf-8')
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
@@ -227,7 +238,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
     update_step_field(task_id,stepIndex,"response",res_json)
     update_step_field(task_id,stepIndex,"message",message)
-    update_step_field(task_id,stepIndex,"status",r.status if r else 500)
+    update_step_field(task_id,stepIndex,"status",r.status)
     return {
         'parsingCondition': parsingCondition,
         'parsingOK': parsingOK,

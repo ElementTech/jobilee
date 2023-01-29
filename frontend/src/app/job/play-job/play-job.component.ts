@@ -102,7 +102,7 @@ export class PlayJobComponent implements OnInit {
           } catch (error) {
             param.default = param.default
           }
-          if (!options.includes(param.default[0]))
+          if (!options.includes(param.default))
           {
             options.push(param.default[0])
           }
