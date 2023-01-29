@@ -174,7 +174,10 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     try:
         res_json = json.loads(r.data)
     except:
-        res_json = r.data.decode('utf-8')
+        try:
+            res_json = r.data.decode('utf-8')
+        except:
+            res_json = {}
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
@@ -232,7 +235,8 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                     print(e)
                     parsingOK = False
                     message = str(e)
-                    r.status = 500
+                    if hasattr(r, 'status'):
+                        r.status = 500
         else:
             extracted_outputs['response'] = res_json.strip()
     update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
