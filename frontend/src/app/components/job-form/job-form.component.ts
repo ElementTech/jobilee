@@ -135,12 +135,20 @@ export class JobFormComponent implements OnInit {
             this.dynamicResultsError[param.name] = "No Results"
             this.dynamicResults[param.name] = param['default'].split(",")
           }
-          param.default = options
+          try {
+            param.default = param['default'].split(",")
+          } catch (error) {
+            param.default = [param.default]
+          }
+          if (!options.includes(param.default[0]) || !options.includes(param.default))
+          {
+            options.push(param.default[0] || param.default)
+          }
           this.dynamicResults[param.name] = options
       } catch (error) {
           console.log(JSON.stringify(error.message));
           this.dynamicResultsError[param.name] = error.message
-          this.dynamicResults[param.name] = param['default'].split(",")
+          this.dynamicResults[param.name] = param['default'].split(",") || [param.default]
       }
   }
 

@@ -37,7 +37,12 @@ export class PlayJobComponent implements OnInit {
       }, error => console.log(error));
   }
   hiddenCount(){
-    return this.job.parameters.filter(p=>p.hidden).length
+    if (this.job?.parameters != undefined) {
+      return this.job?.parameters.filter(p=>p.hidden).length
+
+    } else {
+      return 0
+    }
   }
   regenerateParams()
   {
@@ -92,7 +97,15 @@ export class PlayJobComponent implements OnInit {
             this.dynamicResultsError[param.name] = "No Results"
             this.dynamicResults[param.name] = param['default'].split(",")
           }
-          param.default = options
+          try {
+            param.default = param.default.split(",")
+          } catch (error) {
+            param.default = param.default
+          }
+          if (!options.includes(param.default[0]))
+          {
+            options.push(param.default[0])
+          }
           this.dynamicResults[param.name] = options
       } catch (error) {
           console.log(JSON.stringify(error.message));

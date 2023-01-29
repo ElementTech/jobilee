@@ -48,7 +48,7 @@
                     *ngIf="param.type == 'dynamic'"  appendTo="body"
                     [ngModelOptions]="{standalone: true}" 
                     display="chip"
-        
+                    
                     [pTooltip]="dynamicResultsError[param.name]"
                     [(ngModel)]="param.default" 
                     [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name].length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"

@@ -65,7 +65,7 @@
                       <p-multiSelect  appendTo="body"
                         *ngIf="param.type == 'dynamic'" 
                         display="chip"
-                  
+                        
                         [ngModelOptions]="{standalone: true}" 
                         [pTooltip]="dynamicResultsError[param.name]"
                         [(ngModel)]="param.default" 
