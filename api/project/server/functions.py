@@ -307,7 +307,6 @@ def process_request(job, integrationSteps,chosen_params,task_id):
             parsingDelay = (step['parsingDelay'] if step['parsingDelay'] >= 0 else 0)
             parsingTimeout = (step['parsingTimeout'] if step['parsingTimeout'] >= 0 else 0)            
             while ((not res['parsingOK']) and (timeOutLeft > 0)):
-                print("parsing con",res['parsingCondition'])
                 if not res['parsingCondition']:
                     update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
                     update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)

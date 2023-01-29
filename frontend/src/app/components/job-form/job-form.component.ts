@@ -74,9 +74,10 @@ export class JobFormComponent implements OnInit {
     }
 
   async ngOnInit() {
-    this.regenerateParams()
+
     this.dbService.getObjectList("integrations").subscribe(data=>{
       this.integrations = data
+      this.regenerateParams()
     })
   }
 
