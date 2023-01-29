@@ -110,7 +110,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     r = {}
     chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'],False)
     chosen_params.update(outputs)
-    url = integrationSteps["url"]+(replace_placeholders(integration['definition'].replace(f'{{job}}',job['apiID']),chosen_params))
+    url = integrationSteps["url"].replace(f'{{url}}',chosen_params.get('url'))+(replace_placeholders(integration['definition'].replace(f'{{job}}',job['apiID']),chosen_params))
     chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'],True)
     outputs.update(chosen_params)
 
