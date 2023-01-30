@@ -184,8 +184,6 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
             if integration['strict'] and (type(integration['outputs']) is not type(res_json)):
                 message = "Expected outputs as {o} but got {r}".format(o=type(integration['outputs']),r=type(res_json))
                 parsingOK = False
-                parsingCondition = False
-                r.status = 500
             else:
                 try:
                     res_json = json.loads(r.data)
@@ -210,20 +208,23 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                         for k, v in integration['retryUntil'].items():
                             if k in extracted_outputs or k in outputs:
                                 if v != extracted_outputs.get(k) and v != outputs.get(k):
-                                    message = "{} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
+                                    message = "retryUntil - {} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
                                     parsingOK = False
+                                    if bool(integration.get('failWhen')):
+                                        for k, v in integration['failWhen'].items():
+                                            if k in extracted_outputs or k in outputs:
+                                                print(v, extracted_outputs.get(k), v, outputs.get(k))
+                                                if (v == extracted_outputs.get(k) or v == outputs.get(k)) and ((extracted_outputs.get(k) is not None) or (outputs.get(k) is not None)):
+                                                    message = "failWhen - {} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
+                                                    parsingOK = True
+                                                    parsingCondition = False
+                                            else:
+                                                message = "{} not found in response or in current run outputs".format(k)
+                                                parsingOK = False 
                             else:
                                 message = "{} not found in response or in current run outputs".format(k)
                                 parsingOK = False
-                    if bool(integration.get('failWhen')):
-                        for k, v in integration['failWhen'].items():
-                            if k in extracted_outputs or k in outputs:
-                                if (v == extracted_outputs.get(k) and v == outputs.get(k)) and (extracted_outputs.get(k) is not None) and (outputs.get(k) is not None):
-                                    message = "{} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
-                                    parsingCondition = False
-                            else:
-                                message = "{} not found in response or in current run outputs".format(k)
-                                parsingOK = False                            
+                           
                     else:
                         if extracted_outputs:
                             for k, v in extracted_outputs.items():
@@ -303,36 +304,39 @@ def process_request(job, integrationSteps,chosen_params,task_id):
             upsert=True)
         res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
         # or (not res['parsingOK']))
-        status = ((res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status ) if (res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status ) else 500)
+        status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
+        print("STATUS IS " + str(status))
 
         while status not in range(200, 300) and (retriesLeft > 0):
-            time.sleep(retriesDelay)
             res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
+            status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
             retriesLeft -= 1
             update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
             update_step_field(task_id,stepIndex,"parsingCondition",res['parsingCondition'])
             update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
             update_step_field(task_id,stepIndex,"percentDone",percent(retriesLeft,step['retryCount']))
+            time.sleep(retriesDelay)
 
         if status in range(200, 300) and step['parsing']:
             timeOutLeft = (step['parsingTimeout'] if step['parsingTimeout'] >= 0 else 0)
             timeOutStartTime = datetime.now()            
             parsingDelay = (step['parsingDelay'] if step['parsingDelay'] >= 0 else 0)
             parsingTimeout = (step['parsingTimeout'] if step['parsingTimeout'] >= 0 else 0)            
-            while ((not res['parsingOK']) and (timeOutLeft > 0)):
-                if res['parsingCondition'] is False:
-                    break
-                print("parsing condition is " + res['parsingCondition'])
-                time.sleep(parsingDelay)
+            while (res['parsingOK'] is False) and (timeOutLeft > 0):
+                print("parsing condition is " + str(res['parsingCondition']))
                 res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
+                status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
                 timeOutLeft = int(parsingTimeout - (datetime.now()-timeOutStartTime).total_seconds())
                 update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
                 update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
                 update_step_field(task_id,stepIndex,"timeOutLeft",timeOutLeft)
                 update_step_field(task_id,stepIndex,"parsingCondition",res['parsingCondition'])
                 update_step_field(task_id,stepIndex,"percentDone",-1)
+                if res['parsingCondition'] is False:
+                    break
+                time.sleep(parsingDelay)
+
         update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
-        update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
         update_step_field(task_id,stepIndex,"timeOutLeft",0)
         update_step_field(task_id,stepIndex,"parsingCondition",res['parsingCondition'])
         update_step_field(task_id,stepIndex,"percentDone",100)
@@ -341,17 +345,19 @@ def process_request(job, integrationSteps,chosen_params,task_id):
         update_step_field(task_id,stepIndex,"result",outcomeNumber)
 
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set":{"result":
-        outcomeNumber==2
+        (outcomeNumber==2)
     }})
 
 def res_code(status,condition):
-    if status not in range(200, 300):
-        return 1
+    print("status " + str(status))
+    print("condition " + str(condition))
+    if condition is False:
+        return 3
     else:
-        if condition:
-            return 2
+        if status not in range(200, 300):
+            return 1
         else:
-            return 3
+            return 2
 
 def trigger_job_api(id,chosen_params,task_id):
 

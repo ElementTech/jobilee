@@ -57,7 +57,8 @@
               [value]="step['percentDone']"></p-progressBar>
             </div>
             <div class="col">
-                <p-message *ngIf="step.message" styleClass="min-w-full mb-3" [severity]="(step.result == 0) ? 'info' : ((step.status >= 200 && step.status < 300) ? 'success' : 'error')" [text]="step.message"></p-message>
+              {{step | json}}
+                <p-message *ngIf="step.message" styleClass="min-w-full mb-3" [severity]="(step.result == 0) ? 'info' : step.result == 2 ? 'success' : 'error'" [text]="step.message"></p-message>
 
                 <ng-container  *ngIf="(step.outputs | json) != '{}'">
                   <p-panel header="Outputs" styleClass="mb-3">
