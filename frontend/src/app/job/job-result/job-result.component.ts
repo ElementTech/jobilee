@@ -23,7 +23,7 @@ import { MatStepper } from "@angular/material/stepper";
   ]
 })
 export class JobResultComponent implements OnInit {
-  display: boolean = true;
+  display: boolean = false;
 
   _id: string;
   job: Observable<any>;

@@ -43,7 +43,14 @@ export class JobHistoryComponent implements OnInit {
       {
         return 'bg-green-200'
       } else {
-        return 'bg-red-200'
+        if (task['steps'].map(item=>item.result).includes(3))
+        {
+          return 'bg-yellow-200'
+        }
+        else 
+        {
+          return 'bg-red-200'
+        }           
       }
     } else {
       return 'bg-blue-200'
@@ -56,7 +63,14 @@ export class JobHistoryComponent implements OnInit {
       {
         return 'pi pi-check green'
       } else {
-        return 'pi pi-times'
+        if (task['steps'].map(item=>item.result).includes(3))
+        {
+          return 'pi pi-minus'
+        }
+        else 
+        {
+          return 'pi pi-times'
+        }        
       }
     } else {
       return 'pi pi-question'
