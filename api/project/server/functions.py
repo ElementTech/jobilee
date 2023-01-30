@@ -275,7 +275,6 @@ def process_request(job, integrationSteps,chosen_params,task_id):
 
     update_doc = {"job_id":job['_id'],"steps":[],"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
-    resultAggregator = True
     for step in integrationSteps['steps']:
         stepIndex = integrationSteps['steps'].index(step)
         retriesLeft = (step['retryCount'] if step['retryCount'] >= 0 else 0)
@@ -339,11 +338,10 @@ def process_request(job, integrationSteps,chosen_params,task_id):
         update_step_field(task_id,stepIndex,"percentDone",100)
         outputs.update(res["extracted_outputs"])
         outcomeNumber = res_code(status,res['parsingCondition'])
-        resultAggregator = (resultAggregator and outcomeNumber==2)
         update_step_field(task_id,stepIndex,"result",outcomeNumber)
 
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set":{"result":
-        resultAggregator
+        outcomeNumber==2
     }})
 
 def res_code(status,condition):
