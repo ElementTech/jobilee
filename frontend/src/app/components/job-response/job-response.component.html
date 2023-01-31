@@ -4,6 +4,5 @@
      
         [mode]="task['steps'][step]['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
         [value]="task['steps'][step]['percentDone']"></p-progressBar>
-    <json-editor  [options]="makeOptions()" class="api" name="response" [ngModel]="task['steps'][step][this.attribute]" [ngModelOptions]=" 
-    {standalone: true}"></json-editor>
+    <json-editor  [options]="makeOptions()" class="api" name="response" [data]="task['steps'][step][this.attribute]" ></json-editor>
 </p-panel>

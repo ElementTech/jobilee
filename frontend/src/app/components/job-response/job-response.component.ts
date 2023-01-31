@@ -26,7 +26,7 @@ export class JobResponseComponent implements OnInit {
   constructor(private dbService: DBService,private route: ActivatedRoute) {
       this.editorOptions = new JsonEditorOptions()
       this.editorOptions.modes = ['code', 'tree'];
-      this.editorOptions.mode = 'code';
+      this.editorOptions.mode = 'tree';
     }
   retryer: any;
   ngOnInit() {
@@ -55,7 +55,7 @@ export class JobResponseComponent implements OnInit {
   makeOptions = () => {
     let editorOptions = new JsonEditorOptions()
     editorOptions.modes = ['code', 'tree'];
-    editorOptions.mode = 'code';
+    editorOptions.mode = 'tree';
     return editorOptions
   }
 }
