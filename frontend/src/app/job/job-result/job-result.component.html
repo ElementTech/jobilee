@@ -1,4 +1,3 @@
-
 <p-toolbar >
     <div class="p-toolbar-group-start text-white">
       <span class="p-buttonset ">
@@ -7,7 +6,7 @@
 
       </span>
       <p-dialog [maximizable]="true" header="Parameters" position="bottom-right"  [(visible)]="display">
-        <p-table [value]="task?.chosen_params |keyvalue" >
+        <p-table [value]="task?.chosen_params |keyvalue"  styleClass="p-datatable-sm">
           <ng-template pTemplate="header">
               <tr>
                   <th>Key</th>
@@ -23,7 +22,6 @@
       </p-table>
       
       </p-dialog>
-    
     </div>
     
     <div class="p-toolbar-group-start">
@@ -31,14 +29,76 @@
     </div>
     <div class="p-toolbar-group-end text-white">
       Run ID: {{this.task_id}}
-
   </div>
 </p-toolbar>
-<div class="">
+
+<div class="timeline"> 
+  <div *ngFor="let step of (task)?.steps; let index = index" class="timeline__event  animated fadeInUp delay-1s timeline__event--type{{(step.step+1)%3 != 0 ? (step.step+1)%3 : 3}}">
+    <div class="timeline__event__icon" >
+      <p-progressSpinner *ngIf="shouldISpin(index)" styleClass="custom-spinner" strokeWidth="2" fill="var(--surface-ground)" animationDuration="1s">
+
+      </p-progressSpinner>
+      <i *ngIf="shouldIIcon(index)"  class="pi" [ngClass]="step['result'] != 0 ? getIcon(index) : 'bg-white'">
+      
+      </i>
+    </div>
+    <div class="timeline__event__date">
+      {{step.step+1}}
+    </div>
+  
+    <div class="timeline__event__content ">
+
+      <div class="timeline__event__title" style="font-size: 11px;">
+        {{step['url']}}
+        <p-message *ngIf="step.message" styleClass="min-w-full mb-3" [severity]="(step.result == 0) ? 'info' : step.result == 2 ? 'success' : 'error'" [text]="step.message"></p-message>
+        {{step['result'] == 0 ? (step['timeOutLeft'] > 0 ? step['timeOutLeft']+"s" : step['percentDone']) : ''}}
+      </div>
+      <div class="timeline__event__description">
+
+        <ng-container  *ngIf="(step.outputs | json) != '{}'">
+          <p-panel header="Outputs" styleClass="mb-3">
+
+            <p-table [value]="step.outputs | keyvalue" styleClass="p-datatable-sm" >
+              <ng-template pTemplate="header">
+                  <tr>
+                      <th>Key</th>
+                      <th>Value</th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-o>
+                  <tr>
+                      <td>{{o.key}}</td>
+                      <td>{{o.value}}</td>
+                  </tr>
+              </ng-template>
+          </p-table>
+        </p-panel>
+        </ng-container>
+
+          <json-editor [options]="makeOptions()" class="details" [name]="step['step']" [(ngModel)]="step['response']" [ngModelOptions]=" 
+          {standalone: true}"></json-editor>
+
+      </div>
+      <div class="timeline__event__content__progress">
+        <!-- <p-progressBar 
+        [style]="{'height': '12px'}"
+     
+        [mode]="step['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
+        [value]="step['percentDone']"></p-progressBar> -->
+      </div>
+    
+    </div>
+    
+  </div>
+
+</div>
+
+
+
+<!-- <div class="">
     <mat-stepper orientation="vertical"  #stepper>
       
         <mat-step *ngFor="let step of (task)?.steps"  state="{{step['result']}}">
-          <!-- [ngClass]="{'error': step['result'] == 1, 'success': step['result'] == 2, 'failure': step['result'] == 3}" -->
           <ng-template matStepLabel>
             <ng-container *ngIf="step['result'] == 0">
               {{step['timeOutLeft'] > 0 ? step['timeOutLeft']+"s - " : ''}}
@@ -100,7 +160,6 @@
    <span class="pi pi-times"></span>
   </ng-template>
   <ng-template matStepperIcon="0">
-    <!-- <span class="pi pi-spinner"></span> -->
     <p-progressSpinner [style]="{width: '35px', height: '35px'}" styleClass="custom-spinner" strokeWidth="3" fill="var(--surface-ground)" animationDuration="1s"></p-progressSpinner>
 
    </ng-template>    
@@ -112,4 +171,4 @@
   
    </ng-template>  
       </mat-stepper>
-</div>
+</div> -->

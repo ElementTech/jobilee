@@ -1,7 +1,7 @@
 import { from, Observable, timer } from "rxjs";
 import { DBService } from "src/app/db.service";
 import { Job } from "src/app/job";
-import { Component, OnInit } from "@angular/core";
+import { Component, HostBinding, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2'
 import { SelectItem } from 'primeng/api';
@@ -23,6 +23,9 @@ import { MatStepper } from "@angular/material/stepper";
   ]
 })
 export class JobResultComponent implements OnInit {
+
+  @HostBinding("style.--items") items: number = 0;
+
   display: boolean = false;
 
   _id: string;
@@ -89,7 +92,7 @@ export class JobResultComponent implements OnInit {
       this.dbService.getObject("tasks",this.task_id)   // <-- first emission from `timer` is 0
     ),
     takeWhile(                                // <-- stop polling when a condition from the response is unmet
-      (response: any) => {this.task = response;return (!('result' in response))},
+      (response: any) => {this.task = response;document.documentElement.style.setProperty('--items', response.steps.length);return (!('result' in response))},
       true                                    // <-- emit the response that failed the test
     ),
     filter((response: any) => 
