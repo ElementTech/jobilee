@@ -67,12 +67,14 @@ import {DialogModule} from 'primeng/dialog';
 import { KtdGridModule } from '@katoid/angular-grid-layout';
 
 import {TimelineModule} from 'primeng/timeline';
+import { JobResponseComponent } from './components/job-response/job-response.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateIntegrationComponent,
     IntegrationDetailsComponent,
+    JobResponseComponent,
     IntegrationListComponent,
     UpdateIntegrationComponent,
     CreateJobComponent,

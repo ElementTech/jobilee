@@ -25,7 +25,7 @@
     </div>
     
     <div class="p-toolbar-group-start">
-      <p-button label="{{(job | async)?.name}}" [routerLink]="['/','jobs','details', _id]" styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
+      <p-button label="{{(job | async)?.name}}"  styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
     </div>
     <div class="p-toolbar-group-end text-white">
       Run ID: {{this.task_id}}
@@ -33,9 +33,9 @@
 </p-toolbar>
 
 <div class="timeline"> 
-  <div *ngFor="let step of (task)?.steps; let index = index" class="timeline__event  animated fadeInUp delay-1s timeline__event--type{{(step.step+1)%3 != 0 ? (step.step+1)%3 : 3}}">
-    <div class="timeline__event__icon" >
-      <p-progressSpinner *ngIf="shouldISpin(index)" styleClass="custom-spinner" strokeWidth="2" fill="var(--surface-ground)" animationDuration="1s">
+  <div *ngFor="let step of (task)?.steps; let index = index" class="timeline__event  timeline__event--type1">
+    <div class="timeline__event__icon"  [routerLink]="['/jobs','response',_id,task_id,index]">
+      <p-progressSpinner *ngIf="shouldISpin(index)" styleClass="custom-spinner" strokeWidth="1" fill="var(--surface-ground)" animationDuration="1s">
 
       </p-progressSpinner>
       <i *ngIf="shouldIIcon(index)"  class="pi" [ngClass]="step['result'] != 0 ? getIcon(index) : 'bg-white'">
@@ -49,46 +49,57 @@
     <div class="timeline__event__content ">
 
       <div class="timeline__event__title" style="font-size: 11px;">
-        {{step['url']}}
-        <p-message *ngIf="step.message" styleClass="min-w-full mb-3" [severity]="(step.result == 0) ? 'info' : step.result == 2 ? 'success' : 'error'" [text]="step.message"></p-message>
-        {{step['result'] == 0 ? (step['timeOutLeft'] > 0 ? step['timeOutLeft']+"s" : step['percentDone']) : ''}}
+       
+
       </div>
       <div class="timeline__event__description">
-
-        <ng-container  *ngIf="(step.outputs | json) != '{}'">
-          <p-panel header="Outputs" styleClass="mb-3">
-
+<!--  *ngIf="(step.outputs | json) != '{}' -->
+        <ng-container>
+          <p-panel>
+            <ng-template pTemplate="header">
+              {{step['url']}}
+          </ng-template>
+            <ng-template pTemplate="icons">
+              
+              <button [routerLink]="['/','jobs','details', _id]" type="button" pButton class="p-panel-header-icon p-link">
+                  <span pTooltip="View Response" tooltipPosition="top" class="pi 
+                  pi-directions"></span>
+              </button>
+        
+      </ng-template>
             <p-table [value]="step.outputs | keyvalue" styleClass="p-datatable-sm" >
-              <ng-template pTemplate="header">
+              <!-- <ng-template pTemplate="header">
                   <tr>
                       <th>Key</th>
                       <th>Value</th>
                   </tr>
-              </ng-template>
+              </ng-template> -->
               <ng-template pTemplate="body" let-o>
                   <tr>
-                      <td>{{o.key}}</td>
-                      <td>{{o.value}}</td>
+                      <td [style.width]="'50%'">{{o.key}}</td>
+                      <td [style.width]="'50%'">{{o.value}}</td>
                   </tr>
               </ng-template>
           </p-table>
         </p-panel>
         </ng-container>
 
-          <json-editor [options]="makeOptions()" class="details" [name]="step['step']" [(ngModel)]="step['response']" [ngModelOptions]=" 
-          {standalone: true}"></json-editor>
-
+         
+        <p-message *ngIf="step.message" styleClass="min-w-full m-0 p-1" [severity]="(step.result == 0) ? 'info' : step.result == 2 ? 'success' : 'error'"
+         text="{{(step['timeOutLeft'] > 0) ? (step['timeOutLeft']+'s waiting for task to complete'): ((step['percentDone'] < 100) ? (step['percentDone'] + '% - ' + step['message']) : step['message'])}}">
+        </p-message>
+        <!-- {{step['result'] == 0 ? (step['timeOutLeft'] > 0 ? step['timeOutLeft']+"s" : step['percentDone']) : ''}} -->
       </div>
-      <div class="timeline__event__content__progress">
+    
         <!-- <p-progressBar 
         [style]="{'height': '12px'}"
      
         [mode]="step['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
         [value]="step['percentDone']"></p-progressBar> -->
-      </div>
+
     
     </div>
-    
+
   </div>
 
 </div>

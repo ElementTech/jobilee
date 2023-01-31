@@ -12,6 +12,7 @@ import { RunJobComponent } from './job/run-job/run-job.component';
 import { PlayJobComponent } from './job/play-job/play-job.component';
 import { JobResultComponent } from './job/job-result/job-result.component';
 import { JobHistoryComponent } from './job/job-history/job-history.component';
+import { JobResponseComponent } from './components/job-response/job-response.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'catalog', pathMatch: 'full' },
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'jobs/add', component: CreateJobComponent },
   { path: 'jobs/update/:_id', component: UpdateJobComponent },
   { path: 'jobs/details/:_id', component: JobDetailsComponent },
+  { path: 'jobs/response/:_id/:task_id/:step', component: JobResponseComponent },
   { path: 'jobs/run/:_id', component: PlayJobComponent },
   { path: 'jobs/history/:_id', component: JobHistoryComponent },
   { path: 'jobs/result/:_id/:task', component: JobResultComponent },

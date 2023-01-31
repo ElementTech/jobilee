@@ -1,0 +1,9 @@
+<p-panel header="{{(job | async).name}} - Step Number {{step}}" [toggleable]="false">
+            <p-progressBar 
+        [style]="{'height': '16px'}"
+     
+        [mode]="task['steps'][step]['percentDone'] < 0 ? 'indeterminate' : 'determinate'"
+        [value]="task['steps'][step]['percentDone']"></p-progressBar>
+    <json-editor  [options]="makeOptions()" class="api" name="response" [ngModel]="task['steps'][step].response" [ngModelOptions]=" 
+    {standalone: true}"></json-editor>
+</p-panel>

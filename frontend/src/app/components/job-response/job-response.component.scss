@@ -1,0 +1,20 @@
+
+:host ::ng-deep json-editor.api,
+:host ::ng-deep json-editor.api .jsoneditor,
+:host ::ng-deep json-editor.api > div,
+:host ::ng-deep json-editor.api jsoneditor-outer {
+  height: 100vh;
+}
+:host ::ng-deep .p-inputnumber{
+  height: 30px;
+}
+
+
+:host ::ng-deep .p-panel-content {
+  padding: 0 !important;
+  height: 100vh;
+}
+.up {
+  display: flex;
+  flex: 0 0 auto;
+}
