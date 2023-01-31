@@ -135,6 +135,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
         headers.update({'Authorization': 'Bearer {token}'.format(token=authData[0]['value'])})
 
     update_step_field(task_id,stepIndex,"url",url)
+    update_step_field(task_id,stepIndex,"payload",payload)
 
     try:
         if integration["type"] == "post" and integration['mode'] == 'payload':

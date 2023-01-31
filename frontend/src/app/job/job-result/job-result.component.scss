@@ -299,6 +299,7 @@ td{
     animation: custom-progress-spinner-dash 1.5s ease-in-out infinite, custom-progress-spinner-color 6s ease-in-out infinite;
     stroke: black!important
 }
+
 :host ::ng-deep .custom-spinner { 
   display: flex;
   align-items: center;

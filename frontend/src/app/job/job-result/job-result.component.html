@@ -57,15 +57,25 @@
         <ng-container>
           <p-panel>
             <ng-template pTemplate="header">
-              {{step['url']}}
+              <span style="word-break: break-all;">
+                {{step['url']}}
+
+              </span>
           </ng-template>
             <ng-template pTemplate="icons">
               
-              <button [routerLink]="['/','jobs','details', _id]" type="button" pButton class="p-panel-header-icon p-link">
-                  <span pTooltip="View Response" tooltipPosition="top" class="pi 
-                  pi-directions"></span>
+              <button [routerLink]="['/','jobs','response', _id,task_id,step.step,'payload']" type="button" pButton class="p-panel-header-icon p-link">
+                <span pTooltip="Sent Payload" tooltipPosition="top" class="pi 
+                pi-file-import"></span>
+             
+              </button>
+              <button [routerLink]="['/','jobs','response', _id,task_id,step.step,'response']" type="button" pButton class="p-panel-header-icon p-link">
+                <span pTooltip="View Response" tooltipPosition="top" class="pi
+                pi-directions"></span>
+             
               </button>
         
+           
       </ng-template>
             <p-table [value]="step.outputs | keyvalue" styleClass="p-datatable-sm" >
               <!-- <ng-template pTemplate="header">
@@ -85,7 +95,7 @@
         </ng-container>
 
          
-        <p-message *ngIf="step.message" styleClass="min-w-full m-0 p-1" [severity]="(step.result == 0) ? 'info' : step.result == 2 ? 'success' : 'error'"
+        <p-message *ngIf="step.message" styleClass="min-w-full m-0 p-1"  [severity]="(step.result == 0) ? 'info' : step.result == 2 ? 'success' : 'error'"
          text="{{(step['timeOutLeft'] > 0) ? (step['timeOutLeft']+'s waiting for task to complete'): ((step['percentDone'] < 100) ? (step['percentDone'] + '% - ' + step['message']) : step['message'])}}">
         </p-message>
         <!-- {{step['result'] == 0 ? (step['timeOutLeft'] > 0 ? step['timeOutLeft']+"s" : step['percentDone']) : ''}} -->

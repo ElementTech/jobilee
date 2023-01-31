@@ -22,6 +22,7 @@ export class JobResponseComponent implements OnInit {
   step: any;
   task_id: any;
   job: Observable<any>;
+  attribute: any;
   constructor(private dbService: DBService,private route: ActivatedRoute) {
       this.editorOptions = new JsonEditorOptions()
       this.editorOptions.modes = ['code', 'tree'];
@@ -32,6 +33,7 @@ export class JobResponseComponent implements OnInit {
     this._id = this.route.snapshot.params['_id'];
     this.task_id = this.route.snapshot.params['task_id'];
     this.step = this.route.snapshot.params['step'];
+    this.attribute = this.route.snapshot.params['attribute'];
     this.job = this.dbService.getObject("jobs",this._id);
     this.dbService.getObject("tasks",this.task_id).subscribe(data=>{
       this.task = data

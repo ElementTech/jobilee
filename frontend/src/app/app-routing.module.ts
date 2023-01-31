@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'jobs/add', component: CreateJobComponent },
   { path: 'jobs/update/:_id', component: UpdateJobComponent },
   { path: 'jobs/details/:_id', component: JobDetailsComponent },
-  { path: 'jobs/response/:_id/:task_id/:step', component: JobResponseComponent },
+  { path: 'jobs/response/:_id/:task_id/:step/:attribute', component: JobResponseComponent },
   { path: 'jobs/run/:_id', component: PlayJobComponent },
   { path: 'jobs/history/:_id', component: JobHistoryComponent },
   { path: 'jobs/result/:_id/:task', component: JobResultComponent },
