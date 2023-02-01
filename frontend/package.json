@@ -27,6 +27,7 @@
     "@katoid/angular-grid-layout": "^2.1.0",
     "@maaxgr/ang-jsoneditor": "^14.0.0",
     "ang-jsoneditor": "^2.0.0",
+    "angular2-query-builder": "^0.6.2",
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "jsoneditor": "^9.9.2",

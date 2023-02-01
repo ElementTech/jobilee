@@ -6,7 +6,7 @@ import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 import Swal from 'sweetalert2';
 import { MenuItem } from 'primeng/api';
 import { MatStepper } from '@angular/material/stepper';
-
+import { QueryBuilderConfig } from 'angular2-query-builder';
 @Component({
   selector: 'app-integration-form',
   templateUrl: './integration-form.component.html',
@@ -27,7 +27,29 @@ export class IntegrationFormComponent implements OnInit {
   @Input() formType: "Create" | "Update";
 
   @Input() integrationSteps = new Integration
+  query = {
+    condition: 'and',
+    rules: []
+  };
 
+  config: QueryBuilderConfig = {
+    fields: {
+      string: {
+        name: 'string_output', type: 'string'
+      },
+      number: {
+        name: 'number_output', type: 'number'
+      },
+      array: {
+        name: 'array_output',
+        type: 'category',
+        options: [
+          {name: 'option1', value: 'value1'},
+          {name: 'option2', value: 'value2'}
+        ]
+      }
+    }
+  }
   authenticationOptions = [
     "None",
     "Basic",
@@ -99,8 +121,32 @@ export class IntegrationFormComponent implements OnInit {
       strict: true,
       parsingDelay: 1,
       outputs: {},//{ "result": "{result}" },
-      retryUntil: {},//{ "result": "SUCCESS" },
-      failWhen: {},//{ "result": "FAILURE" },
+      parsingConfig: {
+        fields: {
+          string: {
+            name: 'string_output', type: 'string'
+          },
+          number: {
+            name: 'number_output', type: 'number'
+          },
+          array: {
+            name: 'array_output',
+            type: 'category',
+            options: [
+              {name: 'option1', value: 'value1'},
+              {name: 'option2', value: 'value2'}
+            ]
+          }
+        }
+      },
+      retryUntil: {
+        condition: 'and',
+        rules: []
+      },//{ "result": "SUCCESS" },
+      failWhen: {
+        condition: 'and',
+        rules: []
+      },//{ "result": "FAILURE" },
       splitMultiChoice: true,
       authenticationData: [],
       overrideAuthentication: false,

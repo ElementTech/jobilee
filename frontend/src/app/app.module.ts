@@ -25,7 +25,7 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import {MatGridListModule} from '@angular/material/grid-list';
-
+import { QueryBuilderModule } from "angular2-query-builder";
 import {
   HighlightModule,
   HIGHLIGHT_OPTIONS,
@@ -65,7 +65,6 @@ import { JobResultComponent } from './job/job-result/job-result.component';
 import { JobHistoryComponent } from './job/job-history/job-history.component';
 import {DialogModule} from 'primeng/dialog';
 import { KtdGridModule } from '@katoid/angular-grid-layout';
-
 import {TimelineModule} from 'primeng/timeline';
 import { JobResponseComponent } from './components/job-response/job-response.component';
 
@@ -123,6 +122,7 @@ import { JobResponseComponent } from './components/job-response/job-response.com
     MultiSelectModule,
     DataViewModule,
     ToolbarModule,
+    QueryBuilderModule,
     TimelineModule,
     PanelModule,
     CheckboxModule,

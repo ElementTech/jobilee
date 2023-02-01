@@ -1,3 +1,5 @@
+import { QueryBuilderConfig } from "angular2-query-builder";
+
 export class Integration {
     _id?: string;
     name?: string;
@@ -12,6 +14,7 @@ export class Step {
     retryCount?: Number;
     retryDelay?: Number;
     parsing?: boolean;
+    parsingConfig: QueryBuilderConfig
     parsingTimeout?: Number;
     strict?: Boolean;
     parsingDelay?: Number;

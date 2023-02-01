@@ -304,53 +304,54 @@
                               </div>
                             </div>
            
-                            <div class="grid mt-4 pb-4">
-      
-                              <div class="col">
+                            <div>
+                              <div  class="pt-2">
+
+                              <p-panel header="Defined Parsed Results">
+                                <ng-template  pTemplate="header">
+                                  <span  pTooltip="Decide Success/Failure based on conditions while parsing your previously defined outputs" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                  &nbsp;
+    
+                                </ng-template>
+                 
+         
+                                <json-editor [options]="makeOptions()"  class="api" name="{{step}}retryUntil"  [(ngModel)]="integration.parsingConfig" [ngModelOptions]=" 
+                                {standalone: true}"></json-editor> 
+                              </p-panel>
+                            </div>
+
+                              <div class="pt-2">
+
                                 <p-panel header="Follow Until">
                                   <ng-template  pTemplate="header">
                                     <span  pTooltip="Will retry the API until the output equals your string/array/object. Leave empty for just making sure the value exists." tooltipPosition="top" class="pi pi-question-circle"></span>
                                     &nbsp;
       
                                   </ng-template>
-                                  <ng-template pTemplate="icons">
-                                    <div class="flex justify-content-end">
-                                      <button
-                                        type="button"
-                                        pButton
-                                        class="p-button-rounded p-button-outlined"
-                                        icon="pi pi-filter-slash"
-                                        (click)="integration.retryUntil = {}"
-                                      ></button>
-                                      
-                                    </div>
-                                  </ng-template>
+                       
+                                  <query-builder [(ngModel)]='integration.retryUntil' [config]='integration.parsingConfig' name="{{step}}retryUntil"  [ngModelOptions]=" 
+                                  {standalone: true}"></query-builder>
+<!-- 
+                                  <query-builder [(ngModel)]='integration.retryUntil' [config]="config" [ngModelOptions]=" 
+                                  {standalone: true}" ></query-builder> -->
+<!-- 
                                   <json-editor [options]="makeOptions()"  class="api" name="{{step}}retryUntil"  [(ngModel)]="integration.retryUntil" [ngModelOptions]=" 
-                                  {standalone: true}"></json-editor>
+                                  {standalone: true}"></json-editor> -->
                                 </p-panel>
                               </div>
-                              <p-divider layout="vertical">  <i class="pi pi-arrow-right"></i></p-divider>
-                              <div class="col">
+
+                                <div class="pt-2">
+
                                 <p-panel header="Failure When">
                                   <ng-template  pTemplate="header">
                                     <span  pTooltip="Immediately Fail when an output equals something" tooltipPosition="top" class="pi pi-question-circle"></span>
                                     &nbsp;
       
                                   </ng-template>
-                                  <ng-template pTemplate="icons">
-                                    <div class="flex justify-content-end">
-                                      <button
-                                        type="button"
-                                        pButton
-                                        class="p-button-rounded p-button-outlined"
-                                        icon="pi pi-filter-slash"
-                                        (click)="integration.failWhen = {}"
-                                      ></button>
-                                      
-                                    </div>
-                                  </ng-template>
-                                  <json-editor [options]="makeOptions()"  class="api" name="{{step}}failWhen"  [(ngModel)]="integration.failWhen" [ngModelOptions]=" 
-                                  {standalone: true}"></json-editor>
+                   
+                                  <query-builder [(ngModel)]='integration.failWhen' [config]='integration.parsingConfig' name="{{step}}failWhen" [ngModelOptions]=" 
+                                  {standalone: true}"></query-builder>
+                             
                                 </p-panel>
                               </div>
       

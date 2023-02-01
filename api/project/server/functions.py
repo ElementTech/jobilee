@@ -7,6 +7,7 @@ import urllib3
 import urllib.request 
 import urllib.parse
 import urllib3.exceptions
+import re
 import time
 from celery import Celery, current_task
 from datetime import datetime
@@ -105,6 +106,22 @@ def replace_placeholders(string, values):
         string = string.replace("{" + key + "}", str(values[key]))
     return string
 
+def trace_error(ex):
+    trace = []
+    tb = ex.__traceback__
+    while tb is not None:
+        trace.append({
+            "filename": tb.tb_frame.f_code.co_filename,
+            "name": tb.tb_frame.f_code.co_name,
+            "lineno": tb.tb_lineno
+        })
+        tb = tb.tb_next
+    print(str({
+        'type': type(ex).__name__,
+        'message': str(ex),
+        'trace': trace
+    }))
+
 def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id,stepIndex):
     message = "Success"
     error = ""
@@ -138,6 +155,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     update_step_field(task_id,stepIndex,"url",url)
     update_step_field(task_id,stepIndex,"payload",payload)
 
+
     try:
         if integration["type"] == "post" and integration['mode'] == 'payload':
             r = http.request(
@@ -158,7 +176,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                 retries=urllib3.util.Retry(total=0,backoff_factor=0)
             )          
     except Exception as ex:
-        print(ex)
+        trace_error(ex)
         error = str(ex)
     if r:
         if r.status not in range(200, 300):
@@ -193,43 +211,31 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                 try:
                     res_json = json.loads(json.dumps(res_json))
                     extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs)
-                    print(extracted_outputs)
-                    if bool(integration.get('retryUntil')):
-                        for k, v in integration['retryUntil'].items():
-                            if k in extracted_outputs or k in outputs:
-                                if v != extracted_outputs.get(k) and v != outputs.get(k):
-                                    message = "retryUntil - {} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
-                                    parsingOK = False
-                                    if bool(integration.get('failWhen')):
-                                        for k, v in integration['failWhen'].items():
-                                            if k in extracted_outputs or k in outputs:
-                                                print(v, extracted_outputs.get(k), v, outputs.get(k))
-                                                if (v == extracted_outputs.get(k) or v == outputs.get(k)) and ((extracted_outputs.get(k) is not None) or (outputs.get(k) is not None)):
-                                                    message = "failWhen - {} is equal {}".format(k,extracted_outputs.get(k) or outputs.get(k))
-                                                    parsingOK = True
-                                                    parsingCondition = False
-                                            else:
-                                                message = "{} not found in response or in current run outputs".format(k)
-                                                parsingOK = False 
-                            else:
-                                message = "{} not found in response or in current run outputs".format(k)
-                                parsingOK = False
-                           
-                    else:
-                        if extracted_outputs:
-                            for k, v in extracted_outputs.items():
-                                if v is None:
-                                    message = "got an empty value for key {}".format(k)
-                                    parsingOK = False
+                    if extracted_outputs:
+                        for k, v in extracted_outputs.items():
+                            if v is None:
+                                message = "got an empty value for key {}".format(k)
+                                parsingOK = False   
+                    if parsingOK:
+                        if bool(integration.get('retryUntil').get('rules')):
+                            parsingOK = evaluate_query(integration.get('retryUntil'),extracted_outputs)
+                            print("retryUntil parsing condition is: {}".format(str(parsingOK)))
+                            if not parsingOK:
+                                message = "Did not get all outputs to parse yet"        
+                                                
+                        if bool(integration.get('failWhen').get('rules')):
+                            parsingCondition = not evaluate_query(integration.get('failWhen'),extracted_outputs)
+                            print("failWhen parsing condition is: {}".format(str(parsingCondition)))
+                            if not parsingCondition:
+                                message = "Failure When Condition is True"
                 except Exception as e:
-                    print("Error")
-                    print(e)
+                    trace_error(e)
                     parsingOK = False
                     message = str(e)
                     if hasattr(r, 'status'):
                         r.status = 500
         else:
-            extracted_outputs['response'] = r.data.decode('utf-8')
+            extracted_outputs['response'] = json.dumps(res_json)
     update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
     update_step_field(task_id,stepIndex,"response",res_json)
     update_step_field(task_id,stepIndex,"message",message)
@@ -243,6 +249,58 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
         "res_json":res_json,
         "url":url
     }
+
+def evaluate_query(query, data):
+    def evaluate_rule(rule, data):
+        field = rule["field"]
+        operator = rule["operator"]
+        value = rule.get("value")
+        actual_value = data.get(field)
+        print("actual_value is {} while value is {}".format(actual_value,value))
+        if operator == "<=":
+            return actual_value <= value
+        elif operator == "contains":
+            return actual_value in value      
+        elif operator == "like":
+            pattern = re.compile(value)
+            return pattern.match(actual_value)              
+        elif operator == ">=":
+            return actual_value >= value        
+        elif operator == "=":
+            return actual_value == value
+        elif operator == ">":
+            return actual_value > value        
+        elif operator == "<":
+            return actual_value < value        
+        elif operator == "in":
+            return actual_value in value
+        elif operator == "not in":
+            return actual_value not in value        
+        elif operator == "is null":
+            return actual_value is None
+        else:
+            raise ValueError("Unknown operator: {}".format(operator))
+    
+    def evaluate_rules(rules, data, condition):
+        result = None
+        for rule in rules:
+            if "rules" in rule:
+                sub_result = evaluate_rules(rule["rules"], data, rule["condition"])
+            else:
+                sub_result = evaluate_rule(rule, data)
+            
+            if result is None:
+                result = sub_result
+            elif condition == "and":
+                result = result and sub_result
+            elif condition == "or":
+                result = result or sub_result
+            else:
+                raise ValueError("Unknown condition: {}".format(condition))
+        return result
+    
+    return evaluate_rules(query["rules"], data, query["condition"])
+
 
 def update_step_field(task_id,index,key,value):
     db["tasks"].update_one(
