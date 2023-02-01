@@ -313,10 +313,12 @@
                                   &nbsp;
     
                                 </ng-template>
+                                  <json-editor [options]="makeOptions()"  class="api" name="{{step}}retryUntil"  [(ngModel)]="integration.parsingConfig" [ngModelOptions]=" 
+                                  {standalone: true}"></json-editor> 
+    
                  
-         
-                                <json-editor [options]="makeOptions()"  class="api" name="{{step}}retryUntil"  [(ngModel)]="integration.parsingConfig" [ngModelOptions]=" 
-                                {standalone: true}"></json-editor> 
+                                  
+                    
                               </p-panel>
                             </div>
 
@@ -331,12 +333,7 @@
                        
                                   <query-builder [(ngModel)]='integration.retryUntil' [config]='integration.parsingConfig' name="{{step}}retryUntil"  [ngModelOptions]=" 
                                   {standalone: true}"></query-builder>
-<!-- 
-                                  <query-builder [(ngModel)]='integration.retryUntil' [config]="config" [ngModelOptions]=" 
-                                  {standalone: true}" ></query-builder> -->
-<!-- 
-                                  <json-editor [options]="makeOptions()"  class="api" name="{{step}}retryUntil"  [(ngModel)]="integration.retryUntil" [ngModelOptions]=" 
-                                  {standalone: true}"></json-editor> -->
+
                                 </p-panel>
                               </div>
 
