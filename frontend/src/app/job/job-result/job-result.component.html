@@ -87,7 +87,9 @@
               <ng-template pTemplate="body" let-o>
                   <tr>
                       <td [style.width]="'50%'">{{o.key}}</td>
-                      <td [style.width]="'50%'">{{o.value}}</td>
+                      <td [style.width]="'50%'">
+                          <p-chip [label]="item" *ngFor="let item of o.value.toString().split(',')"> </p-chip>
+                     </td>
                   </tr>
               </ng-template>
           </p-table>
