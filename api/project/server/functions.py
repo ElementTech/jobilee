@@ -13,6 +13,7 @@ from datetime import datetime
 import codecs
 from functools import reduce
 from itertools import chain    
+import xmltodict
 class FakeDict(dict):
     def __init__(self, items):
         if items != []:
@@ -97,7 +98,7 @@ def replace_parameters(parameter, payload, chosen_params):
     return payload
 
 def querify(chosen_params,splitMultiChoice):
-    return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'') 
+    return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'/') 
 
 def replace_placeholders(string, values):
     for key in values:
@@ -173,12 +174,15 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     parsingOK = True
     parsingCondition = True
     try:
-        res_json = json.loads(r.data)
+        res_json = xmltodict.parse(r.data.decode('utf-8'))
     except:
         try:
-            res_json = r.data.decode('utf-8')
+            res_json = json.loads(r.data)
         except:
-            res_json = {}
+            try:
+                res_json = r.data.decode('utf-8')
+            except:
+                res_json = {}
     extracted_outputs = {}
     if integration['parsing']:
         if integration['outputs']:
@@ -187,23 +191,8 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                 parsingOK = False
             else:
                 try:
-                    res_json = json.loads(r.data)
-                    if isinstance(res_json, list):
-                        temp_outputs = []
-                        for item in res_json:
-                            temp_extracted_outputs = {}
-                            extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], item, temp_extracted_outputs)
-                            temp_outputs.append(temp_extracted_outputs)
-                        for d in temp_outputs:
-                            for l in d:
-                                if l in extracted_outputs:
-                                    if not isinstance(extracted_outputs[l], list):
-                                        extracted_outputs[l] = [extracted_outputs[l]]
-                                    extracted_outputs[l].append(d[l])
-                                else:
-                                    extracted_outputs[l] = d[l]
-                    else:
-                        extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs)
+                    res_json = json.loads(json.dumps(res_json))
+                    extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs)
                     print(extracted_outputs)
                     if bool(integration.get('retryUntil')):
                         for k, v in integration['retryUntil'].items():
@@ -240,7 +229,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                     if hasattr(r, 'status'):
                         r.status = 500
         else:
-            extracted_outputs['response'] = res_json.strip()
+            extracted_outputs['response'] = r.data.decode('utf-8')
     update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
     update_step_field(task_id,stepIndex,"response",res_json)
     update_step_field(task_id,stepIndex,"message",message)
@@ -371,24 +360,46 @@ def trigger_job_api(id,chosen_params,task_id):
     integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
     process_request(db_doc,integration_doc,chosen_params,task_id)
 
+def extract_placeholder_values_list(data, values_data, placeholder_values):
+    temp_outputs = []
+    for item in values_data:
+        temp_extracted_outputs = {}
+        extract_placeholder_values(data, item, temp_extracted_outputs)
+        temp_outputs.append(temp_extracted_outputs)
+    for d in temp_outputs:
+        for l in d:
+            if l in placeholder_values:
+                if not isinstance(placeholder_values[l], list):
+                    placeholder_values[l] = [placeholder_values[l]]
+                print("Appending " + d[l])
+                placeholder_values[l].append(d[l])
+            else:
+                placeholder_values[l] = d[l]
+
 def extract_placeholder_values(data, values_data, placeholder_values):
-    for key, value in data.items():
-        if isinstance(value, str):
-            match = re.search(r'{(.*?)}', value)
-            if match:
-                placeholder = match.group(1)
-                placeholder_values[placeholder] = values_data[key]
-        elif isinstance(value, dict):
-            extract_placeholder_values(value, values_data[key], placeholder_values)
-        elif isinstance(value, list):
-            for i in range(len(value)):
-                if isinstance(value[i], str):
-                    match = re.search(r'{(.*?)}', value[i])
-                    if match:
-                        placeholder = match.group(1)
-                        placeholder_values[placeholder] = values_data[key][i]
-                elif isinstance(value[i], dict):
-                    extract_placeholder_values(value[i], values_data[key][i], placeholder_values)
+    if isinstance(values_data, list):
+        extract_placeholder_values_list(data, values_data, placeholder_values)
+    else:
+        for key, value in data.items():
+            if isinstance(value, str):
+                match = re.search(r'{(.*?)}', value)
+                if match:
+                    placeholder = match.group(1)
+                    placeholder_values[placeholder] = values_data[key]
+            elif isinstance(value, dict):
+                extract_placeholder_values(value, values_data[key], placeholder_values)
+            elif isinstance(value, list):
+                for i in range(len(value)):
+                    if isinstance(values_data[key],list):
+                        extract_placeholder_values_list(value[i], values_data[key], placeholder_values)
+                    else:
+                        if isinstance(value[i], str):
+                            match = re.search(r'{(.*?)}', value[i])
+                            if match:
+                                placeholder = match.group(1)
+                                placeholder_values[placeholder] = values_data[key][i]
+                        elif isinstance(value[i], dict):
+                            extract_placeholder_values(value[i], values_data[key][i], placeholder_values)
 
 def check_placeholder_exists(data, values_data):
     for key, value in data.items():
