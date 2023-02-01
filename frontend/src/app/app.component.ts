@@ -13,6 +13,7 @@ export class AppComponent {
     
   }
 
+  
   ngOnInit() {
     this.model = [
       {
@@ -25,43 +26,31 @@ export class AppComponent {
         label: 'Jobs',
         items: [
             {
-              label: 'Jobs',
-              icon: 'pi pi-fw pi-cog',
-              items: [
-                  {
-                      label: 'List',
-                      icon: 'pi pi-fw pi-list',
-                      routerLink: ['/jobs']
-                  },
-                  {
-                      label: 'Add',
-                      icon: 'pi pi-fw pi-plus',
-                      routerLink: ['/jobs/add']
-                  }
-              ]
+                label: 'List',
+                icon: 'pi pi-fw pi-th-large',
+                routerLink: ['/jobs']
+            },
+            {
+                label: 'Add',
+                icon: 'pi pi-fw pi-plus-circle',
+                routerLink: ['/jobs/add']
             }
         ]
       },
       {
-          label: 'Settings',
-          items: [
-              {
                 label: 'Integrations',
-                icon: 'pi pi-fw pi-share-alt',
                 items: [
                     {
                         label: 'List',
-                        icon: 'pi pi-fw pi-list',
+                        icon: 'pi pi-fw pi-share-alt',
                         routerLink: ['/integrations']
                     },
                     {
                         label: 'Add',
-                        icon: 'pi pi-fw pi-plus',
+                        icon: 'pi pi-fw pi-plus-circle',
                         routerLink: ['/integrations/add']
                     }
                 ]
-              }
-          ]
       }
   ];
 
