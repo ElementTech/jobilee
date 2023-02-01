@@ -4,8 +4,10 @@
       [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       [globalFilterFields]="['_id','result']" >
       <ng-template pTemplate="caption">
+
           <div class="flex">
-              Job History
+                {{(job|async).name}} Task History
+
               <span class="p-input-icon-left ml-auto">
                   <i class="pi pi-search"></i>
                   <input pInputText type="text" (input)="dt2.filterGlobal($event.target.value, 'contains')" placeholder="Search" />
@@ -20,6 +22,8 @@
                 <p-sortIcon field="result"></p-sortIcon></th>
               <th  pSortableColumn="_id" style="width:45%">ID
                 <p-sortIcon field="_id"></p-sortIcon></th>
+                <th pSortableColumn="run_time" style="width:15%">Length
+                  <p-sortIcon field="run_time"></p-sortIcon></th>
               <th pSortableColumn="creation_time" style="width:45%">Creation Time
                 <p-sortIcon field="creation_time"></p-sortIcon></th>
               <th style="width:5%">Actions</th>
@@ -41,6 +45,9 @@
                   <p-columnFilter type="text" field="_id"></p-columnFilter>
               </th>
               <th  appendTo="body">
+                <p-columnFilter  placeholder="seconds" type="numeric" field="run_time"></p-columnFilter>
+             </th>
+              <th  appendTo="body">
                 <p-columnFilter   type="text" field="creation_time"></p-columnFilter>
              </th>
               <th>
@@ -56,8 +63,12 @@
             <span 
             [ngClass]="getIcon(task)"></span>
           </td>
+          
           <td  [routerLink]="['/jobs','result',this._id,task._id]">
             {{task._id}}
+          </td>
+          <td  [routerLink]="['/jobs','result',this._id,task._id]">
+            {{toHoursMinutesSeconds(task.run_time)}}
           </td>
           <td  [routerLink]="['/jobs','result',this._id,task._id]">
             {{task.creation_time | date:'short' }}

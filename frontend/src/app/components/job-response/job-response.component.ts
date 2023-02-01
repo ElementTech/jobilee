@@ -18,7 +18,7 @@ export class JobResponseComponent implements OnInit {
 
   public editorOptions: JsonEditorOptions;
   task: Observable<any>;
-  private _id: any;
+  _id: any;
   step: any;
   task_id: any;
   job: Observable<any>;

@@ -152,8 +152,8 @@ export class PlayJobComponent implements OnInit {
       Swal.fire({
         icon: 'success',
         title: 'Job Triggered Succesfully',
-        text: JSON.stringify(result),
-        timer: 2000
+        // text: result['task_id'],
+        timer: 1000
       }).then(data=>{
         this.router.navigate(['jobs','result',this._id,result["task_id"]]);
       })

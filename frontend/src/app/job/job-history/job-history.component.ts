@@ -20,6 +20,7 @@ export class JobHistoryComponent implements OnInit {
     {label: 'Failure', value: false},
   ]
   interval: any;
+  job: Observable<any>;
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService) { 
 
@@ -29,8 +30,24 @@ export class JobHistoryComponent implements OnInit {
         clearInterval(this.interval);
       }
    }
+
+   toHoursMinutesSeconds = totalSeconds => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    let result = `${minutes
+      .toString()
+      .padStart(1, '0')}:${seconds.toString().padStart(2, '0')}`;
+    if (!!hours) {
+      result = `${hours.toString()}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return result;
+  };
   ngOnInit() {
     this._id = this.route.snapshot.params['_id'];
+    this.job = this.dbService.getObject("jobs",this._id)
     this.reloadData(); // api call
     this.interval = setInterval(() => {
         this.reloadData(); // api call

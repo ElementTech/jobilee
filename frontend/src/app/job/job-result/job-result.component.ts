@@ -142,8 +142,8 @@ export class JobResultComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: 'Job Triggered Succesfully',
-          text: JSON.stringify(result),
-          timer: 2000
+          // text: JSON.stringify(result),
+          timer: 1000
         }).then(data=>{
           this.followTask()
         })

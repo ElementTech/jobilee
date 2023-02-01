@@ -8,7 +8,8 @@
       <p-button label="{{job.name}}" [routerLink]="['/','jobs','history', job._id]" styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
     </div>
     <div class="p-toolbar-group-end">
-      <!-- <p-button icon="pi pi-times" (click)="deleteJob(job._id)" styleClass="p-button-danger"></p-button> -->
+      <p-button icon="pi pi-cog" [routerLink]="['/','jobs','update', _id]" styleClass="p-button-link text-white p-button-sm" label="Edit"></p-button>
+      <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-link text-white p-button-sm" label="History"></p-button>
   </div>
 </p-toolbar>
 <div class="pt-3">

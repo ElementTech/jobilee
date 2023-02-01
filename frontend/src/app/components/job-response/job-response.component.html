@@ -1,4 +1,13 @@
-<p-panel header="{{(job | async)?.name}} - Step Number {{step}}" [toggleable]="false">
+<p-panel header="{{(job | async)?.name}} - Step {{step}} - {{this.attribute}}" [toggleable]="false">
+
+    <ng-template pTemplate="icons">
+        <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-link text-white p-button-sm" label="History"></p-button>
+              
+        <p-button icon="pi pi-arrow-left" [routerLink]="['/','jobs','result', _id,task_id]" styleClass="p-button-link text-white p-button-sm" label="Back"></p-button>
+     
+    </ng-template>
+
+
             <p-progressBar 
         [style]="{'height': '16px'}"
      
