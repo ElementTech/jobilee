@@ -48,6 +48,21 @@ export class JobResultComponent implements OnInit {
       editorOptions.mode = 'code';
       return editorOptions
     }
+
+    toHoursMinutesSeconds = totalSeconds => {
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      let result = `${minutes
+        .toString()
+        .padStart(1, '0')}:${seconds.toString().padStart(2, '0')}`;
+      if (!!hours) {
+        result = `${hours.toString()}:${minutes
+          .toString()
+          .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+      return result;
+    };
   ngOnDestroy()
   {
     this.retryer.unsubscribe();
@@ -87,19 +102,23 @@ export class JobResultComponent implements OnInit {
     this.task_id = this.route.snapshot.params['task'];
     this.job = this.dbService.getObject("jobs",this._id)
 
-    this.retryer = timer(0, 1000).pipe(                        // <-- poll every 5 seconds
-    switchMap(() => 
-      this.dbService.getObject("tasks",this.task_id)   // <-- first emission from `timer` is 0
-    ),
-    takeWhile(                                // <-- stop polling when a condition from the response is unmet
-      (response: any) => {this.task = response;document.documentElement.style.setProperty('--items', response.steps.length);return (!('result' in response))},
-      true                                    // <-- emit the response that failed the test
-    ),
-    filter((response: any) => 
-      ('result' in response)   // <-- forward only emissions that pass the condition
-    )
-  ).subscribe();
+    this.followTask()
 
+  }
+  followTask()
+  {
+      this.retryer = timer(0, 1000).pipe(                        // <-- poll every 5 seconds
+      switchMap(() => 
+        this.dbService.getObject("tasks",this.task_id)   // <-- first emission from `timer` is 0
+      ),
+      takeWhile(                                // <-- stop polling when a condition from the response is unmet
+        (response: any) => {this.task = response;console.log(response);return (!(response['done']))},
+        true                                    // <-- emit the response that failed the test
+      ),
+      filter((response: any) => 
+        ('result' in response)   // <-- forward only emissions that pass the condition
+      )
+    ).subscribe();
   }
   progressBarClass(value): string {
     if (value < 70) {
@@ -118,5 +137,22 @@ export class JobResultComponent implements OnInit {
 
   result: any;
 
-  
+  retry(){
+      this.runService.retryJob(this.task_id).subscribe(result=>{
+        Swal.fire({
+          icon: 'success',
+          title: 'Job Triggered Succesfully',
+          text: JSON.stringify(result),
+          timer: 2000
+        }).then(data=>{
+          this.followTask()
+        })
+      },error=>{
+        Swal.fire({
+          icon: 'error',
+          title: 'Job Trigger Failed',
+          text: JSON.stringify(error.message),
+        })
+      })
+  }
 }

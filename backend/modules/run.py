@@ -10,3 +10,11 @@ from app import app
 def run(id):
     resp = requests.post(url="http://localhost:5001/tasks/"+id,json = request.json)
     return (resp.text, resp.status_code, resp.headers.items())
+
+
+@app.route('/retry/<string:task_id>', methods=['POST'])
+def retry(task_id):
+    resp = requests.post(url="http://localhost:5001/tasks/retry/" + task_id)
+    return (resp.text, resp.status_code, resp.headers.items())
+
+

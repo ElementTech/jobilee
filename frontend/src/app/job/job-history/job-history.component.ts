@@ -38,40 +38,61 @@ export class JobHistoryComponent implements OnInit {
   }
   getBackground(task)
   { 
-    if (task.hasOwnProperty('result')) {
-      if (task['result'])
-      {
-        return 'bg-green-200'
-      } else {
-        if (task['steps'].map(item=>item.result).includes(3))
-        {
-          return 'bg-yellow-200'
+
+    if (task.hasOwnProperty('done')) {
+      if (task['done']) {
+        if (task.hasOwnProperty('result')) {
+          if (task['result'])
+          {
+            return 'bg-green-200'
+          } else {
+            if (task['steps'].map(item=>item.result).includes(3))
+            {
+              return 'bg-yellow-200'
+            }
+            else 
+            {
+              return 'bg-red-200'
+            }        
+          }
+        } else {
+          return 'bg-blue-200'
         }
-        else 
-        {
-          return 'bg-red-200'
-        }           
+      } else {
+        return 'bg-blue-200'
       }
+
     } else {
       return 'bg-blue-200'
     }
+
+
   }
   getIcon(task)
   { 
-    if (task.hasOwnProperty('result')) {
-      if (task['result'])
-      {
-        return 'pi pi-check green'
-      } else {
-        if (task['steps'].map(item=>item.result).includes(3))
-        {
-          return 'pi pi-minus'
+    if (task.hasOwnProperty('done')) {
+      if (task['done']) {
+        if (task.hasOwnProperty('result')) {
+          if (task['result'])
+          {
+            return 'pi pi-check green'
+          } else {
+            if (task['steps'].map(item=>item.result).includes(3))
+            {
+              return 'pi pi-minus'
+            }
+            else 
+            {
+              return 'pi pi-times'
+            }        
+          }
+        } else {
+          return 'pi pi-question'
         }
-        else 
-        {
-          return 'pi pi-times'
-        }        
+      } else {
+        return 'pi pi-question'
       }
+
     } else {
       return 'pi pi-question'
     }

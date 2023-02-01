@@ -14,6 +14,7 @@ from datetime import datetime
 import codecs
 from functools import reduce
 from itertools import chain    
+import threading
 import xmltodict
 class FakeDict(dict):
     def __init__(self, items):
@@ -122,6 +123,8 @@ def trace_error(ex):
         'trace': trace
     }))
 
+
+
 def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id,stepIndex):
     message = "Success"
     error = ""
@@ -134,7 +137,6 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     
     payload=querify(chosen_params,integration['splitMultiChoice'])
     headers = {d['key']: d['value'] for d in integration['headers']} 
-
     if integration["type"] == "post" and integration['mode'] == 'payload':
         replacedPayload = replace_parameters(integration['parameter'],integration['payload'],chosen_params)
         print("replaced payload")
@@ -152,13 +154,18 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     authData = integration['authenticationData'] if integration['overrideAuthentication'] else integrationSteps['authenticationData']
     authType = integration['authentication'] if integration['overrideAuthentication'] else integrationSteps['authentication']
     if authType == "Basic":
-        headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(key=authData[0]['value'],value=authData[1]['value'])))
+        headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(
+            key=authData[0]['value'].replace(f"{{username}}",
+            outputs.get("username") or ''),
+            value=authData[1]['value'].replace(f"{{password}}",
+            outputs.get("password") or '')
+        )))
     if authType == "Bearer":
-        headers.update({'Authorization': 'Bearer {token}'.format(token=authData[0]['value'])})
+        headers.update({'Authorization': 'Bearer {token}'.format(token=authData[0]['value'].replace(f"{{token}}",outputs.get("token") or ''))})
 
     update_step_field(task_id,stepIndex,"url",url)
     update_step_field(task_id,stepIndex,"payload",payload)
-
+    print(headers,outputs.get("token"))
 
     try:
         if integration["type"] == "post" and integration['mode'] == 'payload':
@@ -323,11 +330,34 @@ def update_step_field(task_id,index,key,value):
 def percent(part, whole):
     return 100-(100 * float(part)/float(whole))
 
+def countTime(task_id,stepIndex):
+    stepFinished = False
+    run_time = 0
+    while not stepFinished:
+        time.sleep(1)
+        data = db["tasks"].find_one({'_id': ObjectId(task_id)})        
+        run_time += 1 
+        update_step_field(task_id,stepIndex,"run_time",run_time)
+        db["tasks"].update_one({"_id": ObjectId(task_id)}, {'$inc': {'run_time': 1}},upsert=True)
+        stepFinished = data['steps'][stepIndex]['result'] != 0
+
+
+# def countTimeTask(task_id):
+#     taskFinished = False
+#     while not taskFinished:
+#         time.sleep(1)
+#         db["tasks"].update_one({"_id": ObjectId(task_id)}, {'$inc': {'run_time': 1}},upsert=True)
+#         data = db["tasks"].find_one({'_id': ObjectId(task_id)})
+#         print("data['done'] is {}".format(data['done']))       
+#         taskFinished = data['done'] if data['done'] is not None else False
+
 def process_request(job, integrationSteps,chosen_params,task_id):
     outputs = {}
 
-    update_doc = {"job_id":job['_id'],"steps":[],"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
+    update_doc = {"job_id":job['_id'],"steps":[],"done": False,"run_time":0,"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
+    # timer_task = threading.Thread(target=countTimeTask, args=(task_id))
+    # timer_task.start()
     for step in integrationSteps['steps']:
         stepIndex = integrationSteps['steps'].index(step)
         retriesLeft = (step['retryCount'] if step['retryCount'] >= 0 else 0)
@@ -345,6 +375,7 @@ def process_request(job, integrationSteps,chosen_params,task_id):
                         "url": '',
                         "step":stepIndex,
                         "outputs": {},
+                        "run_time": 0,
                         "result": 0,
                         "percentDone": -1,
                         "status":0,
@@ -354,6 +385,8 @@ def process_request(job, integrationSteps,chosen_params,task_id):
                 }
             }, 
             upsert=True)
+        timer_step = threading.Thread(target=countTime, args=(task_id,stepIndex))
+        timer_step.start()
         res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
         # or (not res['parsingOK']))
         status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
@@ -395,9 +428,9 @@ def process_request(job, integrationSteps,chosen_params,task_id):
         outputs.update(res["extracted_outputs"])
         outcomeNumber = res_code(status,res['parsingCondition'])
         update_step_field(task_id,stepIndex,"result",outcomeNumber)
-
-    db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set":{"result":
-        (outcomeNumber==2)
+    db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set":{
+        "result": (outcomeNumber==2),
+        "done": True
     }})
 
 def res_code(status,condition):

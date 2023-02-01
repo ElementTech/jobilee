@@ -14,6 +14,9 @@ export class RunService {
   runJob(_id: string,chosen_params: Object): Observable<any> {
     return this.http.post(`${this.baseUrl}/run/${_id}`,chosen_params);
   }
+  retryJob(task_id: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/retry/${task_id}`,{});
+  }
 
 
 }
