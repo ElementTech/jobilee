@@ -131,14 +131,18 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     url = integrationSteps["url"].replace(f'{{url}}',chosen_params.get('url') or '')+(replace_placeholders(integration['definition'].replace(f'{{job}}',job['apiID']),chosen_params))
     chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'],True)
     outputs.update(chosen_params)
-
+    
     payload=querify(chosen_params,integration['splitMultiChoice'])
     headers = {d['key']: d['value'] for d in integration['headers']} 
 
     if integration["type"] == "post" and integration['mode'] == 'payload':
         replacedPayload = replace_parameters(integration['parameter'],integration['payload'],chosen_params)
+        print("replaced payload")
+        print(replacedPayload)
         try:
             payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replacedPayload])
+            if payload.get("something") is "something":
+                payload = {k: v for d in replacedPayload for k, v in d.items()}
         except:
             payload = replacedPayload
     http = urllib3.PoolManager(
