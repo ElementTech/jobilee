@@ -221,12 +221,16 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
             else:
                 try:
                     res_json = json.loads(json.dumps(res_json))
-                    extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs, integration.get('regex') or {})
+                    extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs, integration.get('regex') or {},integration.get('regexMatch') or {})
                     if extracted_outputs:
                         for k, v in extracted_outputs.items():
                             if v is None:
                                 message = "got an empty value for key {}".format(k)
                                 parsingOK = False   
+                            else:
+                                if bool(integration.get("removeDuplicates")):
+                                    if integration.get("removeDuplicates").get(k):
+                                        extracted_outputs[k] = list(set(v))
                     if parsingOK:
                         if bool(integration.get('retryUntil').get('rules')):
                             parsingOK = evaluate_query(integration.get('retryUntil'),extracted_outputs)
@@ -353,7 +357,7 @@ def countTime(task_id,stepIndex):
 
 def process_request(job, integrationSteps,chosen_params,task_id):
     outputs = {}
-
+    integrationSteps['steps'] = [d for d in integrationSteps['steps'] if d.get('name') in job['steps']]
     update_doc = {"job_id":job['_id'],"steps":[],"done": False,"run_time":0,"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
     # timer_task = threading.Thread(target=countTimeTask, args=(task_id))
@@ -455,11 +459,11 @@ def trigger_job_api(id,chosen_params,task_id):
     integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
     process_request(db_doc,integration_doc,chosen_params,task_id)
 
-def extract_placeholder_values_list(data, values_data, placeholder_values,regexList):
+def extract_placeholder_values_list(data, values_data, placeholder_values,regexList,regexMatchList):
     temp_outputs = []
     for item in values_data:
         temp_extracted_outputs = {}
-        extract_placeholder_values(data, item, temp_extracted_outputs,regexList)
+        extract_placeholder_values(data, item, temp_extracted_outputs,regexList,regexMatchList)
         temp_outputs.append(temp_extracted_outputs)
     for d in temp_outputs:
         for l in d:
@@ -480,31 +484,42 @@ def extract_regex(regexPlaceholder,value):
             return value
     else:
         return value
+    
+def regex_match(pattern,value):
+    result = True
+    if bool(pattern):
+        pattern = re.compile(pattern)
+        result = bool(pattern.match(value))
+    return result
 
-def extract_placeholder_values(data, values_data, placeholder_values, regexList):
+def extract_placeholder_values(data, values_data, placeholder_values, regexList, regexMatchList):
     if isinstance(values_data, list):
-        extract_placeholder_values_list(data, values_data, placeholder_values,regexList)
+        extract_placeholder_values_list(data, values_data, placeholder_values,regexList,regexMatchList)
     else:
         for key, value in data.items():
             if isinstance(value, str):
                 match = re.search(r'{(.*?)}', value)
                 if match:
                     placeholder = match.group(1)
-                    placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key])
+                    result = regex_match(regexMatchList.get(placeholder),values_data[key])
+                    if result:
+                        placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key])
             elif isinstance(value, dict):
-                extract_placeholder_values(value, values_data[key], placeholder_values,regexList)
+                extract_placeholder_values(value, values_data[key], placeholder_values,regexList,regexMatchList)
             elif isinstance(value, list):
                 for i in range(len(value)):
                     if isinstance(values_data[key],list):
-                        extract_placeholder_values_list(value[i], values_data[key], placeholder_values,regexList)
+                        extract_placeholder_values_list(value[i], values_data[key], placeholder_values,regexList,regexMatchList)
                     else:
                         if isinstance(value[i], str):
                             match = re.search(r'{(.*?)}', value[i])
                             if match:
                                 placeholder = match.group(1)
-                                placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key][i])
+                                result = regex_match(regexMatchList.get(placeholder),values_data[key][i])
+                                if result:                                
+                                    placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key][i])
                         elif isinstance(value[i], dict):
-                            extract_placeholder_values(value[i], values_data[key][i], placeholder_values,regexList)
+                            extract_placeholder_values(value[i], values_data[key][i], placeholder_values,regexList,regexMatchList)
 
 def check_placeholder_exists(data, values_data):
     for key, value in data.items():

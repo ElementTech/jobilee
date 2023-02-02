@@ -21,7 +21,13 @@
               <span class="p-inputgroup-addon" *ngIf="getSuffix(job.integration) != ''">{{getSuffix(job.integration)}}</span>      
           </div>
         </div>
-    
+        <div class="col-6">
+          <h5>Choose Steps</h5>
+          <p-multiSelect name="steps"  
+          
+          [filter]="true" filterBy="name" 
+          class="min-w-max" [options]="getSteps()" [(ngModel)]="job.steps" ></p-multiSelect>
+        </div>
   
       </div>
       
@@ -69,8 +75,8 @@
                         [ngModelOptions]="{standalone: true}" 
                         [pTooltip]="dynamicResultsError[param.name]"
                         [(ngModel)]="param.default" 
-                        [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name].length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
-                        [options]="toSelectItem(dynamicResults[param.name] || param.default.split(','))"
+                        [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name]?.length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
+                        [options]="toSelectItem(dynamicResults[param.name] || param['default'].split(','))"
                         >
                       </p-multiSelect>
                     </div>

@@ -28,7 +28,7 @@
       <p-button label="{{(job | async)?.name}}" [routerLink]="['/','jobs','run', _id]" icon="pi pi-play"  styleClass="p-button-link text-white p-button-lg text-2xl"></p-button>
     </div>
     <div class="p-toolbar-group-end text-white">
-      <p-button label="Retry" (click)="retry()" icon="pi pi-replay"  styleClass="p-button-link text-white p-button-sm "></p-button>
+      <p-button label="Retry" pTooltip="Retry a finished run" tooltipPosition="top" (onClick)="retry()" [disabled]="!task?.done" icon="pi pi-replay"  styleClass="p-button-link text-white p-button-sm "></p-button>
       <p-tag icon="pi pi-clock" value="{{toHoursMinutesSeconds(
         (task?.run_time | number: '1.0-0')
       )}}"></p-tag>

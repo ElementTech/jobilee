@@ -44,6 +44,7 @@
             </div>
             <div class="p-buttonset">
                 <!-- <span class="job-price">${{job.price}}</span> -->
+                <p-button   [routerLink]="['/jobs','update',job._id]" icon="pi pi-cog"  label="Edit" class="pr-2"  styleClass="p-button-warning"></p-button>
                <p-button  icon="pi pi-history" (click)="jobDetails(job._id)" class="pr-2" styleClass=" p-button-secondary" label="History"></p-button> 
                <p-button  icon="pi pi-play" (click)="runJob(job._id)" label="Run"></p-button>   <!-- [disabled]="job.inventoryStatus === 'OUTOFSTOCK'" -->
                 <!-- <span [class]="'job-badge status-' + job.inventoryStatus.toLowerCase()">{{job.inventoryStatus}}</span> -->

@@ -65,6 +65,7 @@ export class JobFormComponent implements OnInit {
       }
     }
   ]
+  steps: any;
 
   constructor(private dbService: DBService,
     private router: Router, private runService: RunService) {
@@ -79,6 +80,10 @@ export class JobFormComponent implements OnInit {
       this.integrations = data
       this.regenerateParams()
     })
+  }
+  getSteps()
+  {
+    return this.integrations?.find(item => item.name === this.job.integration)?.steps.map((item)=>item.name)
   }
 
   regenerateParams()
