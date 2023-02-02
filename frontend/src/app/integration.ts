@@ -12,10 +12,12 @@ export class Integration {
 export class Step {
     outputs?: Object;
     regex?: Object;
+    regexMatch?: Object;
     retryCount?: Number;
     retryDelay?: Number;
     parsing?: boolean;
-    parsingConfig: QueryBuilderConfig
+    removeDuplicates: Object;
+    parsingConfig: QueryBuilderConfig;
     parsingTimeout?: Number;
     strict?: Boolean;
     parsingDelay?: Number;

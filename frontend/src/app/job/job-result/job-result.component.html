@@ -60,7 +60,7 @@
       <div class="timeline__event__description">
 <!--  *ngIf="(step.outputs | json) != '{}' -->
         <ng-container>
-          <p-panel>
+          <p-panel [toggleable]="true" [collapsed]="true">
             <ng-template pTemplate="header">
               <span style="word-break: break-all;">
                 

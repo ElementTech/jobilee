@@ -470,7 +470,6 @@ def extract_placeholder_values_list(data, values_data, placeholder_values,regexL
             if l in placeholder_values:
                 if not isinstance(placeholder_values[l], list):
                     placeholder_values[l] = [placeholder_values[l]]
-                print("Appending " + d[l])
                 placeholder_values[l].append(d[l])
             else:
                 placeholder_values[l] = d[l]

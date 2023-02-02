@@ -104,6 +104,8 @@ export class IntegrationFormComponent implements OnInit {
       strict: true,
       parsingDelay: 1,
       regex: {},
+      regexMatch: {},
+      removeDuplicates: {},
       outputs: {},//{ "result": "{result}" },
       parsingConfig: {
         fields: {

@@ -44,6 +44,19 @@ export class PlayJobComponent implements OnInit {
       return 0
     }
   }
+  flatten(items) {
+    const flat = [];
+  
+    items.forEach(item => {
+      if (Array.isArray(item)) {
+        flat.push(...this.flatten(item));
+      } else {
+        flat.push(item);
+      }
+    });
+  
+    return flat;
+  }
   regenerateParams()
   {
     this.dynamicResultsError = []
@@ -93,15 +106,19 @@ export class PlayJobComponent implements OnInit {
                 }
               }
           }
+          console.log(param.default)
+
+          if(Object.prototype.toString.call(param.default) === '[object Array]') {
+            param.default = this.flatten(param.default)
+          } else {
+            param.default = param.default.split(",")
+          }
           if (options.length == 0) {
             this.dynamicResultsError[param.name] = "No Results"
-            this.dynamicResults[param.name] = param['default'].split(",")
+            this.dynamicResults[param.name] = param.default[0]
           }
-          try {
-            param.default = param.default.split(",")
-          } catch (error) {
-            param.default = param.default
-          }
+ 
+ 
           if (!options.includes(param.default))
           {
             options.push(param.default[0])
@@ -110,7 +127,7 @@ export class PlayJobComponent implements OnInit {
       } catch (error) {
           console.log(JSON.stringify(error.message));
           this.dynamicResultsError[param.name] = error.message
-          this.dynamicResults[param.name] = param['default'].split(",")
+          this.dynamicResults[param.name] = param.default
       }
   }
 
