@@ -221,7 +221,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
             else:
                 try:
                     res_json = json.loads(json.dumps(res_json))
-                    extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs)
+                    extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs, integration.get('regex') or {})
                     if extracted_outputs:
                         for k, v in extracted_outputs.items():
                             if v is None:
@@ -455,11 +455,11 @@ def trigger_job_api(id,chosen_params,task_id):
     integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
     process_request(db_doc,integration_doc,chosen_params,task_id)
 
-def extract_placeholder_values_list(data, values_data, placeholder_values):
+def extract_placeholder_values_list(data, values_data, placeholder_values,regexList):
     temp_outputs = []
     for item in values_data:
         temp_extracted_outputs = {}
-        extract_placeholder_values(data, item, temp_extracted_outputs)
+        extract_placeholder_values(data, item, temp_extracted_outputs,regexList)
         temp_outputs.append(temp_extracted_outputs)
     for d in temp_outputs:
         for l in d:
@@ -471,30 +471,40 @@ def extract_placeholder_values_list(data, values_data, placeholder_values):
             else:
                 placeholder_values[l] = d[l]
 
-def extract_placeholder_values(data, values_data, placeholder_values):
+def extract_regex(regexPlaceholder,value):
+    if bool(regexPlaceholder):
+        match = re.search(r"\/(.*?)\.", value)
+        if match:
+            return match.group(1)
+        else:
+            return value
+    else:
+        return value
+
+def extract_placeholder_values(data, values_data, placeholder_values, regexList):
     if isinstance(values_data, list):
-        extract_placeholder_values_list(data, values_data, placeholder_values)
+        extract_placeholder_values_list(data, values_data, placeholder_values,regexList)
     else:
         for key, value in data.items():
             if isinstance(value, str):
                 match = re.search(r'{(.*?)}', value)
                 if match:
                     placeholder = match.group(1)
-                    placeholder_values[placeholder] = values_data[key]
+                    placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key])
             elif isinstance(value, dict):
-                extract_placeholder_values(value, values_data[key], placeholder_values)
+                extract_placeholder_values(value, values_data[key], placeholder_values,regexList)
             elif isinstance(value, list):
                 for i in range(len(value)):
                     if isinstance(values_data[key],list):
-                        extract_placeholder_values_list(value[i], values_data[key], placeholder_values)
+                        extract_placeholder_values_list(value[i], values_data[key], placeholder_values,regexList)
                     else:
                         if isinstance(value[i], str):
                             match = re.search(r'{(.*?)}', value[i])
                             if match:
                                 placeholder = match.group(1)
-                                placeholder_values[placeholder] = values_data[key][i]
+                                placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key][i])
                         elif isinstance(value[i], dict):
-                            extract_placeholder_values(value[i], values_data[key][i], placeholder_values)
+                            extract_placeholder_values(value[i], values_data[key][i], placeholder_values,regexList)
 
 def check_placeholder_exists(data, values_data):
     for key, value in data.items():

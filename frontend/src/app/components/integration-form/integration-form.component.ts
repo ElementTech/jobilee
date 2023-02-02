@@ -32,24 +32,7 @@ export class IntegrationFormComponent implements OnInit {
     rules: []
   };
 
-  config: QueryBuilderConfig = {
-    fields: {
-      string: {
-        name: 'string_output', type: 'string'
-      },
-      number: {
-        name: 'number_output', type: 'number'
-      },
-      array: {
-        name: 'array_output',
-        type: 'category',
-        options: [
-          {name: 'option1', value: 'value1'},
-          {name: 'option2', value: 'value2'}
-        ]
-      }
-    }
-  }
+
   authenticationOptions = [
     "None",
     "Basic",
@@ -120,6 +103,7 @@ export class IntegrationFormComponent implements OnInit {
       parsingTimeout: 300,
       strict: true,
       parsingDelay: 1,
+      regex: {},
       outputs: {},//{ "result": "{result}" },
       parsingConfig: {
         fields: {

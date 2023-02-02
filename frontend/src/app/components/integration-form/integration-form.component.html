@@ -30,7 +30,7 @@
           <p-fieldset legend="Authentication" [toggleable]="false">
             
             <p-selectButton name="authentication" [options]="authenticationOptions" (onChange)="setGeneralAuthData($event)" [(ngModel)]="integrationSteps.authentication"></p-selectButton>
-            <div class="p-inputgroup pt-5"  *ngFor="let auth of integrationSteps.authenticationData; let i = index">
+            <div class="p-inputgroup pt-2"  *ngFor="let auth of integrationSteps.authenticationData; let i = index">
                 <div class="p-inputgroup">
                   <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
                   <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'" id="authValue{{i}}" name="authValue{{i}}">
@@ -75,7 +75,7 @@
             
                 </ng-template>
                 <div class="grid">
-                  <div class="col-10">
+                  <div class="col-12">
 
                       <p-tabView>
                         <p-tabPanel>
@@ -216,7 +216,7 @@
                                       </ng-template>
                                       <div *ngIf="integration.overrideAuthentication">
                                         <p-selectButton name="{{step}}authentication" [options]="authenticationOptions" (onChange)="setAuthData($event,step)" [(ngModel)]="integration.authentication"></p-selectButton>
-                                        <div class="p-inputgroup pt-5"  *ngFor="let auth of integration.authenticationData; let i = index">
+                                        <div class="p-inputgroup pt-2"  *ngFor="let auth of integration.authenticationData; let i = index">
                                             <div class="p-inputgroup">
                                               <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
                                               <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'" id="{{step}}authValue{{i}}" name="{{step}}authValue{{i}}">
@@ -296,9 +296,30 @@
         
         
                                     <ng-template let-output pTemplate="item">
-                                      <div class="pt-5 mb-2">
+                                      <div class="pt-2 mb-2">
+
                                         {{output}}
                                       </div>
+
+                                      <!-- <input type="text" pInputText name="{{step}}{{output}}regex" [(ngModel)]="integration.regex" [ngModelOptions]=" 
+                                      {standalone: true}">  -->
+                                    </ng-template>
+                                  </p-listbox>
+                                  
+                                </p-panel>
+                              </div>
+                              <div class="col">
+                                <p-panel header="Regex (Optional)">
+                             
+                                  <p-listbox [readonly]="true" [options]="extractCurlyStrings(integration.outputs)" >
+        
+        
+                                    <ng-template let-output pTemplate="item">
+                                     
+                                      <input type="text" pInputText name="{{step}}{{output}}regex" [(ngModel)]="integration.regex[output]" [ngModelOptions]=" 
+                                      {standalone: true}"> 
+                                      &nbsp;
+
                                     </ng-template>
                                   </p-listbox>
                                   
@@ -360,7 +381,7 @@
                         </p-tabPanel>
                       </p-tabView>
                   </div>
-                     <div class="col-2" style="padding-top:3.8rem">
+                     <!-- <div class="col-2" style="padding-top:3.8rem">
 
                       <p-panel>
                         <ng-template pTemplate="header">
@@ -373,7 +394,7 @@
                         </ng-template>
                         </p-listbox>
                       </p-panel>
-                     </div>
+                     </div> -->
 
                 </div>
                   

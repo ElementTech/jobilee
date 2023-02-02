@@ -11,6 +11,7 @@ export class Integration {
 
 export class Step {
     outputs?: Object;
+    regex?: Object;
     retryCount?: Number;
     retryDelay?: Number;
     parsing?: boolean;
