@@ -75,61 +75,62 @@ export class PlayJobComponent implements OnInit {
   }
 
   async generateDynamicParams(param) {
-      try {
-          let result = await this.runService.runJob(param['job']['id'], param['job']['parameters']).toPromise();
-          let response;
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          while ((response == undefined) || !('result' in response)) {
-            try {
-              response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
-              if ((response == undefined) || !('result' in response)) {
-                  await new Promise(resolve => setTimeout(resolve, 1000));
-              }
-            } catch {
-              response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+    try {
+        let result = await this.runService.runJob(param['job']['id'], param['job']['parameters']).toPromise();
+        let response;
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        while ((response == undefined) || !('result' in response)) {
+          try {
+            response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
+            if ((response == undefined) || !('result' in response)) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
             }
+          } catch {
+            response = await this.dbService.getObject("tasks", result["task_id"]).toPromise();
           }
-          let options: any = []
-          if (response['result']){
-              for (const item of param['job']['from']) {
-                for (const stepResult of response['steps'])
-                {
-                  if (stepResult['step'] == item['step']) {
-                      for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
+        }
+        let options: any = []
+
+        if (response['result']){
+          
+            for (const item of param['job']['from']) {
+              for (const stepResult of response['steps'])
+              {
+                if (stepResult['name'] == item['step']) {
+                    for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
+                    {
+                      if (item['outputs'].includes(stepKey))
                       {
-                        if (item['outputs'].includes(stepKey))
-                        {
-                          options = options.concat(stepValue)
-                        }
+                        options = options.concat(stepValue)
                       }
-                  }
+                    }
                 }
               }
-          }
-          console.log(param.default)
+            }
+        }
 
-          if(Object.prototype.toString.call(param.default) === '[object Array]') {
-            param.default = this.flatten(param.default)
-          } else {
-            param.default = param.default.split(",")
-          }
-          if (options.length == 0) {
-            this.dynamicResultsError[param.name] = "No Results"
-            this.dynamicResults[param.name] = param.default[0]
-          }
- 
- 
-          if (!options.includes(param.default))
-          {
-            options.push(param.default[0])
-          }
-          this.dynamicResults[param.name] = options
-      } catch (error) {
-          console.log(JSON.stringify(error.message));
-          this.dynamicResultsError[param.name] = error.message
-          this.dynamicResults[param.name] = param.default
-      }
-  }
+        if(Object.prototype.toString.call(param.default) === '[object Array]') {
+          param.default = this.flatten(param.default)
+        } else {
+          param.default = param.default.split(",")
+        }
+        if (options.length == 0) {
+          this.dynamicResultsError[param.name] = "No Results"
+          this.dynamicResults[param.name] = param.default[0]
+        }
+
+
+        if (!options.includes(param.default))
+        {
+          options.push(param.default[0])
+        }
+        this.dynamicResults[param.name] = options
+    } catch (error) {
+        console.log(JSON.stringify(error.message));
+        this.dynamicResultsError[param.name] = error.message
+        this.dynamicResults[param.name] = param.default
+    }
+}
 
 
   list(){

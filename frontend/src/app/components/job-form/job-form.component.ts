@@ -132,11 +132,13 @@ export class JobFormComponent implements OnInit {
           }
         }
         let options: any = []
+
         if (response['result']){
+          
             for (const item of param['job']['from']) {
               for (const stepResult of response['steps'])
               {
-                if (stepResult['step'] == item['step']) {
+                if (stepResult['name'] == item['step']) {
                     for (const [stepKey, stepValue] of Object.entries(stepResult['outputs']))
                     {
                       if (item['outputs'].includes(stepKey))
@@ -148,7 +150,6 @@ export class JobFormComponent implements OnInit {
               }
             }
         }
-        console.log(param.default)
 
         if(Object.prototype.toString.call(param.default) === '[object Array]') {
           param.default = this.flatten(param.default)

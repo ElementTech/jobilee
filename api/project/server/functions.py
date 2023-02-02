@@ -54,14 +54,12 @@ def prepare_params(job_params, chosen_params, splitMultiChoice, payload):
                         if splitMultiChoice:
                             chosen_params[x] = temp
                         else:
-                            print(temp)
                             chosen_params[x] = ','.join(temp)               
                     else:
                         if splitMultiChoice:
                             chosen_params[x] = temp.split(",")
                         else:
                             chosen_params[x] = temp
-    print(chosen_params)
     return chosen_params
 
 def replace_template(parameter, key_value_pairs):
@@ -139,8 +137,6 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     headers = {d['key']: d['value'] for d in integration['headers']} 
     if integration["type"] == "post" and integration['mode'] == 'payload':
         replacedPayload = replace_parameters(integration['parameter'],integration['payload'],chosen_params)
-        print("replaced payload")
-        print(replacedPayload)
         try:
             payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replacedPayload])
             if payload.get("something") is "something":
@@ -165,8 +161,6 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
 
     update_step_field(task_id,stepIndex,"url",url)
     update_step_field(task_id,stepIndex,"payload",payload)
-    print(headers,outputs.get("token"))
-
     try:
         if integration["type"] == "post" and integration['mode'] == 'payload':
             r = http.request(
@@ -234,13 +228,11 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                     if parsingOK:
                         if bool(integration.get('retryUntil').get('rules')):
                             parsingOK = evaluate_query(integration.get('retryUntil'),extracted_outputs)
-                            print("retryUntil parsing condition is: {}".format(str(parsingOK)))
                             if not parsingOK:
                                 message = "Did not get all outputs to parse yet"        
                                                 
                         if bool(integration.get('failWhen').get('rules')):
                             parsingCondition = not evaluate_query(integration.get('failWhen'),extracted_outputs)
-                            print("failWhen parsing condition is: {}".format(str(parsingCondition)))
                             if not parsingCondition:
                                 message = "Failure When Condition is True"
                 except Exception as e:
@@ -271,7 +263,6 @@ def evaluate_query(query, data):
         operator = rule["operator"]
         value = rule.get("value")
         actual_value = data.get(field)
-        print("actual_value is {} while value is {}".format(actual_value,value))
         if operator == "<=":
             return actual_value <= value
         elif operator == "contains":
@@ -345,16 +336,6 @@ def countTime(task_id,stepIndex):
         db["tasks"].update_one({"_id": ObjectId(task_id)}, {'$inc': {'run_time': 1}},upsert=True)
         stepFinished = data['steps'][stepIndex]['result'] != 0
 
-
-# def countTimeTask(task_id):
-#     taskFinished = False
-#     while not taskFinished:
-#         time.sleep(1)
-#         db["tasks"].update_one({"_id": ObjectId(task_id)}, {'$inc': {'run_time': 1}},upsert=True)
-#         data = db["tasks"].find_one({'_id': ObjectId(task_id)})
-#         print("data['done'] is {}".format(data['done']))       
-#         taskFinished = data['done'] if data['done'] is not None else False
-
 def process_request(job, integrationSteps,chosen_params,task_id):
     outputs = {}
     integrationSteps['steps'] = [d for d in integrationSteps['steps'] if d.get('name') in job['steps']]
@@ -377,6 +358,7 @@ def process_request(job, integrationSteps,chosen_params,task_id):
                 "$push": {
                     "steps": {
                         "url": '',
+                        "name": step['name'],
                         "step":stepIndex,
                         "outputs": {},
                         "run_time": 0,
@@ -394,7 +376,6 @@ def process_request(job, integrationSteps,chosen_params,task_id):
         res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
         # or (not res['parsingOK']))
         status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
-        print("STATUS IS " + str(status))
 
         while status not in range(200, 300) and (retriesLeft > 0):
             res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
@@ -412,7 +393,6 @@ def process_request(job, integrationSteps,chosen_params,task_id):
             parsingDelay = (step['parsingDelay'] if step['parsingDelay'] >= 0 else 0)
             parsingTimeout = (step['parsingTimeout'] if step['parsingTimeout'] >= 0 else 0)            
             while (res['parsingOK'] is False) and (timeOutLeft > 0):
-                print("parsing condition is " + str(res['parsingCondition']))
                 res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
                 status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
                 timeOutLeft = int(parsingTimeout - (datetime.now()-timeOutStartTime).total_seconds())
@@ -438,8 +418,6 @@ def process_request(job, integrationSteps,chosen_params,task_id):
     }})
 
 def res_code(status,condition):
-    print("status " + str(status))
-    print("condition " + str(condition))
     if condition is False:
         return 3
     else:
