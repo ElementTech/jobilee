@@ -63,10 +63,13 @@
             <mat-step *ngFor="let integration of integrationSteps.steps; let step = index">
       
               <ng-template matStepLabel >
-                <div class="col-10">
+                <div class="col-12">
                   <div class="p-inputgroup">
-                    <button type="button" (click)="integrationSteps.steps.splice(step,1)" pButton pRipple icon="pi pi-minus" class="p-button-secondary pl-3 pr-3"></button>      
-
+                    
+                    <button type="button" (click)="integrationSteps.steps.splice(step,1)" pButton pRipple icon="pi pi-trash" class="p-button-secondary pl-3 pr-3">
+                      &nbsp;{{integration.name}}
+                    </button>      
+            
                 </div>
               </div>
           
