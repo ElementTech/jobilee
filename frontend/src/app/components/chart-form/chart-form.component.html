@@ -42,8 +42,26 @@
             [filter]="true" [filterInputAutoFocus]="true"
             placeholder="Select Outputs">
           </p-treeSelect>
-          {{(placeholders | async) | json}}
-          <!-- <p-chip [label]="o" *ngFor="let o of placeholders"></p-chip> -->
+
+          <p-table [value]="(placeholders|async)" >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Job</th>
+                    <th>Step</th>
+                    <th>Outputs</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-o>
+                <tr>
+                    <td>{{o.job}}</td>
+                    <td>{{o.step}}</td>
+                    <td>
+                      <p-chip [label]="'{'+a+'}'" *ngFor="let a of (o.outputs)"></p-chip>
+                     </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
         </div>
         <div class="col-6">
           <p-panel header="Definition" [toggleable]="false">

@@ -65,9 +65,7 @@ export class ChartFormComponent implements OnInit {
   
 
   calculatePlaceholders() {
-    const circle = JSON.parse(JSON.stringify(this.chart.jobs, this.circularReplacer())).filter(n => n)
-    console.log(circle)
-    this.placeholders = this.dbService.calculateJobOutputs(circle)
+    this.placeholders = this.dbService.calculateJobOutputs(JSON.parse(JSON.stringify(this.chart.jobs, this.circularReplacer())).filter(n => n))
   }
   constructor(private dbService: DBService,
     private router: Router, private runService: RunService) {
