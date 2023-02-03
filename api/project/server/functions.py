@@ -126,9 +126,13 @@ def transform_dict(d):
     new_dicts = []
     for i in range(num_entries):
         new_dict = {}
+        gotNone = False
         for key in d:
+            if d[key][i] is None:
+                gotNone = True
             new_dict[key] = d[key][i]
-        new_dicts.append(new_dict)
+        if not gotNone:
+            new_dicts.append(new_dict)
     return new_dicts
 
 def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id,stepIndex):

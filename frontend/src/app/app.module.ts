@@ -67,7 +67,14 @@ import {DialogModule} from 'primeng/dialog';
 import { KtdGridModule } from '@katoid/angular-grid-layout';
 import {TimelineModule} from 'primeng/timeline';
 import { JobResponseComponent } from './components/job-response/job-response.component';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { UpdateChartComponent } from './chart/update-chart/update-chart.component';
+import { ChartListComponent } from './chart/chart-list/chart-list.component';
+import { ChartDetailsComponent } from './chart/chart-details/chart-details.component';
+import { CreateChartComponent } from './chart/create-chart/create-chart.component';
+import { ChartFormComponent } from './components/chart-form/chart-form.component';
+import {ChartModule} from 'primeng/chart';
+import {TreeSelectModule} from 'primeng/treeselect';
 @NgModule({
   declarations: [
     AppComponent,
@@ -87,7 +94,12 @@ import { JobResponseComponent } from './components/job-response/job-response.com
     IntegrationFormComponent,
     BreadcrumbComponent,
     JobResultComponent,
-    JobHistoryComponent
+    JobHistoryComponent,
+    UpdateChartComponent,
+    ChartListComponent,
+    ChartDetailsComponent,
+    CreateChartComponent,
+    ChartFormComponent
   ],
   imports: [
     BrowserModule,
@@ -108,6 +120,7 @@ import { JobResponseComponent } from './components/job-response/job-response.com
     KtdGridModule,
     FieldsetModule,
     BreadcrumbModule,
+    TreeSelectModule,
     ProgressSpinnerModule,
     RadioButtonModule,
     SelectButtonModule,
@@ -115,6 +128,7 @@ import { JobResponseComponent } from './components/job-response/job-response.com
     HighlightModule,
     SidebarModule,
     TieredMenuModule,
+    ChartModule,
     RippleModule,
     DropdownModule,
     DividerModule,
@@ -134,7 +148,8 @@ import { JobResponseComponent } from './components/job-response/job-response.com
     ListboxModule,
     ToastModule,
     ProgressBarModule,
-    InputNumberModule
+    InputNumberModule,
+    FontAwesomeModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

@@ -1,0 +1,34 @@
+
+:host ::ng-deep json-editor,
+:host ::ng-deep json-editor .jsoneditor,
+:host ::ng-deep json-editor > div,
+:host ::ng-deep json-editor jsoneditor-outer {
+  height: 400px;
+}
+// :host ::ng-deep .p-fieldset-content {
+// max-width: 100%;
+// }
+
+:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect ,:host ::ng-deep .p-treeselect {
+  width: 100%;
+}
+:host ::ng-deep .p-inputnumber{
+  height: 31px;
+
+}
+:host ::ng-deep .p-treeselect-label{
+  display: flex;
+  flex-wrap: wrap;
+}
+:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect {
+    width: 100%;
+  }
+
+
+
+.my-dropdown-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}

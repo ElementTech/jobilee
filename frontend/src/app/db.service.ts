@@ -38,5 +38,12 @@ export class DBService {
     return this.http.get(`${this.baseUrl}/${col}/${key}/${value}`);
   }  
 
+  getJobOutputs(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/jobs/outputs`);
+  }
+  calculateJobOutputs(outputs): Observable<any> {
+    return this.http.post(`${this.baseUrl}/jobs/outputs`,outputs);
+  }
+
   
 }

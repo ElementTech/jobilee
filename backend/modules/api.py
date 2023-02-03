@@ -12,6 +12,84 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
 
+def extract_values(obj):
+    if isinstance(obj, dict):
+        values = []
+        for v in obj.values():
+            values.extend(extract_values(v))
+        return values
+    elif isinstance(obj, list):
+        values = []
+        for item in obj:
+            values.extend(extract_values(item))
+        return values
+    elif isinstance(obj, str) and obj.startswith("{") and obj.endswith("}"):
+        return [obj.strip("{}")]
+    else:
+        return []
+
+@app.route('/jobs/outputs', methods=['GET','POST'])
+def outputs():
+    # GET all data from database
+    if request.method == 'GET':
+        output = []
+        allData = db["jobs"].find()
+        for job in allData:
+            integration = db['integrations'].find_one({'name': job['integration']})
+            if integration:
+                output.append({
+                    "label": job['name'],
+                    "data": job['name'],
+                    "expandedIcon": "pi pi-folder-open",
+                    "collapsedIcon": "pi pi-folder",
+                    "type": "job",
+                    "children": [
+                        {"label": step['name'], "icon": "pi pi-bolt", 
+                        "expandedIcon": "pi pi-folder-open",
+                        "collapsedIcon": "pi pi-folder",
+                        "job": job['name'],
+                        "type": "step",
+                        "data": step['name'], 'children': [
+                            {"label": out, "icon": "pi pi-cloud-download", 
+                            "expandedIcon": "pi pi-folder-open",
+                            "job": job['name'],
+                            "step": step['name'],
+                            "type": "output",
+                            "collapsedIcon": "pi pi-folder",
+                            "data": out} for out in extract_values(step['outputs'])
+                        ]} for step in integration['steps'] if step['outputs']
+                    ]
+                })
+        return jsonify(parse_json(output))
+    if request.method == 'POST':
+        data = extract_data(request.json)
+        for dict_item in data:
+            for key in dict_item:
+                if isinstance(dict_item[key],dict):
+                    dict_item[key] = dict_item[key]['data']
+        return jsonify(parse_json(data))
+
+def extract_data(input_list):
+    result = []
+    for input_dict in input_list:
+        if input_dict["type"] == "job":
+            result.extend(extract_data(input_dict["children"]))
+        elif input_dict["type"] == "output":
+            result.append({
+                "job": input_dict["job"],
+                "step": input_dict["step"],
+                "outputs": input_dict["data"],
+            })      
+        elif input_dict["type"] == "step":
+            outputs = [out["data"] for out in input_dict["children"]]
+            if len(outputs) > 0:
+                result.append({
+                    "job": input_dict["job"],
+                    "step": input_dict["data"],
+                    "outputs": outputs,
+                })
+    return result
+
 @app.route('/<collection>', methods=['POST', 'GET','DELETE'])
 def data(collection):
     # POST a data to database

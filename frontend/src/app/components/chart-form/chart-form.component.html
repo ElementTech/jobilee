@@ -1,0 +1,75 @@
+  <p-fieldset legend="{{formType}} Chart" [toggleable]="false" styleClass="maxw">
+    <form (ngSubmit)="onSubmit()">
+
+      <div class="grid">
+        <div class="col-6">
+          <h5>Name</h5>
+          <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="chart.name" name="name" placeholder="mychart">
+          <h5>Type</h5>
+
+          <p-dropdown (onChange)="setDefinition()" [options]="types" [(ngModel)]="chart.type" optionValue="name" optionLabel="name" name="type" [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Chart Type">
+            <ng-template pTemplate="selectedItem">
+                <div *ngIf="chart.type" class="my-dropdown-item" > 
+                    <i [class]="getChartIcon()"></i>
+                    &nbsp;
+                    <div >{{chart.type}}</div>
+                </div>
+            </ng-template>
+
+            <ng-template let-chart pTemplate="item" >
+                  <div class="my-dropdown-item" >
+                    <i  [class]="chart.icon"></i>
+                    &nbsp;
+                    <div>{{chart.name}}</div>
+                  </div>
+            </ng-template>
+        </p-dropdown>
+  
+        </div>
+        <div class="col-6" style="max-width:70rem">
+          <h5>Select Outputs from Jobs</h5>
+        
+          <p-treeSelect
+   
+          [showClear]="true"
+            name="jobs"
+            [(ngModel)]="chart.jobs" 
+            [options]="outputs | async"
+            (onNodeSelect)="calculatePlaceholders()" 
+            (onNodeUnselect)="calculatePlaceholders()"
+            [metaKeySelection]="false" 
+            selectionMode="checkbox"
+            [filter]="true" [filterInputAutoFocus]="true"
+            placeholder="Select Outputs">
+          </p-treeSelect>
+          {{(placeholders | async) | json}}
+          <!-- <p-chip [label]="o" *ngFor="let o of placeholders"></p-chip> -->
+        </div>
+        <div class="col-6">
+          <p-panel header="Definition" [toggleable]="false">
+            <ng-template pTemplate="icons">
+              <button type="button" pButton class="p-panel-header-icon p-link" (click)="chart.definition={}">
+                <span pTooltip="Clear"class="pi pi-trash"></span>
+            </button>                  
+         </ng-template>            
+            <json-editor  [options]="editorOptions" [(ngModel)]="definitionTemplate" [ngModelOptions]=" 
+            {standalone: true}"></json-editor>
+            </p-panel>
+        </div>
+        <div class="col-6">
+            <p-panel header="Chart"  [toggleable]="false">
+              <ng-template pTemplate="icons">
+                 
+                      <button type="button" pButton class="p-panel-header-icon p-link" (click)="templateToDefinition()">
+                          <span pTooltip="Render Definition"class="pi pi-bolt"></span>
+                      </button>
+              </ng-template>
+            <p-chart width="400" height="400" [type]="chart.type" [data]="this.chart.definition" [options]=""></p-chart>
+
+              </p-panel>
+        </div>
+      </div>
+   
+      <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
+    </form>
+  </p-fieldset>

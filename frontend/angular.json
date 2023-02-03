@@ -30,7 +30,8 @@
               "node_modules/primeflex/primeflex.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js"
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/chart.js/dist/chart.js"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

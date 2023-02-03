@@ -13,6 +13,10 @@ import { PlayJobComponent } from './job/play-job/play-job.component';
 import { JobResultComponent } from './job/job-result/job-result.component';
 import { JobHistoryComponent } from './job/job-history/job-history.component';
 import { JobResponseComponent } from './components/job-response/job-response.component';
+import { ChartListComponent } from './chart/chart-list/chart-list.component';
+import { CreateChartComponent } from './chart/create-chart/create-chart.component';
+import { UpdateChartComponent } from './chart/update-chart/update-chart.component';
+import { ChartDetailsComponent } from './chart/chart-details/chart-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'catalog', pathMatch: 'full' },
@@ -29,6 +33,10 @@ const routes: Routes = [
   { path: 'integrations/add', component: CreateIntegrationComponent },
   { path: 'integrations/update/:_id', component: UpdateIntegrationComponent },
   { path: 'integrations/details/:_id', component: IntegrationDetailsComponent },
+  { path: 'charts', component: ChartListComponent },
+  { path: 'charts/add', component: CreateChartComponent },
+  { path: 'charts/update/:_id', component: UpdateChartComponent },
+  { path: 'charts/details/:_id', component: ChartDetailsComponent },
 ];
 
 @NgModule({
