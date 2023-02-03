@@ -55,7 +55,7 @@ def onedata(collection,id=None,key=None,value=None):
     else:
         # GET all data from database
         if request.method == 'GET':
-            allData = db[collection].find({key:value}).sort('creation_time', -1)
+            allData = db[collection].find({key:value}).limit(100).sort('creation_time', -1)
             dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
             return jsonify(parse_json(dataJson))
             

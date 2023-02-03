@@ -69,8 +69,14 @@
 
               </span>
           </ng-template>
+          {{item}}
             <ng-template pTemplate="icons">
               
+              <button [routerLink]="['/','jobs','response', _id,task_id,step.step,'items']" type="button" pButton class="p-panel-header-icon p-link">
+                <span pTooltip="View Raw Extracted Outputs" tooltipPosition="top" class="pi
+                pi-database"></span>
+                </button>
+
               <button [routerLink]="['/','jobs','response', _id,task_id,step.step,'payload']" type="button" pButton class="p-panel-header-icon p-link">
                 <span pTooltip="Sent Payload" tooltipPosition="top" class="pi 
                 pi-file-import"></span>

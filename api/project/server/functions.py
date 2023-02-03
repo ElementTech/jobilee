@@ -121,7 +121,15 @@ def trace_error(ex):
         'trace': trace
     }))
 
-
+def transform_dict(d):
+    num_entries = len(list(d.values())[0])
+    new_dicts = []
+    for i in range(num_entries):
+        new_dict = {}
+        for key in d:
+            new_dict[key] = d[key][i]
+        new_dicts.append(new_dict)
+    return new_dicts
 
 def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id,stepIndex):
     message = "Success"
@@ -139,7 +147,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
         replacedPayload = replace_parameters(integration['parameter'],integration['payload'],chosen_params)
         try:
             payload = FakeDict([(list(k.keys())[0],list(k.values())[0]) for k in replacedPayload])
-            if payload.get("something") is "something":
+            if payload.get("something") == "something":
                 payload = {k: v for d in replacedPayload for k, v in d.items()}
         except:
             payload = replacedPayload
@@ -159,8 +167,7 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
     if authType == "Bearer":
         headers.update({'Authorization': 'Bearer {token}'.format(token=authData[0]['value'].replace(f"{{token}}",outputs.get("token") or ''))})
 
-    update_step_field(task_id,stepIndex,"url",url)
-    update_step_field(task_id,stepIndex,"payload",payload)
+    update_step_field(task_id,stepIndex,{"url":url,"payload":payload})
     try:
         if integration["type"] == "post" and integration['mode'] == 'payload':
             r = http.request(
@@ -216,12 +223,16 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                 try:
                     res_json = json.loads(json.dumps(res_json))
                     extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs, integration.get('regex') or {},integration.get('regexMatch') or {})
+                    try:
+                        update_step_field(task_id,stepIndex,{'items':transform_dict(extracted_outputs)})
+                    except:
+                        update_step_field(task_id,stepIndex,{'items':[extracted_outputs]})
                     if extracted_outputs:
                         for k, v in extracted_outputs.items():
                             if v is None:
                                 message = "got an empty value for key {}".format(k)
                                 parsingOK = False   
-                            else:
+                            elif isinstance(v,list):
                                 if bool(integration.get("removeDuplicates")):
                                     if integration.get("removeDuplicates").get(k):
                                         extracted_outputs[k] = list(set(v))
@@ -243,10 +254,12 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                         r.status = 500
         else:
             extracted_outputs['response'] = json.dumps(res_json)
-    update_step_field(task_id,stepIndex,"outputs",extracted_outputs)
-    update_step_field(task_id,stepIndex,"response",res_json)
-    update_step_field(task_id,stepIndex,"message",message)
-    update_step_field(task_id,stepIndex,"status",r['status'] if isinstance(r,dict) else r.status)
+    update_step_field(task_id,stepIndex,{
+        "outputs":extracted_outputs,
+        "response":res_json,
+        "message":message,
+        "status":r['status'] if isinstance(r,dict) else r.status
+    })
     return {
         'parsingCondition': parsingCondition,
         'parsingOK': parsingOK,
@@ -307,11 +320,15 @@ def evaluate_query(query, data):
     
     return evaluate_rules(query["rules"], data, query["condition"])
 
+def add_prefix_to_keys(d):
+    return {f"steps.$.{key}": value for key, value in d.items()}
 
-def update_step_field(task_id,index,key,value):
+def update_step_field(task_id,index,value):
     db["tasks"].update_one(
-        {'_id': ObjectId(task_id), 'steps': {'$elemMatch': { 'step':  index }}}, {'$set': {'steps.$.'+key: value}
-    })
+        {'_id': ObjectId(task_id), 'steps': {'$elemMatch': { 'step':  index }}}, {
+            '$set': add_prefix_to_keys(value)
+        }
+    )
 
 # def update_time(task_id):
 #     db["tasks"].update_one(
@@ -332,7 +349,7 @@ def countTime(task_id,stepIndex):
         time.sleep(1)
         data = db["tasks"].find_one({'_id': ObjectId(task_id)})        
         run_time += 1 
-        update_step_field(task_id,stepIndex,"run_time",run_time)
+        update_step_field(task_id,stepIndex,{"run_time":run_time})
         db["tasks"].update_one({"_id": ObjectId(task_id)}, {'$inc': {'run_time': 1}},upsert=True)
         stepFinished = data['steps'][stepIndex]['result'] != 0
 
@@ -381,10 +398,12 @@ def process_request(job, integrationSteps,chosen_params,task_id):
             res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
             status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
             retriesLeft -= 1
-            update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
-            update_step_field(task_id,stepIndex,"parsingCondition",res['parsingCondition'])
-            update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
-            update_step_field(task_id,stepIndex,"percentDone",percent(retriesLeft,step['retryCount']))
+            update_step_field(task_id,stepIndex,{
+                'parsingOK': res['parsingOK'],
+                'parsingCondition': res['parsingCondition'],
+                'retriesLeft': retriesLeft,
+                'percentDone': percent(retriesLeft,step['retryCount'])
+            })
             time.sleep(retriesDelay)
 
         if status in range(200, 300) and step['parsing']:
@@ -396,22 +415,25 @@ def process_request(job, integrationSteps,chosen_params,task_id):
                 res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
                 status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
                 timeOutLeft = int(parsingTimeout - (datetime.now()-timeOutStartTime).total_seconds())
-                update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
-                update_step_field(task_id,stepIndex,"retriesLeft",retriesLeft)
-                update_step_field(task_id,stepIndex,"timeOutLeft",timeOutLeft)
-                update_step_field(task_id,stepIndex,"parsingCondition",res['parsingCondition'])
-                update_step_field(task_id,stepIndex,"percentDone",-1)
+                update_step_field(task_id,stepIndex,{
+                    'parsingOK': res['parsingOK'],
+                    'timeOutLeft': timeOutLeft,
+                    'retriesLeft': retriesLeft,
+                    'parsingCondition': res['parsingCondition'],
+                    'percentDone': -1
+                })                
                 if res['parsingCondition'] is False:
                     break
                 time.sleep(parsingDelay)
-
-        update_step_field(task_id,stepIndex,"parsingOK",res['parsingOK'])
-        update_step_field(task_id,stepIndex,"timeOutLeft",0)
-        update_step_field(task_id,stepIndex,"parsingCondition",res['parsingCondition'])
-        update_step_field(task_id,stepIndex,"percentDone",100)
         outputs.update(res["extracted_outputs"])
         outcomeNumber = res_code(status,res['parsingCondition'])
-        update_step_field(task_id,stepIndex,"result",outcomeNumber)
+        update_step_field(task_id,stepIndex,{
+            'parsingOK': res['parsingOK'],
+            'timeOutLeft': 0,
+            'parsingCondition': res['parsingCondition'],
+            'percentDone': 100,
+            'result':outcomeNumber
+        })            
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set":{
         "result": (outcomeNumber==2),
         "done": True
@@ -481,6 +503,8 @@ def extract_placeholder_values(data, values_data, placeholder_values, regexList,
                     result = regex_match(regexMatchList.get(placeholder),values_data[key])
                     if result:
                         placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key])
+                    else:
+                        placeholder_values[placeholder] = None
             elif isinstance(value, dict):
                 extract_placeholder_values(value, values_data[key], placeholder_values,regexList,regexMatchList)
             elif isinstance(value, list):
@@ -495,6 +519,8 @@ def extract_placeholder_values(data, values_data, placeholder_values, regexList,
                                 result = regex_match(regexMatchList.get(placeholder),values_data[key][i])
                                 if result:                                
                                     placeholder_values[placeholder] = extract_regex(regexList.get(placeholder),values_data[key][i])
+                                else:
+                                    placeholder_values[placeholder] = None                                    
                         elif isinstance(value[i], dict):
                             extract_placeholder_values(value[i], values_data[key][i], placeholder_values,regexList,regexMatchList)
 

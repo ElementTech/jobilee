@@ -51,7 +51,7 @@ export class JobHistoryComponent implements OnInit {
     this.reloadData(); // api call
     this.interval = setInterval(() => {
         this.reloadData(); // api call
-    }, 3000);
+    }, 5000);
   }
   getBackground(task)
   { 
