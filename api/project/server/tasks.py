@@ -81,6 +81,7 @@ def trigger_chart_job_task(self,chosen_params):
                         if isinstance(step['items'],list):
                             for output in step['items']:
                                 labels.append(output[chosen_params['label']['outputs']])
+        labels = list(set(labels))
         for dataset in chosen_params['definitionTemplate']:
             for v in taskResults:
                 for step in v['steps']:
@@ -125,7 +126,7 @@ def trigger_chart_job_task(self,chosen_params):
         db["chart_tasks"].update_one({"_id": ObjectId(self.request.id)}, {"$set": {
             "done": True,
             "result": True,
-            "output": {
+            "outputs": {
                 "labels": labels,
                 "datasets": datasets
             }
