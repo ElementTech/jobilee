@@ -55,6 +55,7 @@ def outputs():
                             "job": job['name'],
                             "step": step['name'],
                             "type": "output",
+                            "selectable": False,
                             "collapsedIcon": "pi pi-folder",
                             "data": out} for out in extract_values(step['outputs'])
                         ]} for step in integration['steps'] if step['outputs']
@@ -73,14 +74,20 @@ def combine_outputs(input_list):
     result = {}
     for input_dict in input_list:
         step = input_dict["step"]
-        if step in result:
-            result[step]["outputs"] += input_dict["outputs"]
-        else:
-            result[step] = {
+        for out in input_dict["outputs"]:
+            result[out] = {
                 "job": input_dict["job"],
                 "step": step,
-                "outputs": input_dict["outputs"],
+                "outputs": out,
             }
+        # if step in result:
+        #     result[step]["outputs"] += input_dict["outputs"]
+        # else:
+        #     result[step] = {
+        #         "job": input_dict["job"],
+        #         "step": step,
+        #         "outputs": input_dict["outputs"],
+        #     }
     return list(result.values())
 
 

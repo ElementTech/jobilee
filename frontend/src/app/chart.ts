@@ -4,4 +4,6 @@ export class Chart {
     type?: string;
 definition?: any;
 jobs?: any;
+label?: string;
+definitionTemplate?: any;
 }

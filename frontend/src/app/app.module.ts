@@ -74,6 +74,7 @@ import { ChartDetailsComponent } from './chart/chart-details/chart-details.compo
 import { CreateChartComponent } from './chart/create-chart/create-chart.component';
 import { ChartFormComponent } from './components/chart-form/chart-form.component';
 import {ChartModule} from 'primeng/chart';
+import {DragDropModule} from 'primeng/dragdrop';
 import {TreeSelectModule} from 'primeng/treeselect';
 @NgModule({
   declarations: [
@@ -118,6 +119,7 @@ import {TreeSelectModule} from 'primeng/treeselect';
     CardModule,
     StepsModule,
     KtdGridModule,
+    DragDropModule,
     FieldsetModule,
     BreadcrumbModule,
     TreeSelectModule,

@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 })
 
 export class ChartFormComponent implements OnInit {
-
+  jobsSelected: any;
   public editorOptions: JsonEditorOptions;
   public initialData: any;
   toSelectItem = toSelectItem;
@@ -64,10 +64,27 @@ export class ChartFormComponent implements OnInit {
        return value;
    };
 };
+  definition: any;
   
-
+addDataset(){
+  this.chart.definitionTemplate.push({
+    output: "",
+    type: "",
+    condition: "",
+    value: ""
+  })
+  this.chart.definitionTemplate = [...this.chart.definitionTemplate]
+}
+removeDataset(index)
+{
+  this.chart.definitionTemplate.splice(index,1)
+}
   calculatePlaceholders() {
-    this.placeholders = this.dbService.calculateJobOutputs(JSON.parse(JSON.stringify(this.chart.jobs, this.circularReplacer())).filter(n => n))
+    // console.log(JSON.parse(JSON.stringify(this.chart.jobs, this.circularReplacer())).filter(n => n))
+    this.dbService.calculateJobOutputs(JSON.parse(JSON.stringify(this.jobsSelected, this.circularReplacer())).filter(n => n)).subscribe(data=>{
+      this.placeholders = data
+      this.chart.jobs = [...new Set(data.map(i=>i.job))];
+    })
   }
   constructor(private dbService: DBService,
     private router: Router, private runService: RunService) {
@@ -118,20 +135,22 @@ export class ChartFormComponent implements OnInit {
             }
         ]
       }
-      this.chart.definition = this.definitionTemplate
+      this.definition = this.definitionTemplate
 
     }
   }
   templateToDefinition()
   {
-    console.log("rendering")
-    this.chart.definition = this.definitionTemplate
+    this.runService.renderChart(this.chart).subscribe(data=>{
+      console.log(data)
+    })
+    // this.chart.definition = this.definitionTemplate
   }
   setDefinition()
   {
     switch (this.chart.type) {
       case "table":
-        this.definitionTemplate = {
+        this.definition = {
           headers: ['subjectCode', 'subjectTitle', 'subjectGroup', 'status'],
           items: [
             {
@@ -150,7 +169,7 @@ export class ChartFormComponent implements OnInit {
         }      
         break;
       case "bar":
-        this.definitionTemplate = {
+        this.definition = {
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
           datasets: [
               {
@@ -167,7 +186,7 @@ export class ChartFormComponent implements OnInit {
         }
         break;
       case "doughnut":
-        this.definitionTemplate = {
+        this.definition = {
           labels: ['A','B','C'],
           datasets: [
               {
@@ -187,7 +206,7 @@ export class ChartFormComponent implements OnInit {
       }
         break;
       case "line":
-        this.definitionTemplate = {
+        this.definition = {
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
           datasets: [
               {
@@ -208,7 +227,7 @@ export class ChartFormComponent implements OnInit {
       }
         break;
       case "pie":
-        this.definitionTemplate = {
+        this.definition = {
           labels: ['A','B','C'],
           datasets: [
               {
@@ -230,7 +249,7 @@ export class ChartFormComponent implements OnInit {
       default:
         break;
     }
-    this.chart.definition = this.definitionTemplate
+    this.definition = this.definitionTemplate
   }
   getChartIcon()
   {

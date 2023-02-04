@@ -18,5 +18,9 @@ export class RunService {
     return this.http.post(`${this.baseUrl}/retry/${task_id}`,{});
   }
 
+  renderChart(data): Observable<any> {
+    return this.http.post(`${this.baseUrl}/chart/render`,data);
+  }
+
 
 }

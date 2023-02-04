@@ -33,7 +33,7 @@
    
           [showClear]="true"
             name="jobs"
-            [(ngModel)]="chart.jobs" 
+            [(ngModel)]="jobsSelected" 
             [options]="outputs | async"
             (onNodeSelect)="calculatePlaceholders()" 
             (onNodeUnselect)="calculatePlaceholders()"
@@ -43,7 +43,7 @@
             placeholder="Select Outputs">
           </p-treeSelect>
 
-          <p-table [value]="(placeholders|async)" styleClass="p-datatable-sm">
+          <p-table [value]="(placeholders)" styleClass="p-datatable-sm">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Job</th>
@@ -56,12 +56,12 @@
                     <td>{{o.job}}</td>
                     <td>{{o.step}}</td>
                     <td>
-                      <p-tag (click)="copyMessage('{'+o.job+':'+o.step+'}')" [value]="'{'+o.job+':'+o.step+'}'"  styleClass="mr-2" severity="warning" ></p-tag>
-                      <p-tag (click)="copyMessage('{'+a+'}')"  styleClass="mr-2" [value]="'{'+a+'}'" *ngFor="let a of [o.outputs].flat(1)"></p-tag>
+                      <!-- <p-tag (click)="copyMessage('{'+o.job+':'+o.step+'}')" [value]="'{'+o.job+':'+o.step+'}'"  styleClass="mr-2" severity="warning" ></p-tag> -->
+                      <p-tag (click)="copyMessage(a)"  styleClass="mr-2" [value]="a" *ngFor="let a of [o.outputs].flat(1)"></p-tag>
                      </td>
                 </tr>
             </ng-template>
-        </p-table>
+         </p-table>
 
         </div>
         <div class="col-6">
@@ -70,9 +70,107 @@
               <button type="button" pButton class="p-panel-header-icon p-link" (click)="chart.definition={}">
                 <span pTooltip="Clear"class="pi pi-trash"></span>
             </button>                  
-         </ng-template>            
-            <json-editor  [options]="editorOptions" [(ngModel)]="definitionTemplate" [ngModelOptions]=" 
-            {standalone: true}"></json-editor>
+         </ng-template>       
+          <div class="p-inputgroup p-2">
+            <span class="p-inputgroup-addon">Label (X)</span>
+            <span class="p-inputgroup-addon"><i class="fa-solid fa-chart-column"></i></span>
+            <p-dropdown [options]="(placeholders)" 
+            name="labels"  
+            [filter]=true 
+            filterBy="outputs" 
+            [(ngModel)]="chart.label" 
+            optionLabel="outputs" 
+            [ngModelOptions]="{standalone: true}">
+          </p-dropdown>   
+          </div>
+  
+        <!-- <div class="p-inputgroup"  *ngFor="let head of integration.headers; let i = index">
+          <input pInputText [(ngModel)]="head.key"  type="text"  name="{{step}}headerKey{{i}}" id="{{step}}headerKey{{i}}">
+          <input pInputText [(ngModel)]="head.value"  type="text"  name="{{step}}headerValue{{i}}" id="{{step}}headerValue{{i}}">
+          <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(step,i,head)"></p-button>
+      </div> -->
+
+      <p-panel header="Datasets" styleClass="min-w-full p-2" [toggleable]="false">
+        <ng-template pTemplate="icons">
+                <button type='button' pButton class="p-panel-header-icon p-link" (click)="addDataset()">
+                    <span class="pi pi-plus"></span>
+                </button>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <!-- {{chart.definitionTemplate | json}} -->
+          <p-table [value]="chart.definitionTemplate" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Name</th>
+                    <th>Output</th>
+                    <th>Type</th>
+                    <th>Condition</th>
+                    <th>Value</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-dataset let-rowIndex="rowIndex">
+                <tr>
+                  <td>
+                    <input pInputText  
+                    [ngModelOptions]="{standalone: true}" 
+                    [(ngModel)]="chart.definitionTemplate[rowIndex].name"  type="text"  name="{{rowIndex}}name" id="{{rowIndex}}name">
+                  </td>
+                  <td>
+                    <div class="p-inputgroup">
+                      <span class="p-inputgroup-addon">Y</span>
+                      <span class="p-inputgroup-addon"><i class="fa-solid fa-chart-bar"></i></span>
+                      <p-multiSelect [options]="(placeholders)" 
+                      appendTo="body"
+                      name="{{rowIndex}}output"  
+                      [filter]=true 
+                      filterBy="outputs" 
+                      [(ngModel)]="chart.definitionTemplate[rowIndex].output" 
+                      optionLabel="outputs" 
+                      [ngModelOptions]="{standalone: true}">
+                    </p-multiSelect>   
+                    </div>
+                  </td>
+                    <td>
+  
+                      <p-dropdown 
+                      [ngModelOptions]="{standalone: true}" [options]="[{name: 'count'}]" 
+                      optionValue="name" name="{{rowIndex}}type"
+                  appendTo="body"[(ngModel)]="chart.definitionTemplate[rowIndex].type" optionLabel="name"></p-dropdown>
+  
+                    </td>
+                    <td>
+                      <p-dropdown  
+                      appendTo="body"
+                      optionValue="name"
+                      name="{{rowIndex}}condition"
+                      [ngModelOptions]="{standalone: true}" [options]="[
+                        {name: '=='},
+                        {name: '!='},
+                        {name: 'contains'},
+                        {name: 'in'},
+                        {name: 'not in'},
+                        {name: '>'},
+                        {name: '\<'},
+                        {name: '>='},
+                        {name: '>='}
+                        ]" [(ngModel)]="chart.definitionTemplate[rowIndex].condition" optionLabel="name"></p-dropdown>
+                   </td>
+                    <td>
+                      <input pInputText  [ngModelOptions]="{standalone: true}" [(ngModel)]="chart.definitionTemplate[rowIndex].value"  type="text"  name="{{rowIndex}}value" id="{{dataset.outputs}}">
+                    </td>
+                    <td>
+                      <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeDataset(rowIndex)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+      </ng-template>
+      </p-panel>
+
+  
+            <!-- <json-editor  [options]="editorOptions" [(ngModel)]="definitionTemplate" [ngModelOptions]=" 
+            {standalone: true}"></json-editor> -->
             </p-panel>
         </div>
         <div class="col-6">
@@ -83,8 +181,8 @@
                           <span pTooltip="Render Definition"class="pi pi-bolt"></span>
                       </button>
               </ng-template>
-            <p-chart width="400" height="400" [type]="chart.type" *ngIf="chart.type != 'table'" [data]="chart.definition" [options]=""></p-chart>
-            <p-table [columns]="chart.definition['headers']" [value]="chart.definition['items']" styleClass="p-datatable-sm">
+            <p-chart width="400" height="400" [type]="chart.type" *ngIf="chart.type != 'table'" [data]="definition" [options]=""></p-chart>
+            <p-table [columns]="definition['headers']" [value]="definition['items']" styleClass="p-datatable-sm">
               <ng-template pTemplate="header" let-columns>
                   <tr>
                       <th *ngFor="let col of columns">

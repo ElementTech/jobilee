@@ -5,16 +5,17 @@
 :host ::ng-deep json-editor jsoneditor-outer {
   height: 400px;
 }
-// :host ::ng-deep .p-fieldset-content {
-// max-width: 100%;
-// }
 
-:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect ,:host ::ng-deep .p-treeselect {
-  width: 100%;
+:host ::ng-deep .p-dropdown,:host ::ng-deep .p-dropdown-filter, :host ::ng-deep .p-multiselect ,:host ::ng-deep .p-treeselect {
+  width: 100% !important;
 }
 :host ::ng-deep .p-inputnumber{
   height: 31px;
 
+}
+:host ::ng-deep .p-panel-content {
+  padding: 0 !important;
+  min-height: 400px !important;
 }
 :host ::ng-deep .p-treeselect-label{
   display: flex;

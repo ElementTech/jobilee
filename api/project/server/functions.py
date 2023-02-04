@@ -363,7 +363,7 @@ def countTime(task_id,stepIndex):
 def process_request(job, integrationSteps,chosen_params,task_id):
     outputs = {}
     integrationSteps['steps'] = [d for d in integrationSteps['steps'] if d.get('name') in job['steps']]
-    update_doc = {"job_id":job['_id'],"steps":[],"done": False,"run_time":0,"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
+    update_doc = {"job_id":job['_id'],"job_name":job['name'],"steps":[],"done": False,"run_time":0,"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
     # timer_task = threading.Thread(target=countTimeTask, args=(task_id))
     # timer_task.start()
@@ -446,6 +446,8 @@ def process_request(job, integrationSteps,chosen_params,task_id):
         "done": True
     }})
 
+    return db["tasks"].find_one({"_id": ObjectId(task_id)})
+
 def res_code(status,condition):
     if condition is False:
         return 3
@@ -454,18 +456,7 @@ def res_code(status,condition):
             return 1
         else:
             return 2
-
-def trigger_job_api(id,chosen_params,task_id):
-
-    try:
-        data = db["jobs"].find_one({'_id': ObjectId(id)})
-    except:
-        data = db["jobs"].find_one({'name': id})
-    db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
-    integration = db["integrations"].find_one({'name': db_doc["integration"]})
-    integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
-    process_request(db_doc,integration_doc,chosen_params,task_id)
-
+        
 def extract_placeholder_values_list(data, values_data, placeholder_values,regexList,regexMatchList):
     temp_outputs = []
     for item in values_data:
@@ -554,3 +545,24 @@ def check_placeholder_exists(data, values_data):
                     if not check_placeholder_exists(value[i], values_data[key][i]):
                         return False
     return True
+
+def trigger_job_api(id,chosen_params,task_id):
+
+    try:
+        data = db["jobs"].find_one({'_id': ObjectId(id)})
+    except:
+        data = db["jobs"].find_one({'name': id})
+    db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
+    integration = db["integrations"].find_one({'name': db_doc["integration"]})
+    integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
+    return process_request(db_doc,integration_doc,chosen_params,task_id)
+
+    
+    # try:
+    #     data = db["jobs"].find_one({'_id': ObjectId(id)})
+    # except:
+    #     data = db["jobs"].find_one({'name': id})
+    # db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
+    # integration = db["integrations"].find_one({'name': db_doc["integration"]})
+    # integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
+    # process_request(db_doc,integration_doc,chosen_params,task_id)

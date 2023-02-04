@@ -10,6 +10,14 @@ export class CreateChartComponent {
 
   chart: Chart = {
     name: "",
+    label: "",
+    jobs: [],
+    definitionTemplate: [{
+      output: "",
+      type: "",
+      condition: "",
+      value: ""
+    }]
   };
   
 }
