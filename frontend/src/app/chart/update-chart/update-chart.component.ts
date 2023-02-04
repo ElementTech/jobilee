@@ -12,21 +12,18 @@ import {JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
 export class UpdateChartComponent implements OnInit {
 
   _id: string;
-  chart: Chart;
+  chart: any;
 
   constructor(private route: ActivatedRoute,private router: Router,
     private dbService: DBService) { 
+
     }
 
   ngOnInit() {
-    this.chart = new Chart();
 
-    this._id = this.route.snapshot.params['_id'];
-    
-    this.dbService.getObject("charts",this._id)
-      .subscribe(data => {
-        this.chart = data;
-      }, error => console.log(error));
+      this._id = this.route.snapshot.params['_id'];
+      
+      this.chart = this.dbService.getObject("charts",this._id)
   }
 
 }

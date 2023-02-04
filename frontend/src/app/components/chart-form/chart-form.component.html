@@ -181,8 +181,13 @@
                           <span pTooltip="Render Definition"class="pi pi-bolt"></span>
                       </button>
               </ng-template>
+              <p-progressBar 
+              [style]="{'height': '16px'}"
+           
+              [mode]="waiting ? 'indeterminate' : 'determinate'"
+              [value]="100"></p-progressBar>
             <p-chart width="400" height="400" [type]="chart.type" *ngIf="chart.type != 'table'" [data]="definition" [options]=""></p-chart>
-            <p-table [columns]="definition['headers']" [value]="definition['items']" styleClass="p-datatable-sm">
+            <p-table [columns]="definition?.headers" [value]="definition?.items" styleClass="p-datatable-sm">
               <ng-template pTemplate="header" let-columns>
                   <tr>
                       <th *ngFor="let col of columns">

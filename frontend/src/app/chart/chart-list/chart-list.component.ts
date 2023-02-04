@@ -24,7 +24,7 @@ export class ChartListComponent implements OnInit {
     this.loading = false;
   }
 
-  deleteComponent(_id: string) {
+  deleteChart(_id: string) {
     Swal.fire({
       title: 'Are you sure?',
       text: "This will break dashboards that depend on this chart.",
@@ -40,7 +40,7 @@ export class ChartListComponent implements OnInit {
           data => {
             Swal.fire(
               'Deleted!',
-              'Component has been deleted.',
+              'Chart has been deleted.',
               'success'
             )
             this.reloadData();
@@ -50,10 +50,10 @@ export class ChartListComponent implements OnInit {
     })
 
   }
-  updateComponent(id: string){
+  updateChart(id: string){
     this.router.navigate(['charts/update', id]);
   }
-  componentDetails(_id: string){
+  chartDetails(_id: string){
     this.router.navigate(['charts/details', _id]);
   }
 }

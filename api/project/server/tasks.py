@@ -29,8 +29,8 @@ def trigger_chart_job_task(self,chosen_params):
 
     update_doc = {
         "done": False,
+        "chart_name": chosen_params['name'],
         "outputs": {},
-        "run_time":0,
         "creation_time":datetime.now().isoformat(),
         "message": "Success",
         "chosen_params":chosen_params

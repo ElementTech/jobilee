@@ -25,7 +25,7 @@ export class ChartFormComponent implements OnInit {
   integrations: any;
   @Input() _id: string;
   @Input() formType: "Create" | "Update";
-  @Input() chart: Chart
+  @Input() chart: Chart = {};
   submitted = false;
   placeholders: Observable<any>;
   types = [
@@ -115,7 +115,7 @@ removeDataset(index)
         timer: 1000
       })
     }
-  async ngOnInit() {
+  ngOnInit() {
     this.outputs = this.dbService.getJobOutputs()
     this.jobs = this.dbService.getObjectList("jobs")
     if (!this.chart.type)
@@ -139,8 +139,9 @@ removeDataset(index)
       this.definition = this.definitionTemplate
 
     }
+   
   }
-
+  waiting= false;
   async templateToDefinition() {
 
     await this.runService.renderChart(this.chart).subscribe(async (result)=>{
@@ -150,7 +151,7 @@ removeDataset(index)
         // text: result['task_id'],
         timer: 1000
       }).then(async (data)=>{
-       
+        this.waiting=true
         let response;
         while ((response == undefined) || !("result" in response)) {
           await new Promise(resolve => setTimeout(resolve, 1000));
@@ -163,7 +164,7 @@ removeDataset(index)
             this.definition = response['outputs']
         }
         console.log(response)
-        
+        this.waiting=false
         this.message = response['message']        
       })
     },error=>{
