@@ -162,6 +162,7 @@ removeDataset(index)
           
             this.definition = response['outputs']
         }
+        console.log(response)
         
         this.message = response['message']        
       })
