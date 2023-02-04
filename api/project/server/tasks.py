@@ -87,28 +87,31 @@ def trigger_chart_job_task(chosen_params,id):
                                 for output in step['items']:
                                     if output[chosen_params['label']['outputs']] == label:
                                         condition = dataset['condition']
-                                        if condition is "==":
+                                        if condition == "==":
                                             if output[dataset['output'][0]['outputs']] == dataset['value']:
                                                 data_counter[label] += 1    
-                                        if condition is "!=":
+                                        if condition == "!=":
                                             if output[dataset['output'][0]['outputs']] != dataset['value']:
                                                 data_counter[label] += 1
-                                        if condition is "contains":
+                                        if condition == "contains":
                                             if dataset['value'] in output[dataset['output'][0]['outputs']]:
                                                 data_counter[label] += 1         
-                                        if condition is "in":
-                                            if output[dataset['output'][0]['outputs']] != dataset['value'] in dataset['value'].split(","):
-                                                data_counter[label] += 1                      
-                                        if condition is ">":
+                                        if condition == "in":
+                                            if output[dataset['output'][0]['outputs']] in dataset['value'].split(","):
+                                                data_counter[label] += 1      
+                                        if condition == "not in":
+                                            if output[dataset['output'][0]['outputs']] not in dataset['value'].split(","):
+                                                data_counter[label] += 1                                                                    
+                                        if condition == ">":
                                             if output[dataset['output'][0]['outputs']] > dataset['value']:
                                                 data_counter[label] += 1    
-                                        if condition is "<":
+                                        if condition == "<":
                                             if output[dataset['output'][0]['outputs']] < dataset['value']:
                                                 data_counter[label] += 1
-                                        if condition is ">=":
+                                        if condition == ">=":
                                             if output[dataset['output'][0]['outputs']] >= dataset['value']:
                                                 data_counter[label] += 1         
-                                        if condition is "<=":
+                                        if condition == "<=":
                                             if output[dataset['output'][0]['outputs']] <= dataset['value']:
                                                 data_counter[label] += 1                                                                                                                         
                             datasets.append({
