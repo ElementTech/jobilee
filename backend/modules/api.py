@@ -134,8 +134,11 @@ def onedata(collection,id=None,key=None,value=None):
         # GET all data from database
         if request.method == 'GET':
             data = db[collection].find_one({'_id': ObjectId(id)})
-            db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
-            db_doc.update({'_id': str(db_doc['_id'])} if '_id' in db_doc else {})    
+            if data:
+                db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
+                db_doc.update({'_id': str(db_doc['_id'])} if '_id' in db_doc else {})    
+            else:
+                db_doc = {}
             return jsonify(parse_json(db_doc))
             
         # DELETE a data

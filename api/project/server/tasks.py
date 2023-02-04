@@ -5,7 +5,7 @@ from project.server.functions import trigger_job_api
 import yaml 
 from pymongo import MongoClient
 import bson
-import datetime
+from datetime import datetime
 from bson import json_util, ObjectId
 celery = Celery(__name__)
 celery.conf.broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
@@ -25,33 +25,37 @@ def trigger_api_task(self,id,chosen_params):
     return trigger_job_api(id,chosen_params,self.request.id)
 
 @celery.task(name="trigger_api_chart_task",bind=True)
-def trigger_chart_job_task(chosen_params,id):
+def trigger_chart_job_task(self,chosen_params):
 
     update_doc = {
         "done": False,
-        "result": False,
         "outputs": {},
         "run_time":0,
         "creation_time":datetime.now().isoformat(),
-        "message": "",
+        "message": "Success",
         "chosen_params":chosen_params
     }
 
-    db["chart_tasks"].update_one({"_id": ObjectId(id)}, {"$set": update_doc},upsert=True)
+    db["chart_tasks"].update_one({"_id": ObjectId(self.request.id)}, {"$set": update_doc},upsert=True)
 
     taskQueue = []
     for job in chosen_params['jobs']:
         taskQueue.append(trigger_api_task.apply_async(args=[job,{}],task_id=str(bson.ObjectId())))
-    finished = False
-    while not finished:
+    finished = len(taskQueue)
+    while finished > 0:
+        time.sleep(1)
         for task in taskQueue:
-            finished = finished and task.ready()
-    taskResults = {}
+            if task.ready():
+                finished -= 1        
+    taskResults = []
     success = True
     for task in taskQueue:
-        taskResults[task.id] = db.find_one({"_id": ObjectId(task.id)})
-        if taskResults[task.id]['result'] != 2:
-            message = "task {} of job {} failed. ".format(task.id,taskResults[task.id]['job_name'])
+        print(task)
+        data = db["tasks"].find_one({"_id": ObjectId(task.id)})
+        db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
+        taskResults.append(db_doc)
+        if not db_doc['result']:
+            message = "task {} of job {} failed. ".format(task.id,db_doc['job_name'])
             success = False
     if success:
         labels = []
@@ -69,16 +73,16 @@ def trigger_chart_job_task(chosen_params,id):
         #             data: [28, 48, 40, 19, 86, 27, 90]
         #         }
         # ]
-
-        for v in taskResults.values():
+        print(chosen_params)
+        for v in taskResults:
             if v['job_name'] == chosen_params['label']['job']:
                 for step in v['steps']:
-                    if step['name'] == chosen_params['label']['name']:
+                    if step['name'] == chosen_params['label']['step']:
                         if isinstance(step['items'],list):
                             for output in step['items']:
                                 labels.append(output[chosen_params['label']['outputs']])
         for dataset in chosen_params['definitionTemplate']:
-            for v in taskResults.values():
+            for v in taskResults:
                 for step in v['steps']:
                     if step['name'] == dataset['output'][0]['step'] and v['job_name'] == dataset['output'][0]['job']:
                         if isinstance(step['items'],list):
@@ -113,21 +117,23 @@ def trigger_chart_job_task(chosen_params,id):
                                                 data_counter[label] += 1         
                                         if condition == "<=":
                                             if output[dataset['output'][0]['outputs']] <= dataset['value']:
-                                                data_counter[label] += 1                                                                                                                         
+                                                data_counter[label] += 1  
                             datasets.append({
                                 "label": dataset['name'],
-                                "data": data_counter.values()
+                                "data": list(data_counter.values())
                             })
-        db["chart_tasks"].update_one({"_id": ObjectId(id)}, {"$set": {
+        db["chart_tasks"].update_one({"_id": ObjectId(self.request.id)}, {"$set": {
             "done": True,
             "result": True,
             "output": {
-                labels: labels,
-                datasets: datasets
+                "labels": labels,
+                "datasets": datasets
             }
         }},upsert=True)
     else:
-        db["chart_tasks"].update_one({"_id": ObjectId(id)}, {"$set": {
+        db["chart_tasks"].update_one({"_id": ObjectId(self.request.id)}, {"$set": {
+            "result": False,
+            "message": message,
             "done": True
         }},upsert=True)
 

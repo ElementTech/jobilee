@@ -446,8 +446,6 @@ def process_request(job, integrationSteps,chosen_params,task_id):
         "done": True
     }})
 
-    return db["tasks"].find_one({"_id": ObjectId(task_id)})
-
 def res_code(status,condition):
     if condition is False:
         return 3
@@ -555,7 +553,7 @@ def trigger_job_api(id,chosen_params,task_id):
     db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
     integration = db["integrations"].find_one({'name': db_doc["integration"]})
     integration_doc = {k: v if k != '_id' else str(v) for k, v in integration.items()}    
-    return process_request(db_doc,integration_doc,chosen_params,task_id)
+    process_request(db_doc,integration_doc,chosen_params,task_id)
 
     
     # try:

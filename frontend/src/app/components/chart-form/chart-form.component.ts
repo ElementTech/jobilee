@@ -65,6 +65,7 @@ export class ChartFormComponent implements OnInit {
    };
 };
   definition: any;
+  message: any;
   
 addDataset(){
   this.chart.definitionTemplate.push({
@@ -139,13 +140,40 @@ removeDataset(index)
 
     }
   }
-  templateToDefinition()
-  {
-    this.runService.renderChart(this.chart).subscribe(data=>{
-      console.log(data)
+
+  async templateToDefinition() {
+
+    await this.runService.renderChart(this.chart).subscribe(async (result)=>{
+      Swal.fire({
+        icon: 'success',
+        title: 'Job Triggered Succesfully',
+        // text: result['task_id'],
+        timer: 1000
+      }).then(async (data)=>{
+       
+        let response;
+        while ((response == undefined) || !("result" in response)) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          response = await this.dbService.getObject("chart_tasks", result["task_id"]).toPromise();
+        }
+        let options: any = []
+  
+        if (response['result']){
+          
+            this.definition = response['outputs']
+        }
+        
+        this.message = response['message']        
+      })
+    },error=>{
+      Swal.fire({
+        icon: 'error',
+        title: 'Job Trigger Failed',
+        text: JSON.stringify(error.message),
+      })
     })
-    // this.chart.definition = this.definitionTemplate
   }
+
   setDefinition()
   {
     switch (this.chart.type) {
@@ -249,7 +277,7 @@ removeDataset(index)
       default:
         break;
     }
-    this.definition = this.definitionTemplate
+    // this.definition = this.definitionTemplate
   }
   getChartIcon()
   {
