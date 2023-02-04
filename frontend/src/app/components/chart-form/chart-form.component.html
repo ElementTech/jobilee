@@ -43,7 +43,7 @@
             placeholder="Select Outputs">
           </p-treeSelect>
 
-          <p-table [value]="(placeholders|async)" >
+          <p-table [value]="(placeholders|async)" styleClass="p-datatable-sm">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Job</th>
@@ -56,7 +56,8 @@
                     <td>{{o.job}}</td>
                     <td>{{o.step}}</td>
                     <td>
-                      <p-chip [label]="'{'+a+'}'" *ngFor="let a of (o.outputs)"></p-chip>
+                      <p-tag (click)="copyMessage('{'+o.job+':'+o.step+'}')" [value]="'{'+o.job+':'+o.step+'}'"  styleClass="mr-2" severity="warning" ></p-tag>
+                      <p-tag (click)="copyMessage('{'+a+'}')"  styleClass="mr-2" [value]="'{'+a+'}'" *ngFor="let a of [o.outputs].flat(1)"></p-tag>
                      </td>
                 </tr>
             </ng-template>
@@ -82,8 +83,23 @@
                           <span pTooltip="Render Definition"class="pi pi-bolt"></span>
                       </button>
               </ng-template>
-            <p-chart width="400" height="400" [type]="chart.type" [data]="this.chart.definition" [options]=""></p-chart>
-
+            <p-chart width="400" height="400" [type]="chart.type" *ngIf="chart.type != 'table'" [data]="chart.definition" [options]=""></p-chart>
+            <p-table [columns]="chart.definition['headers']" [value]="chart.definition['items']" styleClass="p-datatable-sm">
+              <ng-template pTemplate="header" let-columns>
+                  <tr>
+                      <th *ngFor="let col of columns">
+                          {{col}}
+                      </th>
+                  </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns">
+                  <tr>
+                      <td *ngFor="let col of columns">
+                          {{rowData[col]}}
+                      </td>
+                  </tr>
+              </ng-template>
+          </p-table>
               </p-panel>
         </div>
       </div>

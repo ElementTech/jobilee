@@ -62,12 +62,27 @@ def outputs():
                 })
         return jsonify(parse_json(output))
     if request.method == 'POST':
-        data = extract_data(request.json)
+        data = combine_outputs(extract_data(request.json))
         for dict_item in data:
             for key in dict_item:
                 if isinstance(dict_item[key],dict):
                     dict_item[key] = dict_item[key]['data']
         return jsonify(parse_json(data))
+
+def combine_outputs(input_list):
+    result = {}
+    for input_dict in input_list:
+        step = input_dict["step"]
+        if step in result:
+            result[step]["outputs"] += input_dict["outputs"]
+        else:
+            result[step] = {
+                "job": input_dict["job"],
+                "step": step,
+                "outputs": input_dict["outputs"],
+            }
+    return list(result.values())
+
 
 def extract_data(input_list):
     result = []

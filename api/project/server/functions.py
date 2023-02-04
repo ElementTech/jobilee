@@ -12,6 +12,7 @@ import time
 from celery import Celery, current_task
 from datetime import datetime
 import codecs
+import pandas as pd
 from functools import reduce
 from itertools import chain    
 import threading
@@ -228,7 +229,9 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
                     res_json = json.loads(json.dumps(res_json))
                     extract_placeholder_values(integration['outputs'][0] if isinstance(integration['outputs'],list) else integration['outputs'], res_json, extracted_outputs, integration.get('regex') or {},integration.get('regexMatch') or {})
                     try:
-                        update_step_field(task_id,stepIndex,{'items':transform_dict(extracted_outputs)})
+                        transformed_dict = transform_dict(extracted_outputs)
+             
+                        update_step_field(task_id,stepIndex,{'items':transformed_dict})
                     except:
                         update_step_field(task_id,stepIndex,{'items':[extracted_outputs]})
                     if extracted_outputs:

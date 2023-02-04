@@ -9,6 +9,7 @@ import { RunService } from 'src/app/run.service';
 import { filter, switchMap, takeWhile } from 'rxjs/operators';
 import { defer, from, Observable, timer } from 'rxjs';
 import { SelectItem } from 'primeng/api';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-chart-form',
   templateUrl: './chart-form.component.html',
@@ -31,8 +32,9 @@ export class ChartFormComponent implements OnInit {
     {name: 'bar', icon: 'fa-solid fa-chart-column'},
     {name: 'doughnut', icon: 'fa-solid fa-circle-dot'},
     {name: 'line', icon: 'fa-solid fa-chart-line'},
-    {name: 'pie', icon: 'fa-solid fa-chart-pie'}
-];
+    {name: 'pie', icon: 'fa-solid fa-chart-pie'},
+    {name: 'table', icon: 'fa-solid fa-table'}
+  ];
   jobs: Observable<any>;
   outputs: Observable<any>;
 
@@ -73,7 +75,28 @@ export class ChartFormComponent implements OnInit {
       this.editorOptions.modes = ['code', 'tree'];
       this.editorOptions.mode = 'code';
     }
-
+    copyMessage(val: string){
+      const selBox = document.createElement('textarea');
+      selBox.style.position = 'fixed';
+      selBox.style.left = '0';
+      selBox.style.top = '0';
+      selBox.style.opacity = '0';
+      selBox.value = val;
+      document.body.appendChild(selBox);
+      selBox.focus();
+      selBox.select();
+      document.execCommand('copy');
+      document.body.removeChild(selBox);
+      Swal.fire({
+        icon: 'info',
+        backdrop: false,
+        text:val,
+        title: 'Copied to clipboard',
+        position: 'top-right',
+        showConfirmButton: false,
+        timer: 1000
+      })
+    }
   async ngOnInit() {
     this.outputs = this.dbService.getJobOutputs()
     this.jobs = this.dbService.getObjectList("jobs")
@@ -107,6 +130,25 @@ export class ChartFormComponent implements OnInit {
   setDefinition()
   {
     switch (this.chart.type) {
+      case "table":
+        this.definitionTemplate = {
+          headers: ['subjectCode', 'subjectTitle', 'subjectGroup', 'status'],
+          items: [
+            {
+              "subjectCode": "1111",
+              "subjectTitle": "English Literature",
+              "subjectGroup": "English",
+              "status": "Available"
+            },
+            {
+              "subjectCode": "2222",
+              "subjectTitle": "Algebra III",
+              "subjectGroup": "Mathematics",
+              "status": "Not Available"
+            }
+          ]
+        }      
+        break;
       case "bar":
         this.definitionTemplate = {
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
