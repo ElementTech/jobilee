@@ -86,6 +86,8 @@ def trigger_chart_job_task(self,chosen_params):
             for v in taskResults:
                 for step in v['steps']:
                     if step['name'] == dataset['output'][0]['step'] and v['job_name'] == dataset['output'][0]['job']:
+                        if isinstance(step['items'],dict):
+                            step['items'] = [step['items']]
                         if isinstance(step['items'],list):
                             data_counter = {item: 0 for item in labels}
                             for label in labels:
