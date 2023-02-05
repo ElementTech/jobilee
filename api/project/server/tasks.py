@@ -97,7 +97,8 @@ def trigger_chart_job_task(self,name,chosen_params):
                                     if output[chosen_params['label']['outputs']] == label:
                                         condition = dataset['condition']
                                         if condition == "exists":
-                                            data_counter[label] += 1    
+                                            if output[dataset['output'][0]['outputs']] != None:
+                                                data_counter[label] += 1    
                                         if condition == "==":
                                             if output[dataset['output'][0]['outputs']] == dataset['value']:
                                                 data_counter[label] += 1    

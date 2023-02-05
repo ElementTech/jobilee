@@ -11,7 +11,9 @@ appendTo="body"
           'fa-chart-column':chart.type == 'bar',
           'fa-chart-pie': chart.type == 'pie',
           'fa-circle-dot':chart.type == 'doughnut',
-          'fa-chart-line': chart.type == 'line'
+          'fa-chart-line': chart.type == 'line',
+          'fa-star': chart.type == 'polarArea',
+          'fa-brands fa-uncharted': chart.type == 'radar'
         }"></i>
         &nbsp;
         <div>{{chart.name}}</div>
