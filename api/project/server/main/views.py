@@ -14,7 +14,7 @@ def run_task(job_id):
 
 @main_blueprint.route("/chart/tasks", methods=["POST"])
 @main_blueprint.route("/chart/tasks/<name>", methods=["POST"])
-def run_chart_task(name):
+def run_chart_task(name=None):
     if name:
         task = trigger_chart_job_task.apply_async(args=[name,request.json],task_id=str(bson.ObjectId()))
         return jsonify({"task_id": task.id}), 202        

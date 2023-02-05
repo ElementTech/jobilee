@@ -117,6 +117,7 @@ export class JobHistoryComponent implements OnInit {
   reloadData()
   {
     this.dbService.getObjectListByKey("tasks","job_id",this._id).subscribe(data=>{
+      console.log(data)
       this.tasks = data
       this.loading = false
     })

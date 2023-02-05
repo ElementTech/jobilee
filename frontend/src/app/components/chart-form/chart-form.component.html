@@ -31,9 +31,9 @@
         
           <p-treeSelect
    
-          [showClear]="true"
+           [showClear]="true"
             name="jobs"
-            [(ngModel)]="jobsSelected" 
+            [(ngModel)]="chart.jobs_selected" 
             [options]="outputs | async"
             (onNodeSelect)="calculatePlaceholders()" 
             (onNodeUnselect)="calculatePlaceholders()"

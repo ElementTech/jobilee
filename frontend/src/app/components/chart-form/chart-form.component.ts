@@ -81,8 +81,9 @@ removeDataset(index)
   this.chart.definitionTemplate.splice(index,1)
 }
   calculatePlaceholders() {
+    
     // console.log(JSON.parse(JSON.stringify(this.chart.jobs, this.circularReplacer())).filter(n => n))
-    this.dbService.calculateJobOutputs(JSON.parse(JSON.stringify(this.jobsSelected, this.circularReplacer())).filter(n => n)).subscribe(data=>{
+    this.dbService.calculateJobOutputs(JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(this.chart.jobs_selected, this.circularReplacer())).filter(n => n), this.circularReplacer())).filter(n => n)).subscribe(data=>{
       this.placeholders = data
       this.chart.jobs = [...new Set(data.map(i=>i.job))];
     })
@@ -116,6 +117,11 @@ removeDataset(index)
       })
     }
   ngOnInit() {
+    // if (this.chart.jobs_selected != undefined)
+    // {
+    //   this.calculatePlaceholders()
+    // }
+    this.chart.jobs_selected = ""
     this.outputs = this.dbService.getJobOutputs()
     this.jobs = this.dbService.getObjectList("jobs")
     if (!this.chart.type)
