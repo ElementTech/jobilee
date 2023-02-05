@@ -1,0 +1,18 @@
+
+<p-panel header="{{dashboard.name}}">
+    <ng-template pTemplate="icons">
+    <button pButton pTooltip="Reload" class="p-panel-header-icon p-link" (click)="refresh()" icon="pi pi-refresh">
+        </button>
+    </ng-template>
+    <div class="grid p-2">
+        <div *ngFor='let chart of chartsDefinitions | keyvalue' class="col-4">
+            <p-panel header="{{chart.key}}">
+                <div class="text-center">
+                    <p-chart *ngIf="(chart.value | async); else spin"  [type]="(chartsMetadata[chart.key] | async)[0]?.type" [data]="(chart.value | async)" [options]=""></p-chart>
+                    <ng-template #spin><p-progressSpinner></p-progressSpinner></ng-template>
+                </div>
+            </p-panel>
+        </div>
+    </div>
+</p-panel>
+

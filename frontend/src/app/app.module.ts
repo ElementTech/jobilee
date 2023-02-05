@@ -76,6 +76,13 @@ import { ChartFormComponent } from './components/chart-form/chart-form.component
 import {ChartModule} from 'primeng/chart';
 import {DragDropModule} from 'primeng/dragdrop';
 import {TreeSelectModule} from 'primeng/treeselect';
+import { DashboardDetailsComponent } from './dashboard/dashboard-details/dashboard-details.component';
+import { DashboardFormComponent } from './components/dashboard-form/dashboard-form.component';
+import { DashboardListComponent } from './dashboard/dashboard-list/dashboard-list.component';
+import { CreateDashboardComponent } from './dashboard/create-dashboard/create-dashboard.component';
+import { UpdateDashboardComponent } from './dashboard/update-dashboard/update-dashboard.component';
+import { DashboardViewComponent } from './components/dashboard-view/dashboard-view.component';
+import { PlayDashboardComponent } from './dashboard/play-dashboard/play-dashboard.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -100,7 +107,14 @@ import {TreeSelectModule} from 'primeng/treeselect';
     ChartListComponent,
     ChartDetailsComponent,
     CreateChartComponent,
-    ChartFormComponent
+    ChartFormComponent,
+    DashboardDetailsComponent,
+    DashboardFormComponent,
+    DashboardListComponent,
+    CreateDashboardComponent,
+    UpdateDashboardComponent,
+    DashboardViewComponent,
+    PlayDashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -115,6 +129,7 @@ import {TreeSelectModule} from 'primeng/treeselect';
     ButtonModule,
     TableModule,
     MessagesModule,
+    SidebarModule,
     MessageModule,
     CardModule,
     StepsModule,

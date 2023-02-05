@@ -1,0 +1,41 @@
+<p-sidebar [(visible)]="display" position="right" 
+[modal]="false"
+appendTo="body"
+[dismissible]="false">
+<p-listbox [options]="charts|async" (onChange)="reRenderCharts()" [(ngModel)]="dashboard.charts" optionLabel="name" optionValue="name" [metaKeySelection]="false" [checkbox]="true" [filter]="true" [multiple]="true">
+
+  <ng-template let-chart pTemplate="item">
+    <div class="my-dropdown-item">
+        <i [class]="'fa-solid'" [ngClass]="
+        {
+          'fa-chart-column':chart.type == 'bar',
+          'fa-chart-pie': chart.type == 'pie',
+          'fa-circle-dot':chart.type == 'doughnut',
+          'fa-chart-line': chart.type == 'line'
+        }"></i>
+        &nbsp;
+        <div>{{chart.name}}</div>
+    </div>
+</ng-template>
+</p-listbox>
+</p-sidebar>
+
+
+<p-fieldset legend="{{formType}} Dashboard" [toggleable]="false" styleClass="maxw">
+  <form (ngSubmit)="onSubmit()">
+
+    <div class="grid">
+      <div class="col-6">
+        <h5>Name</h5>
+        <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="dashboard.name" name="name" placeholder="mydashboard">
+        </div>
+      <div class="col-6">
+        <h5>Add</h5>
+        <p-button type="text" type="button" (click)="display = !display" icon="pi pi-search" label="Charts"></p-button>
+      </div>
+    </div>
+      <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
+  </form>
+  
+  <app-dashboard-view [dashboard]="dashboard" [charts]="dashboard.charts"></app-dashboard-view>
+</p-fieldset>

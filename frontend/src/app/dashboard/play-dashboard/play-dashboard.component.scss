@@ -1,0 +1,28 @@
+:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect {
+    width: 100%;
+  }
+
+:host ::ng-deep json-editor,
+:host ::ng-deep json-editor .jsoneditor,
+:host ::ng-deep json-editor > div,
+:host ::ng-deep json-editor jsoneditor-outer {
+  height: 415px;
+}
+:host ::ng-deep .p-panel-content {
+  padding: 0 !important;
+}
+:host ::ng-deep {
+  .p-multiselect .pi-times:before {
+    color: red;
+  }
+  .p-multiselect .pi-spinner:before {
+    color: #007AD9;
+  }
+}
+:host ::ng-deep .p-inputnumber{
+  height: 31px;
+
+}
+[hidden] {
+  display: none !important;
+}

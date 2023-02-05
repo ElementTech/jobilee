@@ -61,7 +61,7 @@ export class AppComponent {
                     {
                         label: 'Dashboard',
                         icon: 'fa-solid fa-square-poll-vertical',
-                        routerLink: ['/dashboard/add']
+                        routerLink: ['/dashboards/add']
                     }
                 ]
             }

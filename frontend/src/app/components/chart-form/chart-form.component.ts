@@ -33,7 +33,7 @@ export class ChartFormComponent implements OnInit {
     {name: 'doughnut', icon: 'fa-solid fa-circle-dot'},
     {name: 'line', icon: 'fa-solid fa-chart-line'},
     {name: 'pie', icon: 'fa-solid fa-chart-pie'},
-    {name: 'table', icon: 'fa-solid fa-table'}
+    // {name: 'table', icon: 'fa-solid fa-table'}
   ];
   jobs: Observable<any>;
   outputs: Observable<any>;

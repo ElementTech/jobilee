@@ -21,6 +21,9 @@ export class RunService {
   renderChart(data): Observable<any> {
     return this.http.post(`${this.baseUrl}/chart/render`,data);
   }
+  renderExistingChart(name): Observable<any> {
+    return this.http.post(`${this.baseUrl}/chart/render/${name}`,{});
+  }
 
 
 }

@@ -3,7 +3,7 @@
       <span class="p-buttonset ">
         <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-link text-white p-button-sm" label="History"></p-button>
         <p-button type="button" (click)="this.display = !this.display" icon="pi pi-info-circle" label="Parameters" styleClass="p-button-link text-white p-button-sm"></p-button>
-
+        
       </span>
       <p-dialog [maximizable]="true" header="Parameters" position="bottom-right"  [(visible)]="display">
         <p-table [value]="task?.chosen_params |keyvalue"  styleClass="p-datatable-sm">

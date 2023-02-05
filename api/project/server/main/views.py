@@ -13,9 +13,14 @@ def run_task(job_id):
     return jsonify({"task_id": task.id}), 202
 
 @main_blueprint.route("/chart/tasks", methods=["POST"])
-def run_chart_task():
-    task = trigger_chart_job_task.apply_async(args=[request.json],task_id=str(bson.ObjectId()))
-    return jsonify({"task_id": task.id}), 202
+@main_blueprint.route("/chart/tasks/<name>", methods=["POST"])
+def run_chart_task(name):
+    if name:
+        task = trigger_chart_job_task.apply_async(args=[name,request.json],task_id=str(bson.ObjectId()))
+        return jsonify({"task_id": task.id}), 202        
+    else:
+        task = trigger_chart_job_task.apply_async(args=[None,request.json],task_id=str(bson.ObjectId()))
+        return jsonify({"task_id": task.id}), 202
 
 @main_blueprint.route("/tasks/retry/<task_id>", methods=["POST"])
 def retry_task(task_id):

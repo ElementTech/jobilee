@@ -67,9 +67,10 @@
         <div class="col-6">
           <p-panel header="Definition" [toggleable]="false">
             <ng-template pTemplate="icons">
-              <button type="button" pButton class="p-panel-header-icon p-link" (click)="chart.definition={}">
-                <span pTooltip="Clear"class="pi pi-trash"></span>
-            </button>                  
+  
+            <button type='button' pButton class="p-panel-header-icon p-link" (click)="addDataset()">
+              <span class="pi pi-plus"></span>
+          </button>              
          </ng-template>       
           <div class="p-inputgroup p-2">
             <span class="p-inputgroup-addon">Label (X)</span>
@@ -90,15 +91,8 @@
           <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(step,i,head)"></p-button>
       </div> -->
 
-      <p-panel header="Datasets" styleClass="min-w-full p-2" [toggleable]="false">
-        <ng-template pTemplate="icons">
-                <button type='button' pButton class="p-panel-header-icon p-link" (click)="addDataset()">
-                    <span class="pi pi-plus"></span>
-                </button>
-        </ng-template>
-        <ng-template pTemplate="content">
           <!-- {{chart.definitionTemplate | json}} -->
-          <p-table [value]="chart.definitionTemplate" styleClass="p-datatable-sm">
+          <p-table [value]="chart.definitionTemplate" styleClass="p-datatable-sm p-2">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Name</th>
@@ -153,7 +147,7 @@
                         {name: '>'},
                         {name: '\<'},
                         {name: '>='},
-                        {name: '>='}
+                        {name: '\<='}
                         ]" [(ngModel)]="chart.definitionTemplate[rowIndex].condition" optionLabel="name"></p-dropdown>
                    </td>
                     <td>
@@ -165,8 +159,7 @@
                 </tr>
             </ng-template>
         </p-table>
-      </ng-template>
-      </p-panel>
+   
 
   
             <!-- <json-editor  [options]="editorOptions" [(ngModel)]="definitionTemplate" [ngModelOptions]=" 
@@ -186,6 +179,8 @@
            
               [mode]="waiting ? 'indeterminate' : 'determinate'"
               [value]="100"></p-progressBar>
+              <p-message *ngIf="definition?.message" styleClass="min-w-full m-0 p-1">
+             </p-message>
             <p-chart width="400" height="400" [type]="chart.type" *ngIf="chart.type != 'table'" [data]="definition" [options]=""></p-chart>
             <p-table [columns]="definition?.headers" [value]="definition?.items" styleClass="p-datatable-sm">
               <ng-template pTemplate="header" let-columns>
