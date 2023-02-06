@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Jobilee';
   model: any[] = [];
+  hideMenu = false;
   constructor(){
     
   }

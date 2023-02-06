@@ -7,7 +7,7 @@
     <div class="card" *ngFor="let job of jobsPaginated" id="card-visitors">
         <input type="checkbox" (click)="jobHistory(job._id)" class="card-visitors-indicator" id="card-visitors-indicator{{job._id}}" />
         <input type="checkbox"(click)="runJob(job._id)"  class="card-visitors-indicator" id="card-visitors-play{{job._id}}" />
-        <!-- <input type="checkbox"   (click)="editJob(job._id)" class="card-visitors-indicator" id="card-visitors-edit{{job._id}}" /> -->
+
         <div class="header">
             <label class="indicator" for="card-visitors-indicator{{job._id}}">
                 <i class="fa fa-history open text-white fa-2x"  width="18" height="27"></i>
@@ -17,10 +17,7 @@
                 <i class="fa fa-play open text-white fa-2x" style="padding-left:5px !important" width="18" height="27"></i>
                 <i class="fa fa-arrow-left close text-white fa-2x" width="18" height="27"></i>
             </label>            
-            <!-- <label class="indicator edit" for="card-visitors-edit{{job._id}}">
-                <i class="fa fa-cog open text-white fa-2x" width="18" height="27"></i>
-                <i class="fa fa-arrow-left close text-white fa-2x" width="18" height="27"></i>
-            </label>                 -->
+    
             <div class="content">
                 <div class="data">
                 

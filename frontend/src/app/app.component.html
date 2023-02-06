@@ -1,11 +1,13 @@
 
-<div class="layout-wrapper layout-static">
+<div class="layout-wrapper" [class.layout-static]="!hideMenu">
   <div class="layout-topbar flex">
     <a class="layout-topbar-logo flex-none" routerLink="">
         <img src="assets/logo.png" alt="logo">
         <span>Jobilee</span>
     </a>
-
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="hideMenu = !hideMenu">
+      <i class="pi pi-bars"></i>
+  </button>
 
 
     <!-- <div #topbarmenu class="layout-topbar-menu" >
@@ -24,7 +26,7 @@
     </div> -->
   </div>
   
-  <div class="layout-sidebar">
+  <div class="layout-sidebar" *ngIf="!hideMenu">
     <ul class="layout-menu">
       <ng-container *ngFor="let item of model; let i = index;">
           <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
@@ -38,7 +40,6 @@
       <div class="layout-main">
           <div class="pb-3">
             <app-breadcrumb></app-breadcrumb>
-
           </div>
         
       
