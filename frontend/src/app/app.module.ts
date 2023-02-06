@@ -82,6 +82,8 @@ import { DashboardListComponent } from './dashboard/dashboard-list/dashboard-lis
 import { CreateDashboardComponent } from './dashboard/create-dashboard/create-dashboard.component';
 import { UpdateDashboardComponent } from './dashboard/update-dashboard/update-dashboard.component';
 import { DashboardViewComponent } from './components/dashboard-view/dashboard-view.component';
+import {PaginatorModule} from 'primeng/paginator';
+
 import { PlayDashboardComponent } from './dashboard/play-dashboard/play-dashboard.component';
 @NgModule({
   declarations: [
@@ -126,6 +128,7 @@ import { PlayDashboardComponent } from './dashboard/play-dashboard/play-dashboar
     InputTextModule,
     TabViewModule,
     MatGridListModule,
+    PaginatorModule,
     ButtonModule,
     TableModule,
     MessagesModule,

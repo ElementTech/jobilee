@@ -1,7 +1,159 @@
+<p-paginator 
+#paginator
+[rows]="10"
 
+[totalRecords]="jobs?.length" (onPageChange)="paginate($event)"></p-paginator>
+<div class="grid">
+    <div class="card" *ngFor="let job of jobsPaginated" id="card-visitors">
+        <input type="checkbox" class="card-visitors-indicator" id="card-visitors-indicator{{job._id}}" />
+        <div class="header">
+            <label class="indicator" for="card-visitors-indicator{{job._id}}">
+                <i class="fa fa-history open text-white fa-2x" width="18" height="27"></i>
+                <!-- <svg class="open" width="18" height="27">
+                    <line x1="1.5" y1="12" x2="2" y2="25" stroke-linecap="round" style="stroke: #FFFFFF; stroke-width: 3;" />
+                    <line x1="9" y1="7" x2="9" y2="25" stroke-linecap="round" style="stroke: #FFFFFF; stroke-width: 3;" />
+                    <line x1="16.5" y1="2" x2="16.5" y2="25" stroke-linecap="round" style="stroke: #FFFFFF; stroke-width: 3;" />
+                </svg> -->
+                <i class="fa fa-arrow-left close text-white fa-2x" width="18" height="27"></i>
+                <!-- <svg class="close" width="15" height="25">
+                    <line x1="1.5" y1="13.5" x2="15" y2="0" style="stroke: #FFFFFF; stroke-width: 3" />
+                    <line x1="1.5" y1="11.5" x2="15" y2="25" style="stroke: #FFFFFF; stroke-width: 3" />
+                </svg> -->
+            </label>
+            <div class="content">
+                <div class="data">
+                    <!-- <div class="top">
+                        <p class="title">Visitors</p>
+                        <p class="date">01 Sep 2016 - 15 Sep 2016</p>
+                    </div>
+                    <div class="graph">
+                        <div class="horizontal">
+                        <div>
+                            <hr>
+                            <p>200</p>
+                        </div>
+                        <div>
+                            <hr>
+                        </div>
+                        <div>
+                            <hr>
+                            <p>100</p>
+                        </div>
+                        <div>
+                            <hr>
+                        </div>
+                        <div>
+                            <hr>
+                            <p>0</p>
+                        </div>
+                        </div>
+                        <div class="vertical">
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 12%"></div>
+                            </div>
+                            <p>01</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 19%"></div>
+                            </div>
+                            <p class="hidden">02</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 8%"></div>
+                            </div>
+                            <p>03</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 15%"></div>
+                            </div>
+                            <p class="hidden">04</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 28%"></div>
+                            </div>
+                            <p>05</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 45%"></div>
+                            </div>
+                            <p class="hidden">06</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 61%"></div>
+                            </div>
+                            <p>07</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 46%"></div>
+                            </div>
+                            <p class="hidden">08</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 39%"></div>
+                            </div>
+                            <p>09</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 52%"></div>
+                            </div>
+                            <p class="hidden">10</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 32%"></div>
+                            </div>
+                            <p>11</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 9.5%"></div>
+                            </div>
+                            <p class="hidden">12</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 41%"></div>
+                            </div>
+                            <p>13</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 79%"></div>
+                            </div>
+                            <p class="hidden">14</p>
+                        </div>
+                        <div class="day">
+                            <div class="line-container">
+                                <div class="line" style="height: 15%"></div>
+                            </div>
+                            <p>15</p>
+                        </div>
+                        </div>
+                    </div> -->
+                </div>
+                <p class="title">{{job.name}}</p>
+                <p class="date">{{job.integration}}</p>
+                <div class="float"></div>
+            </div>
+        </div>
+        <div class="info">
+        <!-- <p>Total Visitors of the<br>Public Website</p> -->
+        <!-- <p class="counter">30<span class="unit"> VIS</span></p> -->
+        </div>
+    </div>
+</div>
 
-
-
+<!-- 
 <p-dataView  #dv [value]="jobs | async" [paginator]="true" [rows]="27" filterBy="name" layout="list"
 [sortField]="sortField" [sortOrder]="sortOrder" [loading]="loading">
 <ng-template pTemplate="header">
@@ -20,10 +172,7 @@
       <div class="job-grid-item card">
 
           <div class="job-grid-item-content">
-              <!-- <img [src]="'assets/showcase/images/demo/job/' + job.image" [alt]="job.name"/> -->
               <div class="job-name">{{job.name}}</div>
-              <!-- <div class="job-description">{{job.description}}</div> -->
-              <!-- <p-rating [ngModel]="job.rating" [readonly]="true" [cancel]="false"></p-rating> -->
           </div>
           <div class="job-grid-item-bottom">
               <button pButton pRipple type="button" (click)="jobDetails(job._id)"  icon="pi pi-history" class="p-button-rounded p-button-outlined p-button-secondary"></button>
@@ -36,21 +185,16 @@
 <ng-template let-job pTemplate="listItem">
     <div class="col-12">
         <div class="job-list-item">
-            <!-- <img [src]="'assets/showcase/images/demo/job/' + job.image" [alt]="job.name"/> -->
             <div class="job-list-detail">
                 <div class="job-name">{{job.name}}</div>
-                <!-- <div class="job-description">{{job.description}}</div> -->
-                <!-- <p-rating [ngModel]="job.rating" [readonly]="true" [cancel]="false"></p-rating> -->
             </div>
             <div class="p-buttonset">
-                <!-- <span class="job-price">${{job.price}}</span> -->
                 <p-button   [routerLink]="['/jobs','update',job._id]" icon="pi pi-cog"  label="Edit" class="pr-2"  styleClass="p-button-warning"></p-button>
                <p-button  icon="pi pi-history" (click)="jobDetails(job._id)" class="pr-2" styleClass=" p-button-secondary" label="History"></p-button> 
-               <p-button  icon="pi pi-play" (click)="runJob(job._id)" label="Run"></p-button>   <!-- [disabled]="job.inventoryStatus === 'OUTOFSTOCK'" -->
-                <!-- <span [class]="'job-badge status-' + job.inventoryStatus.toLowerCase()">{{job.inventoryStatus}}</span> -->
+               <p-button  icon="pi pi-play" (click)="runJob(job._id)" label="Run"></p-button> 
             </div>
         </div>
     </div>
 </ng-template>
 
-</p-dataView>
+</p-dataView> -->

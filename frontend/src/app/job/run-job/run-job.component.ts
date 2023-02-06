@@ -5,27 +5,24 @@ import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2'
 import { SelectItem } from 'primeng/api';
+import { Paginator } from "primeng/paginator";
 @Component({
   selector: "app-run-job",
   templateUrl: "./run-job.component.html",
   styleUrls: ["./run-job.component.scss"]
 })
 export class RunJobComponent implements OnInit {
-  jobs: Observable<Job[]>;
+  jobs: any;
   loading: boolean = true;
   sortOrder: number;
   sortField: string;
   sortOptions: SelectItem[];
+  jobsPaginated: any;
   constructor(private dbService: DBService,
     private router: Router) {}
-  statuses = [
-      {label: 'Unqualified', value: 'unqualified'},
-      {label: 'Qualified', value: 'qualified'},
-      {label: 'New', value: 'new'},
-      {label: 'Negotiation', value: 'negotiation'},
-      {label: 'Renewal', value: 'renewal'},
-      {label: 'Proposal', value: 'proposal'}
-  ]
+  @ViewChild('paginator', { static: true }) paginator: Paginator
+
+
   ngOnInit(): void {
     this.reloadData();
     this.sortOptions = [
@@ -34,11 +31,17 @@ export class RunJobComponent implements OnInit {
       {label: 'Name: A - Z', value: 'name'},
       {label: 'Name: Z - A', value: '!name'}
     ];
-  
+
   }
 
+
   reloadData() {
-    this.jobs = this.dbService.getObjectList("jobs");
+    this.dbService.getObjectList("jobs").subscribe(data=>{
+      this.jobs = data
+      setTimeout(() => {
+        this.paginator?.changePage(0);
+      });
+    });
     this.loading = false;
   }
 
@@ -48,8 +51,9 @@ export class RunJobComponent implements OnInit {
   runJob(_id: string){
     this.router.navigate(['jobs/run', _id]);
   }
-
-
+  paginate(event) {
+    this.jobsPaginated = this.jobs.slice(event.first, event.first+event.rows);
+  }
   
   onSortChange(event) {
     let value = event.value;
