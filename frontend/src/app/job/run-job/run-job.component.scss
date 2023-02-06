@@ -1,431 +1,312 @@
-@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500&subset=latin-ext';
+/* CSS reset */
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
 
-* {
-	z-index: 0;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
+.item{
+    padding:1rem
+}
+
+/* Typography =======================*/
+
+/* Headings */
+
+/* Main heading for card's front cover */
+.card-front__heading {
+  font-size: 1.5rem;
+  margin-top: .25rem;
+    text-align: center;
+    white-space:pre-wrap !important;
+    word-break:keep-all !important;
+}
+
+/* Main heading for inside page */
+.inside-page__heading { 
+  padding-bottom: 1rem; 
+  width: 100%;
+}
+
+/* Mixed */
+
+/* For both inside page's main heading and 'view me' text on card front cover */
+.inside-page__heading,
+.card-front__text-view {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-top: .2rem;
+}
+
+.inside-page__heading--city,
+.card-front__text-view--city { color: black; }
+
+
+/* Front cover */
+
+.card-front__tp { color: #fafbfa; }
+
+/* For pricing text on card front cover */
+.card-front__text-price {
+  font-size: 1.2rem;
+  margin-top: -.2rem;
+}
+
+/* Back cover */
+
+/* For inside page's body text */
+.inside-page__text {
+  color: #333;
+}
+
+/* Icons ===========================================*/
+
+.card-front__icon {
+  fill: #fafbfa;
+  font-size: 3vw;
+  height: 3.25rem;
+  margin-top: -.5rem;
+  width: 3.25rem;
+}
+
+/* Buttons =================================================*/
+
+.inside-page__btn {
+  background-color: transparent;
+  border: 3px solid;
+  border-radius: .5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  overflow: hidden;
+  padding: .7rem .75rem;
+  position: relative;
+  text-decoration: none;
+  transition: all .3s ease;
+  width: 90%;
+  z-index: 10;
+}
+
+.inside-page__btn::before { 
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: scaleY(0);
+  transition: all .3s ease;
+  width: 100%;
+  z-index: -1;
+}
+
+.inside-page__btn--city { 
+  border-color: #017AD9;
+  color: #017AD9;
+}
+
+.inside-page__btn--city::before { 
+  background-color: #017AD9;
 }
 
 
-
-.play{
-    right:125px !important;
-    background-color: #F8AB60 !important;
-    
+.inside-page__btn:hover { 
+  color: #fafbfa;
 }
 
-.edit{
-    right:140px !important;
-    background-color: #acacac !important;
-}
-:root {
-    --color-highlight: 255, 0, 0;
-  }
-  
-.indicator {
-	cursor: pointer;
-}
-label:hover {
-    transition: all .1s ease-in-out !important;
-    transform: scale(1.1) !important; 
+.inside-page__btn:hover::before { 
+  transform: scaleY(1);
 }
 
+/* Layout Structure=========================================*/
+
+.main {
+  background: linear-gradient(
+    to bottom right,
+    #eee8dd,
+    #e3d9c6
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Container to hold all cards in one place */
+.card-area {
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100%;
+  justify-content: space-evenly;
+  padding: 1rem;
+}
+
+/* Card ============================================*/
+
+/* Area to hold an individual card */
+.card-section {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+/* A container to hold the flip card and the inside page */
 .card {
-	background-color: #FFFFFF;
-	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-	border-radius: 5px;
-    margin:0.5rem;
+  background-color: rgba(0,0,0, .05);
+  box-shadow: -.1rem 1.7rem 6.6rem -3.2rem rgba(0,0,0,0.5);
+  height: 15rem;
+  position: relative;
+  transition: all 1s ease;
+  width: 15rem;
 }
 
-.card#card-visitors {
-	position: relative;
-	width: 200px;
-	height: 200px;
+/* Flip card - covering both the front and inside front page */
+
+/* An outer container to hold the flip card. This excludes the inside page */
+.flip-card {
+  height: 15rem;
+  perspective: 100rem;
+  position: absolute;
+  right: 0;
+  transition: all 1s ease;
+  visibility: hidden;
+  width: 15rem;
+  z-index: 100;
 }
 
-.card#card-visitors input[type="checkbox"].card-visitors-indicator {
-	display: none;
+/* The outer container's visibility is set to hidden. This is to make everything within the container NOT set to hidden  */
+/* This is done so content in the inside page can be selected */
+.flip-card > * {
+  visibility: visible;
 }
 
-.card#card-visitors input[type="checkbox"].card-visitors-indicator:checked + .header label.indicator {
-	top: 30%;
-	right: calc(50% - 25px);
-	margin: calc(-15% - 25px) calc(50% - 25px) 0 0;
-	background-color: transparent;
-	-webkit-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, background-color 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s, margin 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-moz-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, background-color 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s, margin 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-o-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, background-color 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s, margin 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-ms-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, background-color 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s, margin 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, background-color 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s, margin 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
+/* An inner container to hold the flip card. This excludes the inside page */
+.flip-card__container {
+  height: 100%;
+  position: absolute;
+  right: 0;
+  transform-origin: left;
+  transform-style: preserve-3d;
+  transition: all 1s ease;
+  width: 100%;
 }
 
-.card#card-visitors input[type="checkbox"].card-visitors-indicator:checked + .header label.indicator .open {
-	opacity: 0;
-	-webkit-transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
-	-moz-transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
-	-o-transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
-	-ms-transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
-	transition: opacity 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) 0.2s;
+.card-front,
+.card-back {
+  backface-visibility: hidden;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
-.card#card-visitors input[type="checkbox"].card-visitors-indicator:checked + .header label.indicator .close {
-	transform: scale(1);
-	-webkit-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-moz-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-o-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-ms-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
+/* Styling for the front side of the flip card */
+
+/* container for the front side */
+.card-front {
+  background-color: #fafbfa;
+  height: 15rem;
+  width: 15rem;
 }
 
-.card#card-visitors input[type="checkbox"].card-visitors-indicator:checked + .header .content .data {
-	opacity: 1;
-	-webkit-transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.45s;
-	-moz-transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.45s;
-	-o-transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.45s;
-	-ms-transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.45s;
-	transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) 0.45s;
+/* Front side's top section */
+.card-front__tp {
+  align-items: center;
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 57% 90%, 50% 100%, 43% 90%, 0 90%);
+  display: flex;
+  flex-direction: column;
+  height: 12rem;
+  justify-content: center;
+  padding: .75rem;
 }
 
-.card#card-visitors input[type="checkbox"].card-visitors-indicator:checked + .header .content .data .graph .vertical .day .line-container {
-	max-height: 80%;
-	-webkit-transition: max-height 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-moz-transition: max-height 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-o-transition: max-height 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	-ms-transition: max-height 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-	transition: max-height 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0.9s;
-}
-
-.card#card-visitors input[type="checkbox"].card-visitors-indicator:checked + .header .content .float {
-	opacity: 1;
-	transform: scale(10);
-	-webkit-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	-moz-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	-o-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	-ms-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-}
-
-.card#card-visitors .header {
-	width: 100%;
-	height: 60%;
-	background-color: #017AD9;
-}
-
-.card#card-visitors .header label.indicator {
-	position: absolute;
-	z-index: 1;
-	width: 50px;
-	height: 50px;
-	top: calc(60% - 25px);
-	right: 20px;
-	margin: 0;
-	border-radius: 100%;
-	background-color: #acacac;
-	-webkit-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	-moz-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	-o-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	-ms-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-	transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
-}
-
-.card#card-visitors .header label.indicator .open {
-	position: absolute;
-	margin: 11.5px 12px;
-	opacity: 1;
-	-webkit-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s;
-	-moz-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s;
-	-o-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s;
-	-ms-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s;
-	transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.6s;
-}
-
-.card#card-visitors .header label.indicator .close {
-	margin: 12.5px 17.5px;
-	transform: scale(0);
-	-webkit-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-moz-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-o-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-ms-transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-}
-
-.card#card-visitors .header .content {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-
-.card#card-visitors .header .content > * {
-	color: #FFFFFF;
-	font-weight: 500;
-}
-
-.card#card-visitors .header .content .data {
-	position: absolute;
-	z-index: 2;
-	width: 100%;
-	height: 100%;
-	opacity: 0;
-	background-color: #FF9800;
-	-webkit-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-moz-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-o-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-ms-transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-}
-
-.card#card-visitors .header .content .data .top {
-	width: 100%;
-	height: 55%;
-}
-
-.card#card-visitors .header .content .data .top .title {
-	width: 100%;
-}
-
-.card#card-visitors .header .content .data .graph {
-	position: relative;
-	width: calc(100% - 10px);
-	height: 50%;
-	margin: 0 6px 6px 6px;
-}
-
-.card#card-visitors .header .content .data .graph .horizontal {
-	width: 100%;
-	height: 100%;
-}
-
-.card#card-visitors .header .content .data .graph .horizontal div {
-	height: 20%;
-}
-
-.card#card-visitors .header .content .data .graph .horizontal div hr {
-	border: 1px solid #FFFFFF;
-	opacity: .25;
-}
-
-.card#card-visitors .header .content .data .graph .horizontal div p {
-	margin-top: 1px;
-	opacity: .7;
-	font-size: 13px;
-}
-
-.card#card-visitors .header .content .data .graph .vertical {
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	-webkit-box-orient: horizontal;
-	-moz-box-orient: horizontal;
-	-webkit-box-direction: normal;
-	-moz-box-direction: normal;
-	-webkit-flex-direction: row;
-	-ms-flex-direction: row;
-	flex-direction: row;
-	position: absolute;
-	width: 90%;
-	height: 100%;
-	top: 0;
-	margin-left: 10%;
-}
-
-.card#card-visitors .header .content .data .graph .vertical .day {
-	position: relative;
-	width: calc(100% / 14);
-	height: 100%;
-}
-
-.card#card-visitors .header .content .data .graph .vertical .day .line-container {
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
-	-webkit-box-orient: vertical;
-	-moz-box-orient: vertical;
-	-webkit-box-direction: normal;
-	-moz-box-direction: normal;
-	-webkit-flex-direction: column;
-	-ms-flex-direction: column;
-	flex-direction: column;
-	justify-content: flex-end;
-	position: absolute;
-	width: 2px;
-	height: 80%;
-	max-height: 0;
-	bottom: 20%;
-	margin: 0 calc((100% - 2px) / 2);
-	-webkit-transition: max-height 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-moz-transition: max-height 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-o-transition: max-height 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-ms-transition: max-height 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	transition: max-height 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-}
-
-.card#card-visitors .header .content .data .graph .vertical .day .line-container .line {
-	width: 100%;
-	background-color: #FFFFFF;
-}
-
-.card#card-visitors .header .content .data .graph .vertical .day p {
-	position: absolute;
-	height: 20%;
-	bottom: 0;
-	margin-bottom: -3px;
-	opacity: .7;
-	font-size: 13px;
-}
-
-.card#card-visitors .header .content .data .graph .vertical .day .hidden {
-	opacity: 0;
-}
-
-.card#card-visitors .header .content .title {
-	margin-top: 15px;
-	font-size: 25px;
-	line-height: 30px;
-	text-align: center;
-}
-
-.card#card-visitors .header .content .date {
-	width: 100%;
-	opacity: .7;
-	text-align: center;
-}
-
-.card#card-visitors .header .content .float {
-	position: absolute;
-	width: 50px;
-	height: 50px;
-	top: 50%;
-	right: calc(50% - 25px);
-	opacity: 0;
-	border-radius: 100%;
-	background-color: #FF9800;
-	-webkit-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-moz-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-o-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	-ms-transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-	transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, opacity 0s cubic-bezier(0.4, 0.0, 0.2, 1) 0s;
-}
-
-.card#card-visitors .info {
-	width: calc(100% - 40px);
-	height: calc(40% - 80px);
-	padding: 40px 20px;
-	color: #9E9E9E;
-}
-
-.card#card-visitors .info .counter {
-	margin-top: 8px;
-	color: #212121;
-	font-size: 45px;
-	font-weight: 400;
-	line-height: 40px;
-}
-
-.card#card-visitors .info .counter .unit {
-	font-size: 15px;
+.card-front__tp--city {
+  background: #017AD9;
 }
 
 
+/* Front card's bottom section */
+.card-front__bt {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
 
+/* Styling for the back side of the flip card */
 
-:host ::ng-deep {
+.card-back {
+  background-color: #fafbfa;
+  transform: rotateY(180deg);
+}
 
-    
-    .p-dropdown {
-        width: 14rem;
-        font-weight: normal;
-    }
-    
-    .job-name {
-        font-size: 1.1rem;
-        word-break: break-all;
-        font-weight: 700;
-    }
-    
-    .job-description {
-        margin: 0 0 1rem 0;
-    }
-    
-    .job-category-icon {
-        vertical-align: middle;
-        margin-right: .5rem;
-    }
-    
-    .job-category {
-        font-weight: 600;
-        vertical-align: middle;
-    }
-    
-    .job-list-item {
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        width: 100%;
-    
-        img {
-            width: 150px;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-            margin-right: 2rem;
-        }
-    
-        .job-list-detail {
-            flex: 1 1 0;
-        }
-    
-        .p-rating {
-            margin: 0 0 .5rem 0;
-        }
-    
-        .job-price {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: .5rem;
-            align-self: flex-end;
-        }
-    
-        .job-list-action {
-            display: flex;
-            flex-direction: column;
-        }
-    
-        .p-button {
-            margin-bottom: .5rem;
-        }
-    }
-    
-    .job-grid-item {
-        margin: .5em;
-        padding-top:1em !important;
-        padding-bottom:.5em !important;
-        padding-right:.5em !important;
-        padding-left:.5em !important;
-        border: 1px solid #dee2e6;
-    
-        .job-grid-item-top,
-        .job-grid-item-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-    
-        img {
-            width: 75%;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-            margin: 2rem 0;
-        }
-    
-        .job-grid-item-content {
-            text-align: center;
-        }
-    
-        .job-price {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-    }
+/* Specifically targeting the <video> element */
+.video__container {
+  clip-path: polygon(0% 0%, 100% 0%, 90% 50%, 100% 100%, 0% 100%);
+  height: auto;
+  min-height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Inside page */
+
+.inside-page {
+  background-color: #fafbfa;
+  box-shadow: inset 20rem 0px 5rem -2.5rem rgba(0,0,0,0.25);
+  height: 100%;
+  padding: 1rem;
+  position: absolute;
+  right: 0;
+  transition: all 1s ease;
+  width: 15rem;
+  z-index: 1;
+}
+
+.inside-page__container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-align: center; 
+  width: 100%;
+}
+
+/* Functionality ====================================*/
+
+/* This is to keep the card centered (within its container) when opened */
+.card:hover {
+  box-shadow:
+  -.1rem 1.7rem 6.6rem -3.2rem rgba(0,0,0,0.75);
+  width: 30rem;
+}
+
+/* When the card is hovered, the flip card container will rotate */
+.card:hover .flip-card__container {
+  transform: rotateY(-180deg);
+}
+
+/* When the card is hovered, the shadow on the inside page will shrink to the left */
+.card:hover .inside-page {
+  box-shadow: inset 1rem 0px 5rem -2.5rem rgba(0,0,0,0.1);
+}
+
+/* Footer ====================================*/
+
+.footer {
+  background-color: #333;
+   margin-top: 3rem;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+.footer-text {
+  color: #fff;
+  font-size: 1.2rem;
+  text-align: center;
 }
