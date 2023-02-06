@@ -44,8 +44,10 @@ export class RunJobComponent implements OnInit {
     });
     this.loading = false;
   }
-
-  jobDetails(_id: string){
+  editJob(_id: string){
+    this.router.navigate(['jobs/update', _id]);
+  }
+  jobHistory(_id: string){
     this.router.navigate(['jobs/history', _id]);
   }
   runJob(_id: string){

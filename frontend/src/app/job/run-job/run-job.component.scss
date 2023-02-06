@@ -9,10 +9,26 @@
 
 
 
+.play{
+    right:125px !important;
+    background-color: #F8AB60 !important;
+    
+}
 
-
+.edit{
+    right:140px !important;
+    background-color: #acacac !important;
+}
+:root {
+    --color-highlight: 255, 0, 0;
+  }
+  
 .indicator {
 	cursor: pointer;
+}
+label:hover {
+    transition: all .5s ease-in-out !important;
+    transform: scale(1.1) !important; 
 }
 
 .card {
@@ -26,7 +42,6 @@
 	position: relative;
 	width: 200px;
 	height: 200px;
-	// margin: calc((100vh - 400px) / 2) auto;
 }
 
 .card#card-visitors input[type="checkbox"].card-visitors-indicator {
@@ -106,7 +121,7 @@
 	right: 20px;
 	margin: 0;
 	border-radius: 100%;
-	background-color: #FF9800;
+	background-color: #acacac;
 	-webkit-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
 	-moz-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
 	-o-transition: top 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s, background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0s, margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) 0.3s;
@@ -162,7 +177,7 @@
 
 .card#card-visitors .header .content .data .top {
 	width: 100%;
-	height: 40%;
+	height: 55%;
 }
 
 .card#card-visitors .header .content .data .top .title {
@@ -172,7 +187,7 @@
 .card#card-visitors .header .content .data .graph {
 	position: relative;
 	width: calc(100% - 10px);
-	height: 40%;
+	height: 50%;
 	margin: 0 6px 6px 6px;
 }
 
