@@ -34,7 +34,8 @@ export class ChartFormComponent implements OnInit {
     {name: 'line', icon: 'fa-solid fa-chart-line'},
     {name: 'pie', icon: 'fa-solid fa-chart-pie'},
     {name: 'polarArea', icon: 'fa-solid fa-star'},
-    {name: 'radar', icon: 'fa-brands fa-uncharted'}
+    {name: 'radar', icon: 'fa-brands fa-uncharted'},
+    {name: 'table', icon: 'fa-solid fa-table'}
     // {name: 'table', icon: 'fa-solid fa-table'}
   ];
   jobs: Observable<any>;
@@ -189,20 +190,19 @@ removeDataset(index)
     switch (this.chart.type) {
       case "table":
         this.definition = {
-          headers: ['subjectCode', 'subjectTitle', 'subjectGroup', 'status'],
-          items: [
-            {
-              "subjectCode": "1111",
-              "subjectTitle": "English Literature",
-              "subjectGroup": "English",
-              "status": "Available"
-            },
-            {
-              "subjectCode": "2222",
-              "subjectTitle": "Algebra III",
-              "subjectGroup": "Mathematics",
-              "status": "Not Available"
-            }
+          "datasets": [
+              {
+                  "test": "2023-02",
+                  "me": "1234"
+              },
+              {
+                "test": "2023-02",
+                "me": "5423"
+              }
+          ],
+          "labels": [
+              "test",
+              "me"
           ]
         }      
         break;

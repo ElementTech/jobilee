@@ -183,22 +183,43 @@
               <p-message *ngIf="definition?.message" styleClass="min-w-full m-0 p-1">
              </p-message>
             <p-chart width="400" height="400" [type]="chart.type" *ngIf="chart.type != 'table'" [data]="definition" [options]=""></p-chart>
-            <p-table [columns]="definition?.headers" [value]="definition?.items" styleClass="p-datatable-sm">
+
+            
+
+
+
+
+
+            <p-table 
+            [columns]="definition?.labels" *ngIf="chart.type == 'table'" [value]="definition?.datasets" styleClass="p-datatable-sm"
+            rowGroupMode="rowspan" 
+            [groupRowsBy]="chart?.label" 
+            [sortField]="chart?.label" 
+            sortMode="single"  
+            [dataKey]="chart?.label">
               <ng-template pTemplate="header" let-columns>
                   <tr>
-                      <th *ngFor="let col of columns">
-                          {{col}}
-                      </th>
+                    <th *ngFor="let col of columns">
+                      {{col}}
+                    </th>
                   </tr>
               </ng-template>
-              <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-rowgroup="rowgroup" let-rowspan="rowspan" let-columns="columns">
                   <tr>
-                      <td *ngFor="let col of columns">
-                          {{rowData[col]}}
-                      </td>
+                    <td 
+                      *ngIf="rowgroup" 
+                      [attr.rowspan]="rowspan">
+                      <span class="font-bold">
+                          {{rowData['namespace']}}
+                      </span>
+                    </td>
+                    <td *ngFor="let col of columns">
+                      {{rowData[col]}}
+                    </td>
                   </tr>
               </ng-template>
-          </p-table>
+            </p-table>
+
               </p-panel>
         </div>
       </div>

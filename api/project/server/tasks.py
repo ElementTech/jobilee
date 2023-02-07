@@ -91,51 +91,57 @@ def trigger_chart_job_task(self,name,chosen_params):
                         if step['name'] == dataset['output'][0]['step'] and v['job_name'] == dataset['output'][0]['job']:
                             if isinstance(step['items'],dict):
                                 step['items'] = [step['items']]
-                            data_counter = {item: 0 for item in labels}
+                            data_counter = {item: 0 for item in labels} if chosen_params.get('type') != 'table' else []
+                     
                             for label in labels:
-                                for output in step['items']:
-                                    if output[chosen_params['label']['outputs']] == label:
-                                        condition = dataset['condition']
-                                        if condition == "exists":
-                                            if output[dataset['output'][0]['outputs']] != None:
-                                                data_counter[label] += 1    
-                                        if condition == "==":
-                                            if output[dataset['output'][0]['outputs']] == dataset['value']:
-                                                data_counter[label] += 1    
-                                        if condition == "!=":
-                                            if output[dataset['output'][0]['outputs']] != dataset['value']:
-                                                data_counter[label] += 1
-                                        if condition == "contains":
-                                            if dataset['value'] in output[dataset['output'][0]['outputs']]:
-                                                data_counter[label] += 1         
-                                        if condition == "in":
-                                            if output[dataset['output'][0]['outputs']] in dataset['value'].split(","):
-                                                data_counter[label] += 1      
-                                        if condition == "not in":
-                                            if output[dataset['output'][0]['outputs']] not in dataset['value'].split(","):
-                                                data_counter[label] += 1                                                                    
-                                        if condition == ">":
-                                            if output[dataset['output'][0]['outputs']] > dataset['value']:
-                                                data_counter[label] += 1    
-                                        if condition == "<":
-                                            if output[dataset['output'][0]['outputs']] < dataset['value']:
-                                                data_counter[label] += 1
-                                        if condition == ">=":
-                                            if output[dataset['output'][0]['outputs']] >= dataset['value']:
-                                                data_counter[label] += 1         
-                                        if condition == "<=":
-                                            if output[dataset['output'][0]['outputs']] <= dataset['value']:
-                                                data_counter[label] += 1  
+                                if chosen_params.get('type') != 'table':
+                                    for output in step['items']:
+                                        if output[chosen_params['label']['outputs']] == label:
+                                            condition = dataset['condition']
+                                            if condition == "exists":
+                                                if output[dataset['output'][0]['outputs']] != None:
+                                                    data_counter[label] += 1    
+                                            if condition == "==":
+                                                if output[dataset['output'][0]['outputs']] == dataset['value']:
+                                                    data_counter[label] += 1    
+                                            if condition == "!=":
+                                                if output[dataset['output'][0]['outputs']] != dataset['value']:
+                                                    data_counter[label] += 1
+                                            if condition == "contains":
+                                                if dataset['value'] in output[dataset['output'][0]['outputs']]:
+                                                    data_counter[label] += 1         
+                                            if condition == "in":
+                                                if output[dataset['output'][0]['outputs']] in dataset['value'].split(","):
+                                                    data_counter[label] += 1      
+                                            if condition == "not in":
+                                                if output[dataset['output'][0]['outputs']] not in dataset['value'].split(","):
+                                                    data_counter[label] += 1                                                                    
+                                            if condition == ">":
+                                                if output[dataset['output'][0]['outputs']] > dataset['value']:
+                                                    data_counter[label] += 1    
+                                            if condition == "<":
+                                                if output[dataset['output'][0]['outputs']] < dataset['value']:
+                                                    data_counter[label] += 1
+                                            if condition == ">=":
+                                                if output[dataset['output'][0]['outputs']] >= dataset['value']:
+                                                    data_counter[label] += 1         
+                                            if condition == "<=":
+                                                if output[dataset['output'][0]['outputs']] <= dataset['value']:
+                                                    data_counter[label] += 1  
+                                else:
+                                    for output in step['items']:
+                                        data_counter.append(output)
+                                                                    
                             datasets.append({
                                 "label": dataset['name'],
                                 "data": list(data_counter.values())
-                            })
+                            } if chosen_params.get('type') != 'table' else data_counter)
         db["chart_tasks"].update_one({"_id": ObjectId(self.request.id)}, {"$set": {
             "done": True,
             "result": True,
             "outputs": {
-                "labels": labels,
-                "datasets": datasets
+                "labels": labels if chosen_params.get('type') != 'table' else list(data_counter[0].keys()),
+                "datasets": datasets if chosen_params.get('type') != 'table' else datasets[0]
             }
         }},upsert=True)
     else:

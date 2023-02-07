@@ -4,7 +4,7 @@
     <button pButton pTooltip="Reload" class="p-panel-header-icon p-link" (click)="refresh()" icon="pi pi-refresh">
         </button>
     </ng-template>
-    <div class="grid p-2">
+    <div class="grid gap-3">
         <div *ngFor='let chart of chartsDefinitions | keyvalue' class="col-4">
             <p-panel header="{{chart.key}}">
                 <div class="text-center">
