@@ -36,7 +36,7 @@ export class RunJobComponent implements OnInit {
 
 
   reloadData() {
-    this.dbService.getObjectList("jobs").subscribe(data=>{
+    this.dbService.getJobsCatalog().subscribe(data=>{
       this.jobs = data
       console.log(data)
       setTimeout(() => {

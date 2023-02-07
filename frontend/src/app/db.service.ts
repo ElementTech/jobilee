@@ -44,6 +44,8 @@ export class DBService {
   calculateJobOutputs(outputs): Observable<any> {
     return this.http.post(`${this.baseUrl}/jobs/outputs`,outputs);
   }
-
+  getJobsCatalog(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/history`);
+  }
   
 }

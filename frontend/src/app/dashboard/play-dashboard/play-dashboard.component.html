@@ -1,1 +1,5 @@
-<app-dashboard-view [dashboard]="dashboard | async" [charts]="(dashboard|async)?.charts"></app-dashboard-view>
+<app-dashboard-view 
+    *ngIf="dashboard | async; let dashboard"
+    [dashboard]="dashboard"   
+    [charts]="(dashboard)?.charts">
+</app-dashboard-view>

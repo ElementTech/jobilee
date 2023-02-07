@@ -1,17 +1,30 @@
 
-<p-panel header="{{dashboard.name}}">
+<p-panel header="{{dashboard?.name}}">
     <ng-template pTemplate="icons">
-    <button pButton pTooltip="Reload" class="p-panel-header-icon p-link" (click)="refresh()" icon="pi pi-refresh">
+        <div class="flex">
+        <button pButton pTooltip="Reload" class="p-panel-header-icon p-link" (click)="refresh()" icon="pi pi-refresh">
         </button>
+
+    <div>
+      <label for="horizontal">Refresh Every</label>
+        <p-inputNumber (onInput)="onIntervalChange($event)" [(ngModel)]="dashboard.refresh" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="1"
+        decrementButtonClass="p-button-info" incrementButtonClass="p-button-info" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" mode="decimal">
+        </p-inputNumber>
+    </div>
+    
+    </div>
+  
     </ng-template>
     <div class="grid gap-3">
-        <div *ngFor='let chart of chartsDefinitions | keyvalue' class="col-4">
-            <p-panel header="{{chart.key}}">
+        <div class="col-6 xl:col-4 p-4" *ngFor='let chart of chartsDefinitions | keyvalue'>
+            <div class="card">
+                <h5>{{chart.key}}</h5>
                 <div class="text-center">
-                    <p-chart *ngIf="(chart.value | async); else spin"  [type]="(chartsMetadata[chart.key] | async)[0]?.type" [data]="(chart.value | async)" [options]=""></p-chart>
+                    <p-chart *ngIf="(chart.value | async); else spin"  [type]="(chartsMetadata[chart.key] | async)[0]?.type" width="400" [data]="(chart.value | async)" [options]=""></p-chart>
                     <ng-template #spin><p-progressSpinner></p-progressSpinner></ng-template>
                 </div>
-            </p-panel>
+            </div>        
+           
         </div>
     </div>
 </p-panel>

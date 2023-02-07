@@ -12,23 +12,50 @@ export class DashboardViewComponent implements OnInit {
 
 
   @Input() charts: Array<string> = [];
-  @Input() dashboard: Dashboard;
+  @Input() dashboard: Dashboard = {'refresh': 60};
   chartsDefinitions:Object = {};
   chartsMetadata:Object = {};
-
+  interval: any;
+  refreshing = false;
   constructor(private dbService: DBService,
     private router: Router, private runService: RunService) {
 
     }
 
   ngOnInit() {
-
+    this.refresh()
+    this.interval = setInterval(() => {
+      console.log("counting until refresh",this.dashboard?.refresh)
+      this.refresh(); // api call
+  }, (this.dashboard?.refresh)*1000);
 
   }
+  onIntervalChange(event){
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+    console.log("changed",event.value)
+    this.interval = setInterval(() => {
+      console.log("counting until refresh",this.dashboard?.refresh)
+      this.refresh(); // api call
+  }, (event.value)*1000);
+}
+  ngOnDestroy() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+ }
+  promiseQueue: any = {}
   refresh()
   {
+    this.promiseQueue = {}
     Object.keys(this.chartsDefinitions).forEach(element => {
-      this.chartsDefinitions[element] = this.templateToDefinition(element)
+      this.promiseQueue[element] = this.templateToDefinition(element)
+      Promise.all(Object.values(this.promiseQueue)).then(done=>{
+        for (const [key, value] of Object.entries(this.promiseQueue)) {
+          this.chartsDefinitions[key] = value
+        }
+      })
     });
   }
 
@@ -44,7 +71,7 @@ export class DashboardViewComponent implements OnInit {
 
     this.chartsDefinitions = changes.charts.currentValue
     .filter(key => !Object.keys(this.chartsDefinitions).includes(key))
-    .reduce((acc, key) => ({...acc, [key]: this.templateToDefinition(key)}), this.chartsDefinitions);
+    .reduce((acc, key) => ({...acc, [key]: {}}), this.chartsDefinitions);
   }    
 
   async templateToDefinition(chart) {

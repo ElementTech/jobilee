@@ -112,6 +112,7 @@ def extract_data(input_list):
                 })
     return result
 
+
 @app.route('/<collection>', methods=['POST', 'GET','DELETE'])
 def data(collection):
     # POST a data to database
@@ -125,12 +126,17 @@ def data(collection):
     if request.method == 'GET':
         allData = db[collection].find()
         dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
-        # print([{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in tasks])
-        if collection == "jobs":
-            for job in dataJson:
-                history = db['tasks'].find({'job_id':job['_id']}).sort('creation_time', -1).limit(2)
-                dataJson[dataJson.index(job)]["history"] = [{'result':d['result'],'creation_time':d['creation_time']} for d in history if 'result' in d]
         return jsonify(parse_json(dataJson))
+
+@app.route('/history', methods=['GET'])
+def history(collection='jobs'):
+    allData = db[collection].find()
+    dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
+    for job in dataJson:
+        history = db['tasks'].find({'job_id':job['_id']}).sort('creation_time', -1).limit(2)
+        dataJson[dataJson.index(job)]["history"] = [{'result':d['result'],'creation_time':d['creation_time']} for d in history if 'result' in d]
+    return jsonify(parse_json(dataJson))
+
 
 @app.route('/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
 @app.route('/<collection>/<string:key>/<string:value>', methods=['GET','DELETE'])
