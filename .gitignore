@@ -1,5 +1,5 @@
 .DS_STORE
-
+.data
 **/dist/
 **/bazel-out
 **/integration/bazel/bazel-*
