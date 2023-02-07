@@ -44,7 +44,7 @@ services:
   api:
     build: ./api
     container_name: api
-    command: python run -h 0.0.0.0 -p 5001
+    command: python manage.py run -h 0.0.0.0 -p 5001
     environment:
       - PORT=5001
       - FLASK_DEBUG=1
@@ -58,7 +58,7 @@ services:
 
   worker:
     build: ./api
-    command: celery --app project.server.tasks worker
+    command: celery --app project.server.tasks worker --loglevel=info
     environment:
       - FLASK_DEBUG=1
       - CELERY_BROKER_URL=redis://redis:6379/0
@@ -70,7 +70,7 @@ services:
 
   dashboard:
     build: ./api
-    command: celery -A project.server.tasks flower --port=5555 --broker=redis://redis:6379/0
+    command: celery --app project.server.tasks flower --port=5555 --broker=redis://redis:6379/0 --loglevel=info
     ports:
       - 5555:5555
     environment:
