@@ -1,87 +1,61 @@
+
+
+<p-panel header="Run a Job">
+    <p-paginator 
+#paginator
+[rows]="50"
+
+
+[totalRecords]="jobs?.length" (onPageChange)="paginate($event)"></p-paginator>
+
+
+
+<div class="card-custom-container">
+
+    
+     <div class="card-custom" *ngFor="let job of jobsPaginated" [id]="job._id" (click)="runJob(job._id)">
+      
+      <div class="card-custom__image" id="card-custom-2">
+        <div class="image-overlay">
+        </div>
+        <h6 class="text-center" style="word-wrap: break-word;">
+            {{job.name}}
+            <br>
+            <small style="font-size: 10px;">{{job.integration}}</small>
+        </h6>
+        <!-- <img src="http://www.fubiz.net/wp-content/uploads/2014/11/Lotta-Nieminen_Google_07-640x553.jpg" alt="" /> -->
+      </div>
+      <div class="card-custom__actions">
+      </div>
+      <div class="card-custom__description">
+        <span class="line _long"  [ngClass]="r ? 'bg-green-500' : 'bg-red-500'" *ngFor="let r of job.history"></span>
+      </div>
+      
+    </div><!-- /.card-custom -->
+    
+
+   
+  </div><!-- /.card-custom-container -->
+  
+  <!-- 
+  
+  The illustrations used in the card-customs do not belong to me. I did not create them nor is it my intention to pass these artist's work as my own. 
+  
+  With that being said here are links where you can view the to the more of illustrator's work that was used:
+  
+  card-custom 1: 
+  https://dribbble.com/shots/1081469-Google-Now
+   
+  card-customs 2,3,4,5: http://www.lottanieminen.com/illustration/google-calendar/
+  
+  -->
+
+
+
 <p-paginator 
 #paginator
 [rows]="20"
 [totalRecords]="jobs?.length" (onPageChange)="paginate($event)"></p-paginator>
 
-<div class="grid">
-    <div *ngFor="let job of jobsPaginated" class="item">
-        <section class="card-section">
-            <div class="card">
-                <div class="flip-card">
-                    <div class="flip-card__container">
-                        <div class="card-front">
-                            <div class="card-front__tp card-front__tp--city">
-           
-
-                           <h2 class="card-front__heading text-white" >
-                            {{job.name}}
-                        </h2>
-                        <p class="card-front__text-price">
-                           {{job.integration}}
-                        </p>
-                            </div>
-
-                            <div class="card-front__bt">
-                                <p class="card-front__text-view card-front__text-view--city">
-                                </p>
-                            </div>
-                        </div>
-                        <div class="card-back text-center">
-                            <button pButton pRipple type="button"
-                             (click)="runJob(job._id)" 
-                              icon="fa-solid fa-play fa-2x" 
-                              [style.width]="'50px'"
-                              [style.height]="'50px'"
-                              class="p-button-rounded" 
-                              style="top:80px"></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="inside-page">
-                    <div class="inside-page__container">
-                        <h3 class="inside-page__heading inside-page__heading--city">
-                            {{job.name}}
-                        </h3>
-                        <p class="inside-page__text">
-                          {{job?.description}}
-                        </p>
-                        <!-- <a href="#" class="inside-page__btn inside-page__btn--city"><i class="fa fa-history" aria-hidden="true"></i></a> -->
-                        <!-- <a href="#" class="inside-page__btn inside-page__btn--city"><i class="fa fa-edit" aria-hidden="true"></i></a> -->
-                    </div>
-                </div>
-            </div>
-        </section>   
-
-    </div>
-
-        
-        <!-- <input type="checkbox" (click)="jobHistory(job._id)" class="card-visitors-indicator" id="card-visitors-indicator{{job._id}}" />
-        <input type="checkbox"(click)="runJob(job._id)"  class="card-visitors-indicator" id="card-visitors-play{{job._id}}" />
-
-        <div class="header">
-            <label class="indicator history" for="card-visitors-indicator{{job._id}}">
-                <i class="fa fa-history open text-white"  width="18" height="27"></i>
-                <i class="fa fa-arrow-left close text-white fa-2x" width="18" height="27"></i>
-            </label>
-            <label class="indicator play" for="card-visitors-play{{job._id}}">
-                <i class="fa fa-play open text-white fa-2x" style="padding-left:5px !important" width="18" height="27"></i>
-                <i class="fa fa-arrow-left close text-white fa-2x" width="18" height="27"></i>
-            </label>            
-    
-            <div class="content">
-                <div class="data">
-                
-                </div>
-                <p class="title">{{job.name}}</p>
-                <p class="date">{{job.integration}}</p>
-                <div class="float"></div>
-            </div>
-        </div>
-        <div class="info flex">
-         {{job.steps?.length}} Steps <br>
-
-         {{job.parameters?.length}} Parameters
-        </div> -->
-</div>
+</p-panel>
 

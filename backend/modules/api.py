@@ -125,6 +125,11 @@ def data(collection):
     if request.method == 'GET':
         allData = db[collection].find()
         dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
+        # print([{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in tasks])
+        if collection == "jobs":
+            for job in dataJson:
+                history = db['tasks'].find({'job_id':job['_id']}).sort('creation_time', -1).limit(2)
+                dataJson[dataJson.index(job)]["history"] = [d['result'] for d in history if 'result' in d]
         return jsonify(parse_json(dataJson))
 
 @app.route('/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])

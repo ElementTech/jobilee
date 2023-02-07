@@ -5,4 +5,5 @@ export class Job {
     apiID?: string;
     integration?: string;
     parameters?: Array<any>;
+description?: string;
 }

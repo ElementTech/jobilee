@@ -30,6 +30,12 @@
         </div>
   
       </div>
+      <div class="col-6">
+        <h5>Description</h5>
+        <textarea pInputTextarea class="min-w-max"  
+        id="name" required [(ngModel)]="job.description" name="description"
+        [rows]="5" [cols]="30"  [autoResize]="true"></textarea>
+      </div>
       
 
         <p-panel header="Parameters" styleClass="pt-2" [toggleable]="false">

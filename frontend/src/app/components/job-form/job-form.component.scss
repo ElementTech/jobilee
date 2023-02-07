@@ -12,7 +12,8 @@
   height: 31px;
 
 }
-:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect {
+
+:host ::ng-deep .p-dropdown, :host ::ng-deep .p-multiselect, :host ::ng-deep .p-inputtextarea {
     width: 100%;
   }
 :host ::ng-deep {
