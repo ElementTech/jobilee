@@ -28,7 +28,15 @@
       <div class="card-custom__actions">
       </div>
       <div class="card-custom__description">
-        <span class="line _long"  [ngClass]="r ? 'bg-green-500' : 'bg-red-500'" *ngFor="let r of job.history"></span>
+        <div  *ngFor="let r of job.history">
+            <!-- <p-progressBar 
+            [style]="{'height': '6px','padding-top':'1rem'}"
+            [mode]="(r['result'] == undefined) ? 'indeterminate' : 'determinate'" [value]="100"
+            [ngClass]="r['result'] ? 'bg-green-500' : 'bg-red-500'"
+            > {{r.creation_time |date:'short'}}</p-progressBar> -->
+            <span class="line _long"  [ngClass]="r['result'] ? 'bg-green-500' : 'bg-red-500'"></span>
+        </div>
+        
       </div>
       
     </div><!-- /.card-custom -->

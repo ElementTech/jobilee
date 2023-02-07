@@ -129,7 +129,7 @@ def data(collection):
         if collection == "jobs":
             for job in dataJson:
                 history = db['tasks'].find({'job_id':job['_id']}).sort('creation_time', -1).limit(2)
-                dataJson[dataJson.index(job)]["history"] = [d['result'] for d in history if 'result' in d]
+                dataJson[dataJson.index(job)]["history"] = [{'result':d['result'],'creation_time':d['creation_time']} for d in history if 'result' in d]
         return jsonify(parse_json(dataJson))
 
 @app.route('/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
