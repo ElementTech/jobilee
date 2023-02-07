@@ -61,6 +61,7 @@ services:
     command: celery --app project.server.tasks worker --loglevel=info
     environment:
       - FLASK_DEBUG=1
+      - MONGODB_URI=mongodb://mongodb:27017
       - CELERY_BROKER_URL=redis://redis:6379/0
       - APP_SETTINGS=project.server.config.DevelopmentConfig      
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
