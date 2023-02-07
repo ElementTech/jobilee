@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: bitnami/mongodb
+    environment:
+      MONGODB_REPLICA_SET_MODE: primary
+      ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./.data/mongo:/bitnami/mongodb
+
+  web:
+    container_name: web
+    build: ./frontend
+    image: web
+    restart: always
+    ports:
+      - '80:80'
+    environment:
+      - SERVER_ADDRESS=backend
+    command: ["/bin/sh","-c","envsubst '$${SERVER_ADDRESS}'< /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"]
+    depends_on:
+      - backend    
+
+  backend:
+    build: ./backend
+    image: backend
+    container_name: backend
+    ports:
+      - 5000:5000
+    command: python run.py
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - PORT=5000
+      - API_URL=http://api
+      - API_PORT=5001
+      - FLASK_DEBUG=1
+      - MONGODB_URI=mongodb://mongodb:27017
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - api
+      - mongodb
+
+  api:
+    build: ./api
+    image: api
+    container_name: api
+    command: python run -h 0.0.0.0 -p $PORT
+    environment:
+      - PORT=5001
+      - FLASK_DEBUG=1
+      - MONGODB_URI=mongodb://mongodb:27017
+      - APP_SETTINGS=project.server.config.DevelopmentConfig      
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - mongodb
+
+  worker:
+    build: ./api
+    command: celery --app project.server.tasks worker
+    environment:
+      - FLASK_DEBUG=1
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - APP_SETTINGS=project.server.config.DevelopmentConfig      
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+      - mongodb
+
+  dashboard:
+    build: ./api
+    command: celery --app project.server.tasks flower --port=5555 --broker=$CELERY_BROKER_URL
+    ports:
+      - 5556:5555
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - backend
+      - redis
+      - worker
+
+  redis:
+    image: redis:6-alpine

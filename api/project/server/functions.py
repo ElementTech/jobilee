@@ -17,6 +17,7 @@ from functools import reduce
 from itertools import chain    
 import threading
 import xmltodict
+import os
 class FakeDict(dict):
     def __init__(self, items):
         if items != []:
@@ -25,7 +26,7 @@ class FakeDict(dict):
     def items(self):
         return self._items
 
-db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
+db = MongoClient(os.environ.get('MONGODB_URI') or yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
 reader = codecs.getreader("utf-8")
 def parse_json(data):
     return json.loads(json_util.dumps(data))

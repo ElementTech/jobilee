@@ -7,9 +7,15 @@ from pymongo import MongoClient
 import bson
 from datetime import datetime
 from bson import json_util, ObjectId
+import os
+
+url = os.environ.get('REDIS_URL') or "redis://localhost"
+port = os.environ.get('REDIS_PORT') or "6379"
+redis_db = os.environ.get('REDIS_DB') or 0
+
 celery = Celery(__name__)
-celery.conf.broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
-celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
+celery.conf.broker_url = os.environ.get("CELERY_BROKER_URL", f"{url}:{port}/{redis_db}")
+celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", f"{url}:{port}/{redis_db}")
 celery.conf.update(result_extended=True) 
 
 # @celery.task(name="create_task")
@@ -18,7 +24,7 @@ celery.conf.update(result_extended=True)
 #     time.sleep(int(task_type) * 10)
 #     return True
 
-db = MongoClient(yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
+db = MongoClient(os.environ.get('MONGODB_URI') or yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
 
 @celery.task(name="trigger_api_task",bind=True)
 def trigger_api_task(self,id,chosen_params):
