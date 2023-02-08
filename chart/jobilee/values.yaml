@@ -1,4 +1,6 @@
 web:
+  rbac:
+    enabled: false
   applicationName: web
   image: 
     repository: jatalocks333/jobilee-web
@@ -38,6 +40,8 @@ mognodb:
   auth:
     enabled: false
 worker:
+  rbac:
+    enabled: false
   applicationName: worker
   image: 
     repository: jatalocks333/jobilee-worker
@@ -71,6 +75,8 @@ worker:
   service:
     enabled: false
 dashboard:
+  rbac:
+    enabled: false
   applicationName: dashboard
   image: 
     repository: jatalocks333/jobilee-worker
@@ -109,6 +115,8 @@ dashboard:
         protocol: TCP
         targetPort: 5555    
 api:
+  rbac:
+    enabled: false
   applicationName: api
   image: 
     repository: jatalocks333/jobilee-worker
@@ -149,6 +157,8 @@ api:
         protocol: TCP
         targetPort: 5001        
 backend:
+  rbac:
+    enabled: false
   applicationName: backend
   image: 
     repository: jatalocks333/jobilee-backend
