@@ -24,7 +24,7 @@ web:
     env:
       SERVER_ADDRESS:
           value: "backend"
-    args:
+    command:
       - /bin/sh
       - -c
       - envsubst '${SERVER_ADDRESS}'< /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'
