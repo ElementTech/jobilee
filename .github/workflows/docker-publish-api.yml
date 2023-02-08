@@ -20,7 +20,7 @@ env:
   # REGISTRY: ghcr.io
   REGISTRY: docker.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: jobilee-api
+  IMAGE_NAME: jatalocks333/jobilee-api
 
 
 jobs:
