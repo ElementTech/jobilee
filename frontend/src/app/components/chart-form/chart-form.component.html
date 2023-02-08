@@ -1,5 +1,6 @@
 <form (ngSubmit)="onSubmit()"><p-tabView>
   <p-tabPanel header="{{formType}}">
+    
   <p-fieldset legend="{{formType}} Chart" [toggleable]="false" styleClass="maxw">
 
       <div class="grid">
@@ -227,6 +228,7 @@
    
 
   </p-fieldset>
+
 </p-tabPanel>
 <p-tabPanel header="Code">
   <json-editor [options]="makeOptions()" class="code"  [(ngModel)]="chart" [ngModelOptions]=" 
