@@ -3,11 +3,11 @@ web:
     serviceAccount:
       enabled: true
   applicationName: web
-  image: 
-    repository: jatalocks333/jobilee-web
-    tag: latest
-    pullPolicy: Always  
   deployment:
+    image: 
+      repository: jatalocks333/jobilee-web
+      tag: latest
+      pullPolicy: Always    
     replicas: 1
     env:
       SERVER_ADDRESS:
@@ -45,11 +45,11 @@ worker:
     serviceAccount:
       enabled: true
   applicationName: worker
-  image: 
-    repository: jatalocks333/jobilee-worker
-    tag: latest
-    pullPolicy: Always  
   deployment:
+    image: 
+      repository: jatalocks333/jobilee-worker
+      tag: latest
+      pullPolicy: Always    
     replicas: 1
     env:
       APP_SETTINGS:
@@ -81,11 +81,11 @@ dashboard:
     serviceAccount:
       enabled: true
   applicationName: dashboard
-  image: 
-    repository: jatalocks333/jobilee-worker
-    tag: latest
-    pullPolicy: Always  
   deployment:
+    image: 
+      repository: jatalocks333/jobilee-worker
+      tag: latest
+      pullPolicy: Always    
     replicas: 1
     env:
       APP_SETTINGS:
@@ -122,11 +122,11 @@ api:
     serviceAccount:
       enabled: true
   applicationName: api
-  image: 
-    repository: jatalocks333/jobilee-worker
-    tag: latest
-    pullPolicy: Always  
   deployment:
+    image: 
+      repository: jatalocks333/jobilee-worker
+      tag: latest
+      pullPolicy: Always  
     replicas: 1
     env:
       APP_SETTINGS:
@@ -165,11 +165,11 @@ backend:
     serviceAccount:
       enabled: true
   applicationName: backend
-  image: 
-    repository: jatalocks333/jobilee-backend
-    tag: latest
-    pullPolicy: Always  
   deployment:
+    image: 
+      repository: jatalocks333/jobilee-backend
+      tag: latest
+      pullPolicy: Always   
     replicas: 1
     env:
       API_PORT:
