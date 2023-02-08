@@ -4,6 +4,7 @@ web:
   applicationName: web
   deployment:
     containerSecurityContext:
+      readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-frontend
@@ -47,6 +48,7 @@ worker:
   applicationName: worker
   deployment:
     containerSecurityContext:
+      readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-worker
@@ -84,6 +86,7 @@ dashboard:
   applicationName: dashboard
   deployment:
     containerSecurityContext:
+      readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-worker
@@ -126,6 +129,7 @@ api:
   applicationName: api
   deployment:
     containerSecurityContext:
+      readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-worker
@@ -170,6 +174,7 @@ backend:
   applicationName: backend
   deployment:
     containerSecurityContext:
+      readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-backend
