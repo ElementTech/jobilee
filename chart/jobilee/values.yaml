@@ -55,7 +55,7 @@ worker:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
-      repository: docker.io/jatalocks333/jobilee-worker
+      repository: docker.io/jatalocks333/jobilee-api
       tag: main
       pullPolicy: Always    
     replicas: 1
@@ -95,7 +95,7 @@ dashboard:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
-      repository: docker.io/jatalocks333/jobilee-worker
+      repository: docker.io/jatalocks333/jobilee-api
       tag: main
       pullPolicy: Always    
     replicas: 1
@@ -140,7 +140,7 @@ api:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
     image: 
-      repository: docker.io/jatalocks333/jobilee-worker
+      repository: docker.io/jatalocks333/jobilee-api
       tag: main
       pullPolicy: Always  
     replicas: 1
