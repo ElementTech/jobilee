@@ -48,7 +48,7 @@ redis:
     enabled: false
   fullnameOverride: redis
 mongodb:
-  architecture: replicaset
+  architecture: standalone
   fullnameOverride: mongodb  
   auth:
     enabled: false
