@@ -45,6 +45,8 @@ web:
         protocol: TCP
         targetPort: 443        
 redis:
+  auth:
+    enabled: false
   fullnameOverride: redis
 mognodb:
   architecture: replicaset
@@ -65,7 +67,7 @@ worker:
         command: [
           "bash",
           "-c",
-          "celery inspect ping -A project.server.tasks -d celery@$HOSTNAME"
+          "celery -A project.server.tasks inspect ping -d celery@$HOSTNAME"
         ]
       initialDelaySeconds: 30  # startup takes some time
       periodSeconds: 60  # default is quite often and celery uses a lot cpu/ram then.
