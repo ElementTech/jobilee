@@ -37,7 +37,7 @@ web:
   service:
     enabled: true
     ports:
-      - port: 443
+      - port: 80
         name: http
         protocol: TCP
         targetPort: 80
