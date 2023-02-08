@@ -1,6 +1,6 @@
 web:
   rbac:
-    enabled: false
+    enabled: true
     serviceAccount:
       enabled: true
   applicationName: web
@@ -46,7 +46,7 @@ mognodb:
     enabled: false
 worker:
   rbac:
-    enabled: false
+    enabled: true
     serviceAccount:
       enabled: true
   applicationName: worker
@@ -86,7 +86,7 @@ worker:
     enabled: false
 dashboard:
   rbac:
-    enabled: false
+    enabled: true
     serviceAccount:
       enabled: true
   applicationName: dashboard
@@ -131,7 +131,7 @@ dashboard:
         targetPort: 5555    
 api:
   rbac:
-    enabled: false
+    enabled: true
     serviceAccount:
       enabled: true
   applicationName: api
@@ -178,7 +178,7 @@ api:
         targetPort: 5001        
 backend:
   rbac:
-    enabled: false
+    enabled: true
     serviceAccount:
       enabled: true
   applicationName: backend
