@@ -12,7 +12,6 @@ web:
       requests:
         memory: 512Mi
         cpu: 0.5
-
     containerSecurityContext:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
@@ -23,7 +22,7 @@ web:
     replicas: 1
     env:
       SERVER_ADDRESS:
-          value: "backend"
+        value: "backend"
     command: ["/bin/sh","-c","envsubst '$${SERVER_ADDRESS}'< /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"]
     ports:
     - containerPort: 80
