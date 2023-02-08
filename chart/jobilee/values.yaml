@@ -1,0 +1,186 @@
+web:
+  applicationName: web
+  image: 
+    repository: jatalocks333/jobilee-web
+    tag: latest
+    pullPolicy: Always  
+  deployment:
+    replicas: 1
+    env:
+      SERVER_ADDRESS:
+          value: "backend"
+    args:
+      - /bin/sh
+      - -c
+      - envsubst '${SERVER_ADDRESS}'< /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'
+    ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP      
+  autoscaling:
+  # enabled is a boolean flag for enabling or disabling autoscaling 
+    enabled: true    
+  # Environment variables to be passed to the app container
+  service:
+    enabled: true
+    ports:
+      - port: 80
+        name: http
+        protocol: TCP
+        targetPort: 80
+  ingress:
+    enabled: false        
+redis:
+  fullnameOverride: redis
+mognodb:
+  architecture: replicaset
+  fullnameOverride: mongodb  
+  auth:
+    enabled: false
+worker:
+  applicationName: worker
+  image: 
+    repository: jatalocks333/jobilee-worker
+    tag: latest
+    pullPolicy: Always  
+  deployment:
+    replicas: 1
+    env:
+      APP_SETTINGS:
+        value: project.server.config.DevelopmentConfig
+      CELERY_BROKER_URL:
+        value: redis://redis:6379/0
+      CELERY_RESULT_BACKEND:
+        value: redis://redis:6379/0
+      FLASK_DEBUG:
+        value: "1"
+      MONGODB_URI:
+        value: mongodb://mongodb:27017          
+    args:
+      - celery
+      - --app
+      - project.server.tasks
+      - worker
+      - --loglevel=info
+    ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP      
+  autoscaling:
+    enabled: true    
+  service:
+    enabled: false
+dashboard:
+  applicationName: dashboard
+  image: 
+    repository: jatalocks333/jobilee-worker
+    tag: latest
+    pullPolicy: Always  
+  deployment:
+    replicas: 1
+    env:
+      APP_SETTINGS:
+        value: project.server.config.DevelopmentConfig
+      CELERY_BROKER_URL:
+        value: redis://redis:6379/0
+      CELERY_RESULT_BACKEND:
+        value: redis://redis:6379/0
+      FLASK_DEBUG:
+        value: "1"
+    args:
+      - celery
+      - --app
+      - project.server.tasks
+      - flower
+      - --port=5555
+      - --broker=redis://redis:6379/0
+      - --loglevel=info
+    ports:
+    - containerPort: 5555
+      name: http
+      protocol: TCP      
+  autoscaling:
+    enabled: false    
+  service:
+    enabled: true    
+    ports:
+      - port: 5555
+        name: http
+        protocol: TCP
+        targetPort: 5555    
+api:
+  applicationName: api
+  image: 
+    repository: jatalocks333/jobilee-worker
+    tag: latest
+    pullPolicy: Always  
+  deployment:
+    replicas: 1
+    env:
+      APP_SETTINGS:
+        value: project.server.config.DevelopmentConfig
+      CELERY_BROKER_URL:
+        value: redis://redis:6379/0
+      CELERY_RESULT_BACKEND:
+        value: redis://redis:6379/0
+      FLASK_DEBUG:
+        value: "1"
+      MONGODB_URI:
+        value: mongodb://mongodb:27017    
+    args:
+      - python
+      - manage.py
+      - run
+      - -h
+      - 0.0.0.0
+      - -p
+      - "5001"
+    ports:
+    - containerPort: 5001
+      name: http
+      protocol: TCP      
+  autoscaling:
+    enabled: true    
+  service:
+    enabled: true    
+    ports:
+      - port: 5001
+        name: http
+        protocol: TCP
+        targetPort: 5001        
+backend:
+  applicationName: backend
+  image: 
+    repository: jatalocks333/jobilee-backend
+    tag: latest
+    pullPolicy: Always  
+  deployment:
+    replicas: 1
+    env:
+      API_PORT:
+        value: "5001"
+      API_URL:
+        value: http://api
+      CELERY_BROKER_URL:
+        value: redis://redis:6379/0
+      CELERY_RESULT_BACKEND:
+        value: redis://redis:6379/0
+      FLASK_DEBUG:
+        value: "1"
+      MONGODB_URI:
+        value: mongodb://mongodb:27017
+      PORT:
+        value: "5000"
+    ports:
+    - containerPort: 5000
+      name: http
+      protocol: TCP      
+  autoscaling:
+    enabled: true    
+  service:
+    enabled: true    
+    ports:
+      - port: 5000
+        name: http
+        protocol: TCP
+        targetPort: 5000                
