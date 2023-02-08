@@ -5,6 +5,14 @@ web:
       enabled: true
   applicationName: web
   deployment:
+    resources:
+      limits:
+        memory: 8192Mi
+        cpu: 4
+      requests:
+        memory: 512Mi
+        cpu: 0.5
+
     containerSecurityContext:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
@@ -60,6 +68,14 @@ worker:
       enabled: true
   applicationName: worker
   deployment:
+    resources:
+      limits:
+        memory: 8192Mi
+        cpu: 4
+      requests:
+        memory: 512Mi
+        cpu: 0.5
+
     livenessProbe:
       enabled: true
       exec:
@@ -112,6 +128,14 @@ dashboard:
       enabled: true
   applicationName: dashboard
   deployment:
+    resources:
+      limits:
+        memory: 8192Mi
+        cpu: 4
+      requests:
+        memory: 512Mi
+        cpu: 0.5
+
     containerSecurityContext:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
@@ -157,6 +181,14 @@ api:
       enabled: true
   applicationName: api
   deployment:
+    resources:
+      limits:
+        memory: 8192Mi
+        cpu: 4
+      requests:
+        memory: 512Mi
+        cpu: 0.5
+
     containerSecurityContext:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
@@ -204,6 +236,14 @@ backend:
       enabled: true
   applicationName: backend
   deployment:
+    resources:
+      limits:
+        memory: 8192Mi
+        cpu: 4
+      requests:
+        memory: 512Mi
+        cpu: 0.5
+
     containerSecurityContext:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
