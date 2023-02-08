@@ -9,6 +9,22 @@ dependencies:
     repository: https://stakater.github.io/stakater-charts
     version: 2.1.1
     alias: web
+  - name: application
+    repository: https://stakater.github.io/stakater-charts
+    version: 2.1.1
+    alias: backend
+  - name: application
+    repository: https://stakater.github.io/stakater-charts
+    version: 2.1.1
+    alias: api
+  - name: application
+    repository: https://stakater.github.io/stakater-charts
+    version: 2.1.1
+    alias: worker     
+  - name: application
+    repository: https://stakater.github.io/stakater-charts
+    version: 2.1.1
+    alias: dashboard               
   - name: redis
     repository: https://charts.bitnami.com/bitnami
     version: 17.7.2
