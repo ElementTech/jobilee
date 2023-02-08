@@ -118,6 +118,21 @@ worker:
       protocol: TCP      
   autoscaling:
     enabled: true    
+  # metrics is the list of metrics used for hpa
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: 
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target: 
+          type: Utilization
+          averageUtilization: 80
+
   service:
     enabled: false
 dashboard:
