@@ -1,6 +1,7 @@
 web:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: web
   image: 
     repository: jatalocks333/jobilee-web
@@ -41,7 +42,8 @@ mognodb:
     enabled: false
 worker:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: worker
   image: 
     repository: jatalocks333/jobilee-worker
@@ -76,7 +78,8 @@ worker:
     enabled: false
 dashboard:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: dashboard
   image: 
     repository: jatalocks333/jobilee-worker
@@ -116,7 +119,8 @@ dashboard:
         targetPort: 5555    
 api:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: api
   image: 
     repository: jatalocks333/jobilee-worker
@@ -158,7 +162,8 @@ api:
         targetPort: 5001        
 backend:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: backend
   image: 
     repository: jatalocks333/jobilee-backend
