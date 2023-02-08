@@ -35,8 +35,6 @@ web:
         name: http
         protocol: TCP
         targetPort: 80
-  ingress:
-    enabled: false        
 redis:
   fullnameOverride: redis
 mognodb:
