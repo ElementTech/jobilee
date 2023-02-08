@@ -1,6 +1,7 @@
 web:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: web
   deployment:
     containerSecurityContext:
@@ -44,7 +45,8 @@ mognodb:
     enabled: false
 worker:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: worker
   deployment:
     containerSecurityContext:
@@ -82,7 +84,8 @@ worker:
     enabled: false
 dashboard:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: dashboard
   deployment:
     containerSecurityContext:
@@ -125,7 +128,8 @@ dashboard:
         targetPort: 5555    
 api:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: api
   deployment:
     containerSecurityContext:
@@ -170,7 +174,8 @@ api:
         targetPort: 5001        
 backend:
   rbac:
-    enabled: false
+    serviceAccount:
+      enabled: true
   applicationName: backend
   deployment:
     containerSecurityContext:
