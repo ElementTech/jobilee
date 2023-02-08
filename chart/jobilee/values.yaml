@@ -49,7 +49,7 @@ mognodb:
   extraEnvVars:
     - name: "ALLOW_EMPTY_PASSWORD"
       value: "yes"
-  architecture: replicaset
+  architecture: standalone
   fullnameOverride: mongodb  
   auth:
     enabled: false
