@@ -5,7 +5,7 @@ web:
   applicationName: web
   deployment:
     image: 
-      repository: jatalocks333/jobilee-web
+      repository: docker.io/jatalocks333/jobilee-frontend
       tag: main
       pullPolicy: Always    
     replicas: 1
@@ -47,7 +47,7 @@ worker:
   applicationName: worker
   deployment:
     image: 
-      repository: jatalocks333/jobilee-worker
+      repository: docker.io/jatalocks333/jobilee-worker
       tag: main
       pullPolicy: Always    
     replicas: 1
@@ -83,7 +83,7 @@ dashboard:
   applicationName: dashboard
   deployment:
     image: 
-      repository: jatalocks333/jobilee-worker
+      repository: docker.io/jatalocks333/jobilee-worker
       tag: main
       pullPolicy: Always    
     replicas: 1
@@ -124,7 +124,7 @@ api:
   applicationName: api
   deployment:
     image: 
-      repository: jatalocks333/jobilee-worker
+      repository: docker.io/jatalocks333/jobilee-worker
       tag: main
       pullPolicy: Always  
     replicas: 1
@@ -167,7 +167,7 @@ backend:
   applicationName: backend
   deployment:
     image: 
-      repository: jatalocks333/jobilee-backend
+      repository: docker.io/jatalocks333/jobilee-backend
       tag: main
       pullPolicy: Always   
     replicas: 1
