@@ -1,7 +1,6 @@
 web:
   rbac:
-    serviceAccount:
-      enabled: true
+    enabled: false
   applicationName: web
   deployment:
     image: 
@@ -42,8 +41,7 @@ mognodb:
     enabled: false
 worker:
   rbac:
-    serviceAccount:
-      enabled: true
+    enabled: false
   applicationName: worker
   deployment:
     image: 
@@ -78,8 +76,7 @@ worker:
     enabled: false
 dashboard:
   rbac:
-    serviceAccount:
-      enabled: true
+    enabled: false
   applicationName: dashboard
   deployment:
     image: 
@@ -119,8 +116,7 @@ dashboard:
         targetPort: 5555    
 api:
   rbac:
-    serviceAccount:
-      enabled: true
+    enabled: false
   applicationName: api
   deployment:
     image: 
@@ -162,8 +158,7 @@ api:
         targetPort: 5001        
 backend:
   rbac:
-    serviceAccount:
-      enabled: true
+    enabled: false
   applicationName: backend
   deployment:
     image: 
