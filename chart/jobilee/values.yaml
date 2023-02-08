@@ -48,6 +48,13 @@ redis:
     enabled: false
   fullnameOverride: redis
 mongodb:
+  resources:
+    limits:
+       cpu: 100m
+       memory: 128Mi
+    requests:
+       cpu: 4
+       memory: 8192Mi
   architecture: standalone
   fullnameOverride: mongodb  
   auth:
