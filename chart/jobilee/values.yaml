@@ -69,8 +69,8 @@ worker:
   deployment:
     resources:
       limits:
-        memory: 8192Mi
-        cpu: 4
+        memory: 4096Mi
+        cpu: 2
       requests:
         memory: 512Mi
         cpu: 0.5
