@@ -25,7 +25,7 @@ web:
       name: http
       protocol: TCP      
     - containerPort: 443
-      name: http
+      name: https
       protocol: TCP          
   autoscaling:
   # enabled is a boolean flag for enabling or disabling autoscaling 
@@ -41,7 +41,7 @@ web:
         protocol: TCP
         targetPort: 80
       - port: 443
-        name: http
+        name: https
         protocol: TCP
         targetPort: 443        
 redis:
