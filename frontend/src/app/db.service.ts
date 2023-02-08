@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class DBService {
 
-  private baseUrl = 'http://localhost:5000';
+  private baseUrl:string = window.location.protocol + '//' + window.location.host;
 
   constructor(private http: HttpClient) { }
 
