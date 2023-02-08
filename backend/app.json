@@ -6,10 +6,8 @@
       "API",
       "Python3"
    ],
-   "website":"https://jainam.me/",
    "repository":"https://github.com/jatalocks/jobilee",
-   "logo":"https://telegra.ph/file/05e4a6d070a97dd853297.png",
-   "success_url":"/code",
+   "success_url":"/jobs",
    "formation":{
       "web":{
          "quantity":1,

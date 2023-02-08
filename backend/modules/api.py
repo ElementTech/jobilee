@@ -29,7 +29,7 @@ def extract_values(obj):
     else:
         return []
 
-@app.route('/jobs/outputs', methods=['GET','POST'])
+@app.route('/api/jobs/outputs', methods=['GET','POST'])
 def outputs():
     # GET all data from database
     if request.method == 'GET':
@@ -114,7 +114,7 @@ def extract_data(input_list):
     return result
 
 
-@app.route('/<collection>', methods=['POST', 'GET','DELETE'])
+@app.route('/api/<collection>', methods=['POST', 'GET','DELETE'])
 def data(collection):
     # POST a data to database
     if request.method == 'POST':
@@ -129,7 +129,7 @@ def data(collection):
         dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
         return jsonify(parse_json(dataJson))
 
-@app.route('/history', methods=['GET'])
+@app.route('/api/history', methods=['GET'])
 def history(collection='jobs'):
     allData = db[collection].find()
     dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
@@ -139,8 +139,8 @@ def history(collection='jobs'):
     return jsonify(parse_json(dataJson))
 
 
-@app.route('/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
-@app.route('/<collection>/<string:key>/<string:value>', methods=['GET','DELETE'])
+@app.route('/api/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
+@app.route('/api/<collection>/<string:key>/<string:value>', methods=['GET','DELETE'])
 def onedata(collection,id=None,key=None,value=None):
     if id:
         # GET all data from database

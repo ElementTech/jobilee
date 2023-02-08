@@ -12,17 +12,17 @@ export class RunService {
   constructor(private http: HttpClient) { }
 
   runJob(_id: string,chosen_params: Object): Observable<any> {
-    return this.http.post(`${this.baseUrl}/run/${_id}`,chosen_params);
+    return this.http.post(`${this.baseUrl}/api/run/${_id}`,chosen_params);
   }
   retryJob(task_id: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/retry/${task_id}`,{});
+    return this.http.post(`${this.baseUrl}/api/retry/${task_id}`,{});
   }
 
   renderChart(data): Observable<any> {
-    return this.http.post(`${this.baseUrl}/chart/render`,data);
+    return this.http.post(`${this.baseUrl}/api/chart/render`,data);
   }
   renderExistingChart(name): Observable<any> {
-    return this.http.post(`${this.baseUrl}/chart/render/${name}`,{});
+    return this.http.post(`${this.baseUrl}/api/chart/render/${name}`,{});
   }
 
 
