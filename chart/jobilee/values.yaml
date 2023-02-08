@@ -2,7 +2,7 @@ web:
   rbac:
     enabled: false
     serviceAccount:
-      enabled: false
+      enabled: true
   applicationName: web
   deployment:
     containerSecurityContext:
@@ -48,7 +48,7 @@ worker:
   rbac:
     enabled: false
     serviceAccount:
-      enabled: false
+      enabled: true
   applicationName: worker
   deployment:
     containerSecurityContext:
@@ -88,7 +88,7 @@ dashboard:
   rbac:
     enabled: false
     serviceAccount:
-      enabled: false
+      enabled: true
   applicationName: dashboard
   deployment:
     containerSecurityContext:
@@ -133,7 +133,7 @@ api:
   rbac:
     enabled: false
     serviceAccount:
-      enabled: false
+      enabled: true
   applicationName: api
   deployment:
     containerSecurityContext:
@@ -180,7 +180,7 @@ backend:
   rbac:
     enabled: false
     serviceAccount:
-      enabled: false
+      enabled: true
   applicationName: backend
   deployment:
     containerSecurityContext:
