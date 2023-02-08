@@ -95,7 +95,7 @@ worker:
       FLASK_DEBUG:
         value: "1"
       MONGODB_URI:
-        value: mongodb://mongodb:27017          
+        value: mongodb://mongodb-headless:27017          
     args:
       - celery
       - --app
@@ -196,7 +196,7 @@ api:
       FLASK_DEBUG:
         value: "1"
       MONGODB_URI:
-        value: mongodb://mongodb:27017    
+        value: mongodb://mongodb-headless:27017    
     args:
       - python
       - manage.py
@@ -253,7 +253,7 @@ backend:
       FLASK_DEBUG:
         value: "1"
       MONGODB_URI:
-        value: mongodb://mongodb:27017
+        value: mongodb://mongodb-headless:27017
       PORT:
         value: "5000"
     ports:
