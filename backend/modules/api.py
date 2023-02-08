@@ -13,6 +13,7 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 db = MongoClient(os.environ.get('MONGODB_URI') or yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
 
+
 def extract_values(obj):
     if isinstance(obj, dict):
         values = []

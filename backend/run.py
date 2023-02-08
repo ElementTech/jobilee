@@ -5,8 +5,10 @@
 
 # Import Libraries 
 from app import app
+from flask_redoc import Redoc
 import os
 
 # If file is called directly called, then run the app on the PORT provided defined in ENV or use '5000'.
 if __name__ == "__main__":
+    redoc = Redoc(app,'docs.yaml')
     app.run("0.0.0.0", port=os.getenv('PORT', 5000))
