@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "front-end-simple-crud": {
+    "jobilee": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -74,18 +74,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "front-end-simple-crud:build"
+            "browserTarget": "jobilee:build",
+            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "browserTarget": "front-end-simple-crud:build:production"
+              "browserTarget": "jobilee:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "front-end-simple-crud:build"
+            "browserTarget": "jobilee:build"
           }
         },
         "test": {
@@ -109,11 +110,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "front-end-simple-crud:serve"
+            "devServerTarget": "jobilee:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "front-end-simple-crud:serve:production"
+              "devServerTarget": "jobilee:serve:production"
             }
           }
         }
