@@ -52,24 +52,24 @@ mognodb:
   auth:
     enabled: false
 worker:
-  livenessProbe:
-    enabled: true
-    exec:
-      # bash is needed to replace the environment variable
-      command: [
-        "bash",
-        "-c",
-        "celery inspect ping -A project.server.tasks -d celery@$HOSTNAME"
-      ]
-    initialDelaySeconds: 30  # startup takes some time
-    periodSeconds: 60  # default is quite often and celery uses a lot cpu/ram then.
-    timeoutSeconds: 10  # default is too low
   rbac:
     enabled: true
     serviceAccount:
       enabled: true
   applicationName: worker
   deployment:
+    livenessProbe:
+      enabled: true
+      exec:
+        # bash is needed to replace the environment variable
+        command: [
+          "bash",
+          "-c",
+          "celery inspect ping -A project.server.tasks -d celery@$HOSTNAME"
+        ]
+      initialDelaySeconds: 30  # startup takes some time
+      periodSeconds: 60  # default is quite often and celery uses a lot cpu/ram then.
+      timeoutSeconds: 10  # default is too low  
     containerSecurityContext:
       readOnlyRootFilesystem: false
       runAsNonRoot: false
