@@ -1,5 +1,6 @@
+<form (ngSubmit)="onSubmit()"><p-tabView>
+  <p-tabPanel header="{{formType}}">
   <p-fieldset legend="{{formType}} Job" [toggleable]="false">
-    <form (ngSubmit)="onSubmit()">
       <div class="grid">
         <div class="col-6">
           <h5>Name</h5>
@@ -36,8 +37,6 @@
         id="name" required [(ngModel)]="job.description" name="description"
         [rows]="5" [cols]="30"  [autoResize]="true"></textarea>
       </div>
-      
-
         <p-panel header="Parameters" styleClass="pt-2" [toggleable]="false">
           <ng-template pTemplate="icons">
                   <button type="button" pButton class="p-panel-header-icon p-link" (click)="job.parameters=examples;dynamicResultsError=[];dynamicResults=[];regenerateParams()">
@@ -91,7 +90,12 @@
             </div>
           </div>
         </p-panel>
-  
-        <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
-    </form>
   </p-fieldset>
+  </p-tabPanel>
+  <p-tabPanel header="Code">
+    <json-editor [options]="makeOptions()" class="code"  [(ngModel)]="job" [ngModelOptions]=" 
+    {standalone: true}"></json-editor>
+  </p-tabPanel>
+</p-tabView>
+  <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
+</form>

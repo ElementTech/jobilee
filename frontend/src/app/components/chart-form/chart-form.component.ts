@@ -184,7 +184,12 @@ removeDataset(index)
       })
     })
   }
-
+  makeOptions = () => {
+    let editorOptions = new JsonEditorOptions()
+    editorOptions.modes = ['code', 'tree'];
+    editorOptions.mode = 'code';
+    return editorOptions
+  }
   setDefinition()
   {
     switch (this.chart.type) {

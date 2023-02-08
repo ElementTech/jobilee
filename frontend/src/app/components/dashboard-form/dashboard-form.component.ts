@@ -40,7 +40,12 @@ display: any = false;
   reRenderCharts(){
     this.dashboard.charts = [...this.dashboard.charts]
   }
-
+  makeOptions = () => {
+    let editorOptions = new JsonEditorOptions()
+    editorOptions.modes = ['code', 'tree'];
+    editorOptions.mode = 'code';
+    return editorOptions
+  }
   save() {
     if (this.formType == "Create")
     {

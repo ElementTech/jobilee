@@ -22,9 +22,10 @@ appendTo="body"
 </p-listbox>
 </p-sidebar>
 
+<form (ngSubmit)="onSubmit()"><p-tabView>
+  <p-tabPanel header="{{formType}}">
 
 <p-fieldset legend="{{formType}} Dashboard" [toggleable]="false" styleClass="maxw">
-  <form (ngSubmit)="onSubmit()">
 
     <div class="grid">
       <div class="col-6">
@@ -36,8 +37,17 @@ appendTo="body"
         <p-button type="text" type="button" (click)="display = !display" icon="pi pi-search" label="Charts"></p-button>
       </div>
     </div>
-      <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
-  </form>
+  
   
   <app-dashboard-view [dashboard]="dashboard" [charts]="dashboard.charts"></app-dashboard-view>
 </p-fieldset>
+
+</p-tabPanel>
+<p-tabPanel header="Code">
+  <json-editor [options]="makeOptions()" class="code"  [(ngModel)]="dashboard" [ngModelOptions]=" 
+  {standalone: true}"></json-editor>
+</p-tabPanel>
+</p-tabView>
+
+  <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
+</form>

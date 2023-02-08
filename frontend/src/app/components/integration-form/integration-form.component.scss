@@ -9,6 +9,13 @@
   height: 30px;
 }
 
+:host ::ng-deep json-editor.code,
+:host ::ng-deep json-editor.code .jsoneditor,
+:host ::ng-deep json-editor.code > div,
+:host ::ng-deep json-editor.code jsoneditor-outer {
+  height: 100vh;
+  width: 100%;
+}
 
 :host ::ng-deep .p-panel-content {
   padding: 0 !important;

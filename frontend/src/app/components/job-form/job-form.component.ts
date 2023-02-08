@@ -102,6 +102,12 @@ export class JobFormComponent implements OnInit {
       }
     }
   }
+  makeOptions = () => {
+    let editorOptions = new JsonEditorOptions()
+    editorOptions.modes = ['code', 'tree'];
+    editorOptions.mode = 'code';
+    return editorOptions
+  }
   flatten(items) {
     const flat = [];
   

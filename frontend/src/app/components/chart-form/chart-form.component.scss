@@ -5,7 +5,13 @@
 :host ::ng-deep json-editor jsoneditor-outer {
   height: 400px;
 }
-
+:host ::ng-deep json-editor.code,
+:host ::ng-deep json-editor.code .jsoneditor,
+:host ::ng-deep json-editor.code > div,
+:host ::ng-deep json-editor.code jsoneditor-outer {
+  height: 100vh;
+  width: 100%;
+}
 :host ::ng-deep .p-dropdown,:host ::ng-deep .p-dropdown-filter, :host ::ng-deep .p-multiselect ,:host ::ng-deep .p-treeselect {
   width: 100% !important;
 }
