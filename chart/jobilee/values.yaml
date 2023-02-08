@@ -24,10 +24,15 @@ web:
     - containerPort: 80
       name: http
       protocol: TCP      
+    - containerPort: 443
+      name: http
+      protocol: TCP          
   autoscaling:
   # enabled is a boolean flag for enabling or disabling autoscaling 
     enabled: true    
   # Environment variables to be passed to the app container
+  ingress:
+    enabled: false
   service:
     enabled: true
     ports:
@@ -35,6 +40,10 @@ web:
         name: http
         protocol: TCP
         targetPort: 80
+      - port: 443
+        name: http
+        protocol: TCP
+        targetPort: 443        
 redis:
   fullnameOverride: redis
 mognodb:
