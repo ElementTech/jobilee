@@ -6,7 +6,7 @@ web:
   deployment:
     image: 
       repository: jatalocks333/jobilee-web
-      tag: latest
+      tag: main
       pullPolicy: Always    
     replicas: 1
     env:
@@ -48,7 +48,7 @@ worker:
   deployment:
     image: 
       repository: jatalocks333/jobilee-worker
-      tag: latest
+      tag: main
       pullPolicy: Always    
     replicas: 1
     env:
@@ -84,7 +84,7 @@ dashboard:
   deployment:
     image: 
       repository: jatalocks333/jobilee-worker
-      tag: latest
+      tag: main
       pullPolicy: Always    
     replicas: 1
     env:
@@ -125,7 +125,7 @@ api:
   deployment:
     image: 
       repository: jatalocks333/jobilee-worker
-      tag: latest
+      tag: main
       pullPolicy: Always  
     replicas: 1
     env:
@@ -168,7 +168,7 @@ backend:
   deployment:
     image: 
       repository: jatalocks333/jobilee-backend
-      tag: latest
+      tag: main
       pullPolicy: Always   
     replicas: 1
     env:
