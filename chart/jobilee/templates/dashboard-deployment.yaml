@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.26.1 (a9d05d509)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dashboard
+  name: dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: dashboard
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -c
+        kompose.version: 1.26.1 (a9d05d509)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: dashboard
+    spec:
+      containers:
+        - args:
+            - celery
+            - --app
+            - project.server.tasks
+            - flower
+            - --port=5555
+            - --broker=redis://redis:6379/0
+            - --loglevel=info
+          env:
+            - name: APP_SETTINGS
+              value: project.server.config.DevelopmentConfig
+            - name: CELERY_BROKER_URL
+              value: redis://redis:6379/0
+            - name: CELERY_RESULT_BACKEND
+              value: redis://redis:6379/0
+            - name: FLASK_DEBUG
+              value: "1"
+          image: dashboard
+          name: dashboard
+          ports:
+            - containerPort: 5555
+          resources: {}
+      restartPolicy: Always
+status: {}
