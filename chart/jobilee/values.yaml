@@ -55,9 +55,9 @@ worker:
       APP_SETTINGS:
         value: project.server.config.DevelopmentConfig
       CELERY_BROKER_URL:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       CELERY_RESULT_BACKEND:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       FLASK_DEBUG:
         value: "1"
       MONGODB_URI:
@@ -91,9 +91,9 @@ dashboard:
       APP_SETTINGS:
         value: project.server.config.DevelopmentConfig
       CELERY_BROKER_URL:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       CELERY_RESULT_BACKEND:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       FLASK_DEBUG:
         value: "1"
     args:
@@ -102,7 +102,7 @@ dashboard:
       - project.server.tasks
       - flower
       - --port=5555
-      - --broker=redis://redis:6379/0
+      - --broker=redis://redis-master:6379/0
       - --loglevel=info
     ports:
     - containerPort: 5555
@@ -132,9 +132,9 @@ api:
       APP_SETTINGS:
         value: project.server.config.DevelopmentConfig
       CELERY_BROKER_URL:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       CELERY_RESULT_BACKEND:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       FLASK_DEBUG:
         value: "1"
       MONGODB_URI:
@@ -177,9 +177,9 @@ backend:
       API_URL:
         value: http://api
       CELERY_BROKER_URL:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       CELERY_RESULT_BACKEND:
-        value: redis://redis:6379/0
+        value: redis://redis-master:6379/0
       FLASK_DEBUG:
         value: "1"
       MONGODB_URI:
