@@ -49,10 +49,10 @@ redis:
   fullnameOverride: redis
 mongodb:
   resources:
-    limits:
+    requests:
        cpu: 100m
        memory: 128Mi
-    requests:
+    limits:
        cpu: 4
        memory: 8192Mi
   architecture: standalone
