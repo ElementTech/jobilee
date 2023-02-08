@@ -46,6 +46,9 @@ redis:
     enabled: false
   fullnameOverride: redis
 mognodb:
+  extraEnvVars:
+    - name: "ALLOW_EMPTY_PASSWORD"
+      value: "yes"
   architecture: replicaset
   fullnameOverride: mongodb  
   auth:
