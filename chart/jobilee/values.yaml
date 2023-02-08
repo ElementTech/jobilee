@@ -3,6 +3,8 @@ web:
     enabled: false
   applicationName: web
   deployment:
+    containerSecurityContext:
+      runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-frontend
       tag: main
@@ -44,6 +46,8 @@ worker:
     enabled: false
   applicationName: worker
   deployment:
+    containerSecurityContext:
+      runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-worker
       tag: main
@@ -79,6 +83,8 @@ dashboard:
     enabled: false
   applicationName: dashboard
   deployment:
+    containerSecurityContext:
+      runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-worker
       tag: main
@@ -119,6 +125,8 @@ api:
     enabled: false
   applicationName: api
   deployment:
+    containerSecurityContext:
+      runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-worker
       tag: main
@@ -161,6 +169,8 @@ backend:
     enabled: false
   applicationName: backend
   deployment:
+    containerSecurityContext:
+      runAsNonRoot: false
     image: 
       repository: docker.io/jatalocks333/jobilee-backend
       tag: main
