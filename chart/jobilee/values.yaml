@@ -94,7 +94,7 @@ worker:
       repository: docker.io/jatalocks333/jobilee-api
       tag: main
       pullPolicy: Always    
-    replicas: 1
+    replicas: 3
     env:
       APP_SETTINGS:
         value: project.server.config.DevelopmentConfig
@@ -117,7 +117,7 @@ worker:
       name: http
       protocol: TCP      
   autoscaling:
-    enabled: true    
+    enabled: false    
   # metrics is the list of metrics used for hpa
     metrics:
     - type: Resource
