@@ -8,7 +8,7 @@ import os
 from app import app
 
 url = os.environ.get('API_URL') or "http://localhost"
-port = os.environ.get('API_PORT') or "5000"
+port = os.environ.get('API_PORT') or "5001"
 
 @app.route('/api/run/<string:id>', methods=['POST'])
 def run(id):
