@@ -41,9 +41,7 @@ export class DashboardViewComponent implements OnInit {
   }, (event.value)*1000);
 }
   ngOnDestroy() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
+    clearInterval(this.interval);
  }
   promiseQueue: any = {}
   refresh()

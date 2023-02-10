@@ -60,7 +60,7 @@ def outputs():
                             "selectable": False,
                             "collapsedIcon": "pi pi-folder",
                             "data": out} for out in extract_values(step['outputs'])
-                        ]} for step in integration['steps'] if step['outputs']
+                        ]} for step in (integration['steps']+(job.get('steps') or [])) if ('outputs' in step)
                     ]
                 })
         return jsonify(parse_json(output))
