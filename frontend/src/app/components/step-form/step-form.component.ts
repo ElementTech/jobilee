@@ -24,6 +24,7 @@ export class StepFormComponent implements OnInit {
       stepper.next();
   }
   @Input() allSteps: Step[];
+  @Input() URLDefinitionOverride: string = "";
 
   authenticationOptions = [
     "None",

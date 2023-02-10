@@ -26,9 +26,7 @@ export class JobHistoryComponent implements OnInit {
 
     }
   ngOnDestroy() {
-      if (this.interval) {
         clearInterval(this.interval);
-      }
    }
 
    toHoursMinutesSeconds = totalSeconds => {

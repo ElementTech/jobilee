@@ -92,7 +92,7 @@
         </p-panel>
 
     
-        <app-step-form [allSteps]="job.steps"></app-step-form>
+        <app-step-form [URLDefinitionOverride]="getURL(job.integration)" [allSteps]="job.steps"></app-step-form>
 
 
   </p-fieldset>

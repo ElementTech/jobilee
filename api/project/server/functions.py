@@ -365,7 +365,7 @@ def process_request(job, integrationSpec,chosen_params,task_id):
     outputs = {}
     print("integ steps", integrationSpec['steps'])
     print("job steps", job['steps'])
-    allSteps = integrationSpec['steps'] + (job['steps'] or [])
+    allSteps = [dict(item, **{'step_type':'integration'}) for item in integrationSpec['steps']] + [dict(item, **{'step_type':'integration'}) for item in job['steps']]
     update_doc = {"job_id":job['_id'],"job_name":job['name'],"steps":[],"done": False,"run_time":0,"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSpec["_id"]),"chosen_params":chosen_params}
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
     # timer_task = threading.Thread(target=countTimeTask, args=(task_id))
