@@ -85,6 +85,7 @@ import { DashboardViewComponent } from './components/dashboard-view/dashboard-vi
 import {PaginatorModule} from 'primeng/paginator';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import { PlayDashboardComponent } from './dashboard/play-dashboard/play-dashboard.component';
+import { StepFormComponent } from './components/step-form/step-form.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -116,7 +117,8 @@ import { PlayDashboardComponent } from './dashboard/play-dashboard/play-dashboar
     CreateDashboardComponent,
     UpdateDashboardComponent,
     DashboardViewComponent,
-    PlayDashboardComponent
+    PlayDashboardComponent,
+    StepFormComponent
   ],
   imports: [
     BrowserModule,

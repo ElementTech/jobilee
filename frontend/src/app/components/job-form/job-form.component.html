@@ -22,22 +22,22 @@
               <span class="p-inputgroup-addon" *ngIf="getSuffix(job.integration) != ''">{{getSuffix(job.integration)}}</span>      
           </div>
         </div>
-        <div class="col-6">
+        <!-- <div class="col-6">
           <h5>Choose Steps</h5>
           <p-multiSelect name="steps"  
           
           [filter]="true" filterBy="name" 
           class="min-w-max" [options]="getSteps()" [(ngModel)]="job.steps" ></p-multiSelect>
-        </div>
+        </div> -->
   
       </div>
-      <div class="col-6">
+      <div class="col-12">
         <h5>Description</h5>
         <textarea pInputTextarea class="min-w-max"  
         id="name" required [(ngModel)]="job.description" name="description"
         [rows]="5" [cols]="30"  [autoResize]="true"></textarea>
       </div>
-        <p-panel header="Parameters" styleClass="pt-2" [toggleable]="false">
+        <p-panel header="Parameters" styleClass="pt-2" [toggleable]="true">
           <ng-template pTemplate="icons">
                   <button type="button" pButton class="p-panel-header-icon p-link" (click)="job.parameters=examples;dynamicResultsError=[];dynamicResults=[];regenerateParams()">
                     <span pTooltip="Reset"class="pi pi-history"></span>
@@ -90,6 +90,11 @@
             </div>
           </div>
         </p-panel>
+
+    
+        <app-step-form [allSteps]="job.steps"></app-step-form>
+
+
   </p-fieldset>
   </p-tabPanel>
   <p-tabPanel header="Code">

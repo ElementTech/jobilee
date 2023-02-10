@@ -1,5 +1,5 @@
 import { DBService } from 'src/app/db.service';
-import { Integration, Step } from 'src/app/integration';
+import { Step } from 'src/app/integration';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {JsonEditorComponent, JsonEditorOptions} from "@maaxgr/ang-jsoneditor"
@@ -7,13 +7,12 @@ import Swal from 'sweetalert2';
 import { MenuItem } from 'primeng/api';
 import { MatStepper } from '@angular/material/stepper';
 import { QueryBuilderConfig } from 'angular2-query-builder';
-import { StepFormComponent } from '../step-form/step-form.component';
 @Component({
-  selector: 'app-integration-form',
-  templateUrl: './integration-form.component.html',
-  styleUrls: ['./integration-form.component.scss']
+  selector: 'app-step-form',
+  templateUrl: './step-form.component.html',
+  styleUrls: ['./step-form.component.scss']
 })
-export class IntegrationFormComponent implements OnInit {
+export class StepFormComponent implements OnInit {
 
   public initialData: any;
 
@@ -24,15 +23,7 @@ export class IntegrationFormComponent implements OnInit {
   goForward(stepper: MatStepper){
       stepper.next();
   }
-  @Input() _id: string;
-  @Input() formType: "Create" | "Update";
-
-  @Input() integrationSteps = new Integration
-  query = {
-    condition: 'and',
-    rules: []
-  };
-
+  @Input() allSteps: Step[];
 
   authenticationOptions = [
     "None",
@@ -87,14 +78,14 @@ export class IntegrationFormComponent implements OnInit {
     }
   ]
   makeVariables(step){
-    let out = this.integrationSteps.steps.slice(0,step).map(data=>(this.extractCurlyStrings(data.outputs)))
+    let out = this.allSteps.slice(0,step).map(data=>(this.extractCurlyStrings(data.outputs)))
     let newOut = out.reduce((acc, val) => acc.concat(val), []).map(data=>{return {"name":"{"+data+"}",description:""}});
     return this.options.concat(
       newOut
     )
   }
   pushCopy(){
-    this.integrationSteps.steps.push({
+    this.allSteps.push({
       type: 'post',
       parsing: false,
       mode: 'payload',
@@ -152,47 +143,34 @@ export class IntegrationFormComponent implements OnInit {
     this.items = [
       {label: 'Trigger'},
     ];
-    if (this.integrationSteps.steps?.length == 0)
+    if (this.allSteps?.length == 0)
     {
       this.pushCopy()
     }
   }
-  setGeneralAuthData(event){
-    if (event.value == "None")
-    {
-      this.integrationSteps.authenticationData = []
-    }
-    if (event.value == "Basic")
-    {
-      this.integrationSteps.authenticationData = [{"key":"Username", "value": ""},{"key":"Password", "value": ""}]
-    }
-    if (event.value == "Bearer")
-    {
-      this.integrationSteps.authenticationData = [{"key":"Token", "value": ""}]
-    }
-  }
+
   setAuthData(event,step){
     if (event.value == "None")
     {
-      this.integrationSteps.steps[step].authenticationData = []
+      this.allSteps[step].authenticationData = []
     }
     if (event.value == "Basic")
     {
-      this.integrationSteps.steps[step].authenticationData = [{"key":"Username", "value": ""},{"key":"Password", "value": ""}]
+      this.allSteps[step].authenticationData = [{"key":"Username", "value": ""},{"key":"Password", "value": ""}]
     }
     if (event.value == "Bearer")
     {
-      this.integrationSteps.steps[step].authenticationData = [{"key":"Token", "value": ""}]
+      this.allSteps[step].authenticationData = [{"key":"Token", "value": ""}]
     }
   }
   addHeader(step)
   {
-   this.integrationSteps.steps[step].headers.push({'key':'','value':''});
-   this.integrationSteps.steps = [...this.integrationSteps.steps]
+   this.allSteps[step].headers.push({'key':'','value':''});
+   this.allSteps = [...this.allSteps]
   }
   removeHeader(step,i,head)
   {
-    if ((head["key"] == "Content-Type") && (head["value"] == "application/json") && (this.integrationSteps.steps[step].mode == 'payload') && (this.integrationSteps.steps[step].type == 'post'))
+    if ((head["key"] == "Content-Type") && (head["value"] == "application/json") && (this.allSteps[step].mode == 'payload') && (this.allSteps[step].type == 'post'))
     {
       Swal.fire({
         icon: 'error',
@@ -200,7 +178,7 @@ export class IntegrationFormComponent implements OnInit {
         text: 'If Payload mode is enabled, the [Content-Type=application/json] header must be present.',
       })
     } else {
-      this.integrationSteps.steps[step].headers.splice(i,1)
+      this.allSteps[step].headers.splice(i,1)
     }
 
   }
@@ -215,18 +193,18 @@ export class IntegrationFormComponent implements OnInit {
             description: "The Name/ID of the job that will be triggered through the query"
           }
         ]        
-        if (this.integrationSteps.steps[step].headers.some(elem =>{
+        if (this.allSteps[step].headers.some(elem =>{
           return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
            })) {
-          this.integrationSteps.steps[step].headers.splice(this.integrationSteps.steps[step].headers.indexOf({"key":"Content-Type", "value": "application/json"}),1)
+          this.allSteps[step].headers.splice(this.allSteps[step].headers.indexOf({"key":"Content-Type", "value": "application/json"}),1)
         }
         break;
       case 'post':
       case 'payload':
-        if (!this.integrationSteps.steps[step].headers.some(elem =>{
+        if (!this.allSteps[step].headers.some(elem =>{
           return JSON.stringify({"key":"Content-Type", "value": "application/json"}) === JSON.stringify(elem);
            })) {
-          this.integrationSteps.steps[step].headers.push({"key":"Content-Type", "value": "application/json"});
+          this.allSteps[step].headers.push({"key":"Content-Type", "value": "application/json"});
         }
         this.options = [
           {
@@ -257,32 +235,6 @@ export class IntegrationFormComponent implements OnInit {
     editorOptions.mode = 'code';
     return editorOptions
   }
-  save() {
-    if (this.formType == "Create")
-    {
-      this.dbService
-      .createObject("integrations",this.integrationSteps).subscribe(data => {
-        this.integrationSteps = new Integration();
-        this.gotoList();
-      }, 
-      error => console.log(error));
-    } 
-    else if (this.formType == "Update")
-    {
-      this.dbService.updateObject("integrations",this._id, this.integrationSteps)
-      .subscribe(data => {
-        console.log(data);
-        this.integrationSteps = new Integration();
-        this.gotoList();
-      }, error => console.log(error));
-    }
-  }
 
-  onSubmit() {
-    this.save();    
-  }
 
-  gotoList() {
-    this.router.navigate(['/integrations']);
-  }
 }

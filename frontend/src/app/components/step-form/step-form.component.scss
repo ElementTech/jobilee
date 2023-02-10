@@ -1,0 +1,26 @@
+
+:host ::ng-deep json-editor.api,
+:host ::ng-deep json-editor.api .jsoneditor,
+:host ::ng-deep json-editor.api > div,
+:host ::ng-deep json-editor.api jsoneditor-outer {
+  height: 300px;
+}
+:host ::ng-deep .p-inputnumber{
+  height: 30px;
+}
+
+:host ::ng-deep json-editor.code,
+:host ::ng-deep json-editor.code .jsoneditor,
+:host ::ng-deep json-editor.code > div,
+:host ::ng-deep json-editor.code jsoneditor-outer {
+  height: 100vh;
+  width: 100%;
+}
+
+:host ::ng-deep .p-panel-content {
+  padding: 0 !important;
+}
+.up {
+  display: flex;
+  flex: 0 0 auto;
+}

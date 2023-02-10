@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 export class CreateJobComponent {
 
   job: Job = {
+    steps: [],
     parameters: [
       {
         "name": "string-param",

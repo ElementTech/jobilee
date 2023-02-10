@@ -137,13 +137,13 @@ def transform_dict(d):
             new_dicts.append(new_dict)
     return new_dicts
 
-def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id,stepIndex):
+def process_step(job, integrationSpec,chosen_params,integration,outputs,task_id,stepIndex):
     message = "Success"
     error = ""
     r = {}
     chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'],False)
     chosen_params.update(outputs)
-    url = integrationSteps["url"].replace(f'{{url}}',chosen_params.get('url') or '')+(replace_placeholders(integration['definition'].replace(f'{{job}}',job.get('apiID') or ''),chosen_params))
+    url = integrationSpec["url"].replace(f'{{url}}',chosen_params.get('url') or '')+(replace_placeholders(integration['definition'].replace(f'{{job}}',job.get('apiID') or ''),chosen_params))
     chosen_params = prepare_params(job['parameters'], chosen_params, integration['splitMultiChoice'],True)
     outputs.update(chosen_params)
     
@@ -161,8 +161,8 @@ def process_step(job, integrationSteps,chosen_params,integration,outputs,task_id
         cert_reqs = 'CERT_NONE' if integration['ignoreSSL'] else 'CERT_REQUIRED'
     )
 
-    authData = integration['authenticationData'] if integration['overrideAuthentication'] else integrationSteps['authenticationData']
-    authType = integration['authentication'] if integration['overrideAuthentication'] else integrationSteps['authentication']
+    authData = integration['authenticationData'] if integration['overrideAuthentication'] else integrationSpec['authenticationData']
+    authType = integration['authentication'] if integration['overrideAuthentication'] else integrationSpec['authentication']
     if authType == "Basic":
         headers.update(urllib3.make_headers(basic_auth="{key}:{value}".format(
             key=authData[0]['value'].replace(f"{{username}}",
@@ -361,15 +361,17 @@ def countTime(task_id,stepIndex):
         db["tasks"].update_one({"_id": ObjectId(task_id)}, {'$inc': {'run_time': 1}},upsert=True)
         stepFinished = data['steps'][stepIndex]['result'] != 0
 
-def process_request(job, integrationSteps,chosen_params,task_id):
+def process_request(job, integrationSpec,chosen_params,task_id):
     outputs = {}
-    integrationSteps['steps'] = [d for d in integrationSteps['steps'] if d.get('name') in job['steps']]
-    update_doc = {"job_id":job['_id'],"job_name":job['name'],"steps":[],"done": False,"run_time":0,"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSteps["_id"]),"chosen_params":chosen_params}
+    print("integ steps", integrationSpec['steps'])
+    print("job steps", job['steps'])
+    allSteps = integrationSpec['steps'] + (job['steps'] or [])
+    update_doc = {"job_id":job['_id'],"job_name":job['name'],"steps":[],"done": False,"run_time":0,"creation_time":datetime.now().isoformat(),"integration_id":str(integrationSpec["_id"]),"chosen_params":chosen_params}
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set": update_doc},upsert=True)
     # timer_task = threading.Thread(target=countTimeTask, args=(task_id))
     # timer_task.start()
-    for step in integrationSteps['steps']:
-        stepIndex = integrationSteps['steps'].index(step)
+    for step in allSteps:
+        stepIndex = allSteps.index(step)
         retriesLeft = (step['retryCount'] if step['retryCount'] >= 0 else 0)
         retriesDelay = (step['retryDelay'] if step['retryDelay'] >= 0 else 0)
 
@@ -398,12 +400,12 @@ def process_request(job, integrationSteps,chosen_params,task_id):
             upsert=True)
         timer_step = threading.Thread(target=countTime, args=(task_id,stepIndex))
         timer_step.start()
-        res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
+        res = process_step(job,integrationSpec,chosen_params,step,outputs,task_id,stepIndex)
         # or (not res['parsingOK']))
         status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
 
         while status not in range(200, 300) and (retriesLeft > 0):
-            res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
+            res = process_step(job,integrationSpec,chosen_params,step,outputs,task_id,stepIndex)
             status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
             retriesLeft -= 1
             update_step_field(task_id,stepIndex,{
@@ -420,7 +422,7 @@ def process_request(job, integrationSteps,chosen_params,task_id):
             parsingDelay = (step['parsingDelay'] if step['parsingDelay'] >= 0 else 0)
             parsingTimeout = (step['parsingTimeout'] if step['parsingTimeout'] >= 0 else 0)            
             while (res['parsingOK'] is False) and (timeOutLeft > 0):
-                res = process_step(job,integrationSteps,chosen_params,step,outputs,task_id,stepIndex)
+                res = process_step(job,integrationSpec,chosen_params,step,outputs,task_id,stepIndex)
                 status = res["r"]['status'] if isinstance(res["r"],dict) else res["r"].status
                 timeOutLeft = int(parsingTimeout - (datetime.now()-timeOutStartTime).total_seconds())
                 update_step_field(task_id,stepIndex,{
