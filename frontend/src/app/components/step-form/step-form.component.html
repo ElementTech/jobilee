@@ -58,7 +58,7 @@
                               API Definition
                             </ng-template>
                             <div class="p-inputgroup pb-3">
-                              <span class="p-inputgroup-addon">{{URLDefinitionOverride != "" ? URLDefinitionOverride : allSteps.url}}</span>
+                              <span class="p-inputgroup-addon">{{(URLDefinitionOverride != "") ? URLDefinitionOverride : allSteps.url}}</span>
                               <input type="text" [(ngModel)]="step.definition" name="{{index}}definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
                             </div>
               
