@@ -217,5 +217,6 @@ export class JobFormComponent implements OnInit {
   gotoList() {
     this.router.navigate(['/jobs']);
   }
+  
 }
 
