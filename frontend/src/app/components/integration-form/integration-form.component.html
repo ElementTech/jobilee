@@ -8,22 +8,9 @@
             <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="integrationSteps.name" name="name" placeholder="myapi">
       
             <h5>URL</h5>
-            
-            <!-- <p-table [value]="optionsURL" styleClass="p-datatable-sm">
-              <ng-template pTemplate="header">
-                  <tr>
-                      <th>Name</th>
-                      <th>Description</th>
-                  </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-option>
-                  <tr>
-                      <td>{{option.name}}</td>
-                      <td>{{option.description}}</td>
-                  </tr>
-              </ng-template>
-          </p-table> -->
             <input pInputText  class="min-w-full"  type="text" id="url" required [(ngModel)]="integrationSteps.url" name="url" placeholder="https://api.com">
+            <h5>Icon URL</h5>
+            <input pInputText  class="min-w-full"  type="text" id="icon" required [(ngModel)]="integrationSteps.icon" name="icon" placeholder="https://myimage/icon.svg">
           </div>
           <div class="col-6">
             <p-fieldset legend="Authentication" [toggleable]="false">
@@ -38,8 +25,16 @@
             </p-fieldset>
    
           </div>
-  
+          
+          <div class="col-12">
+            <h5>Description</h5>
+            <textarea pInputTextarea class="min-w-max"  
+            id="description" [(ngModel)]="integrationSteps.description" name="description"
+            [rows]="5" [cols]="30"  [autoResize]="true"></textarea>
           </div>
+          </div>
+
+          
           <hr>
           <app-step-form [allSteps]="integrationSteps.steps"  [URLDefinitionOverride]="integrationSteps.url"></app-step-form>
       

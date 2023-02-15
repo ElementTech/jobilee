@@ -40,7 +40,13 @@
         </td>
         <td>
           <span class="p-column-title">{{job.integration}}</span>
-          {{job.integration}}
+          <span class="">
+            <img width="25px" [src]="getIntegrationIcon(integrations[job.integration],job.integration)"/>
+            <span>
+              {{job.integration}}
+            </span>
+          </span>
+    
         </td>
         <td>
           <button pButton (click)="updateJob(job._id)" class="p-button-warning" style="margin-left: 10px">Update</button>

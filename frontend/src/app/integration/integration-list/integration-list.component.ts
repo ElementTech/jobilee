@@ -8,21 +8,14 @@ import Swal from 'sweetalert2'
 @Component({
   selector: "app-integration-list",
   templateUrl: "./integration-list.component.html",
-  styleUrls: ["./integration-list.component.css"]
+  styleUrls: ["./integration-list.component.scss"]
 })
 export class IntegrationListComponent implements OnInit {
   integrations: Observable<Integration[]>;
   loading: boolean = true;
   constructor(private dbService: DBService,
     private router: Router) {}
-  statuses = [
-      {label: 'Unqualified', value: 'unqualified'},
-      {label: 'Qualified', value: 'qualified'},
-      {label: 'New', value: 'new'},
-      {label: 'Negotiation', value: 'negotiation'},
-      {label: 'Renewal', value: 'renewal'},
-      {label: 'Proposal', value: 'proposal'}
-  ]
+
   ngOnInit() {
     this.reloadData();
   }
@@ -30,6 +23,11 @@ export class IntegrationListComponent implements OnInit {
   reloadData() {
     this.integrations = this.dbService.getObjectList("integrations");
     this.loading = false;
+  }
+
+  getIntegrationIcon(icon,text)
+  {
+    return icon || `https://www.vectorlogo.zone/logos/${text.split(" ")[0].toLowerCase()}/${text.split(" ")[0].toLowerCase()}-icon.svg`
   }
 
   deleteIntegration(_id: string) {

@@ -3,7 +3,10 @@ import { QueryBuilderConfig } from "angular2-query-builder";
 export class Integration {
     _id?: string;
     name?: string;
+    icon?: string;
     url?: string;
+    iconUrl?: string;
+    description?: string;
     steps: Step[];
     authentication?: string;
     authenticationData?: Array<Object>;    

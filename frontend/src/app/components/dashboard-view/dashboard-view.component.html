@@ -20,7 +20,7 @@
             <div class="card">
                 <h5>{{chart.key}}</h5>
                 <div class="text-center">
-                    <p-chart *ngIf="(chart.value | async); else spin"  [type]="(chartsMetadata[chart.key] | async)[0]?.type" width="400" [data]="(chart.value | async)" [options]=""></p-chart>
+                    <p-chart *ngIf="(chart?.value | async); else spin"  [type]="(chartsMetadata[chart.key] | async)[0]?.type" width="400" [data]="(chart?.value | async)" [options]=""></p-chart>
                     <ng-template #spin><p-progressSpinner></p-progressSpinner></ng-template>
                 </div>
             </div>        

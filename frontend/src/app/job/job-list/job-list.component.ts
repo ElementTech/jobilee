@@ -12,6 +12,7 @@ import Swal from 'sweetalert2'
 })
 export class JobListComponent implements OnInit {
   jobs: Observable<Job[]>;
+  integrations: any = {};
   loading: boolean = true;
   constructor(private dbService: DBService,
     private router: Router) {}
@@ -24,9 +25,17 @@ export class JobListComponent implements OnInit {
       {label: 'Proposal', value: 'proposal'}
   ]
   ngOnInit() {
+    this.dbService.getObjectList("integrations").subscribe(data=>{
+      data.forEach(element => {
+       this.integrations[element.name] = element.icon
+     });
+    });
     this.reloadData();
   }
-
+  getIntegrationIcon(icon,text)
+  {
+    return icon || `https://www.vectorlogo.zone/logos/${text.split(" ")[0].toLowerCase()}/${text.split(" ")[0].toLowerCase()}-icon.svg`
+  }
   reloadData() {
     this.jobs = this.dbService.getObjectList("jobs");
     this.loading = false;
