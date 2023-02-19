@@ -33,5 +33,5 @@ export function getStringAfterSubstring(str: string, substring: string): string 
 }
 
 export function toSelectItem(arr: Array<string>) {
-  return arr.map((item) => ({ label: item, value: item } as SelectItem));
+  return (arr||[]).map((item) => ({ label: item, value: item } as SelectItem));
 }

@@ -102,7 +102,7 @@ def replace_parameters(parameter, payload, chosen_params):
 def querify(chosen_params,splitMultiChoice):
     return urllib.parse.urlencode(chosen_params, doseq=splitMultiChoice, safe=',~()*!.\'/') 
 
-def replace_placeholders(string, values):
+def replace_placeholders(string:str, values:dict) -> str:
     for key in values:
         string = string.replace("{" + key + "}", str(values[key]))
     return string
@@ -445,6 +445,7 @@ def process_request(job, integrationSpec,chosen_params,task_id):
             'result':outcomeNumber
         })            
     db["tasks"].update_one({"_id": ObjectId(task_id)}, {"$set":{
+        "markdown": replace_placeholders(job.get('markdown') or '',outputs),
         "result": (outcomeNumber==2),
         "done": True
     }})

@@ -83,7 +83,7 @@
                         [pTooltip]="dynamicResultsError[param.name]"
                         [(ngModel)]="param.default" 
                         [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name]?.length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
-                        [options]="toSelectItem(dynamicResults[param.name] || param['default'].split(','))"
+                        [options]="toSelectItem(dynamicResults[param.name])"
                         >
                       </p-multiSelect>
                     </div>
@@ -103,6 +103,12 @@
     <json-editor [options]="makeOptions()" class="code"  [(ngModel)]="job" [ngModelOptions]=" 
     {standalone: true}"></json-editor>
   </p-tabPanel>
+  <p-tabPanel header="Result Parser">
+
+    <p-editor  [ngModelOptions]="   
+    {standalone: true}" [(ngModel)]="job.markdown" [style]="{'height':'80vh'}"></p-editor>
+
+  </p-tabPanel>  
 </p-tabView>
   <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
 </form>

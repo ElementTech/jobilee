@@ -22,6 +22,7 @@ import { DashboardDetailsComponent } from './dashboard/dashboard-details/dashboa
 import { DashboardListComponent } from './dashboard/dashboard-list/dashboard-list.component';
 import { UpdateDashboardComponent } from './dashboard/update-dashboard/update-dashboard.component';
 import { PlayDashboardComponent } from './dashboard/play-dashboard/play-dashboard.component';
+import { JobOutputComponent } from './job/job-output/job-output.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'catalog', pathMatch: 'full' },
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'jobs/run/:_id', component: PlayJobComponent },
   { path: 'jobs/history/:_id', component: JobHistoryComponent },
   { path: 'jobs/result/:_id/:task', component: JobResultComponent },
+  { path: 'jobs/output/:_id/:task', component: JobOutputComponent },
   { path: 'integrations', component: IntegrationListComponent },
   { path: 'integrations/add', component: CreateIntegrationComponent },
   { path: 'integrations/update/:_id', component: UpdateIntegrationComponent },

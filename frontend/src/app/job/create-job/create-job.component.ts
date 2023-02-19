@@ -9,6 +9,7 @@ export class CreateJobComponent {
 
   job: Job = {
     steps: [],
+    markdown: "",
     parameters: [
       {
         "name": "string-param",

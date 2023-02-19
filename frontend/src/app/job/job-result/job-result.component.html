@@ -3,7 +3,7 @@
       <span class="p-buttonset ">
         <p-button icon="pi pi-history" [routerLink]="['/','jobs','history', _id]" styleClass="p-button-link text-white p-button-sm" label="History"></p-button>
         <p-button type="button" (click)="this.display = !this.display" icon="pi pi-info-circle" label="Parameters" styleClass="p-button-link text-white p-button-sm"></p-button>
-        
+        <p-button icon="fa-solid fa-clipboard-check" [routerLink]="['/','jobs','output', _id, task_id]" styleClass="p-button-link text-white p-button-sm" label="Output"></p-button>
       </span>
       <p-dialog [maximizable]="true" header="Parameters" position="bottom-right"  [(visible)]="display">
         <p-table [value]="task?.chosen_params |keyvalue"  styleClass="p-datatable-sm">
@@ -36,6 +36,11 @@
       Run ID: {{this.task_id}}
   </div>
 </p-toolbar>
+
+<!-- 
+<div *ngIf="task.done" [innerHtml]="task.markdown">
+</div> -->
+
 
 <div class="timeline"> 
   <div *ngFor="let step of (task)?.steps; let index = index" class="timeline__event  timeline__event--type1">

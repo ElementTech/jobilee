@@ -16,10 +16,10 @@
 
           <p-panel header="Parameters" [toggleable]="false">
             <ng-template pTemplate="icons">
-                    <button type="button" pButton class="p-panel-header-icon p-link" (click)="regenerateParams()">
+                    <button type="button" pButton class="p-panel-header-icon p-link" (click)="regenerateParams()" *ngIf="hasDynamic()">
                         <span pTooltip="Refresh Dynamic Parameters" tooltipPosition="left" class="pi pi-bolt"></span>
                     </button>
-                    <button type="button" pButton class="p-panel-header-icon p-link" (click)="toHide = !toHide">
+                    <button type="button" *ngIf="hiddenCount()" pButton class="p-panel-header-icon p-link" (click)="toHide = !toHide">
                       <span pTooltip="Toggle Hidden Parameters" tooltipPosition="left"  class="pi flex" [ngClass]="{'pi-eye':!toHide,'pi-eye-slash': toHide}">
                        {{hiddenCount() || ''}}
                       </span>

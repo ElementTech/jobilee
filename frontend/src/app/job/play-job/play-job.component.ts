@@ -57,6 +57,9 @@ export class PlayJobComponent implements OnInit {
   
     return flat;
   }
+  hasDynamic(){
+    return this.job?.parameters.some(obj => obj.type === "dynamic")
+  }
   regenerateParams()
   {
     this.dynamicResultsError = []

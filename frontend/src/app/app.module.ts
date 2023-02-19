@@ -26,6 +26,8 @@ import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { QueryBuilderModule } from "angular2-query-builder";
+import {EditorModule} from 'primeng/editor';
+
 import {
   HighlightModule,
   HIGHLIGHT_OPTIONS,
@@ -86,6 +88,8 @@ import {PaginatorModule} from 'primeng/paginator';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import { PlayDashboardComponent } from './dashboard/play-dashboard/play-dashboard.component';
 import { StepFormComponent } from './components/step-form/step-form.component';
+import { JobOutputComponent } from './job/job-output/job-output.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -118,7 +122,8 @@ import { StepFormComponent } from './components/step-form/step-form.component';
     UpdateDashboardComponent,
     DashboardViewComponent,
     PlayDashboardComponent,
-    StepFormComponent
+    StepFormComponent,
+    JobOutputComponent
   ],
   imports: [
     BrowserModule,
@@ -172,7 +177,8 @@ import { StepFormComponent } from './components/step-form/step-form.component';
     ToastModule,
     ProgressBarModule,
     InputNumberModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    EditorModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

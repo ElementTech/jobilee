@@ -47,7 +47,9 @@
  */
 import 'zone.js';  // Included with Angular CLI.
 
-
+import 'brace';
+import 'brace/mode/markdown';
+import 'brace/mode/json';
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */

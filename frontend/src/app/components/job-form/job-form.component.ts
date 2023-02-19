@@ -9,6 +9,7 @@ import { RunService } from 'src/app/run.service';
 import { filter, switchMap, takeWhile } from 'rxjs/operators';
 import { defer, from, timer } from 'rxjs';
 import { SelectItem } from 'primeng/api';
+import { MarkdownService } from 'ngx-markdown';
 @Component({
   selector: 'app-job-form',
   templateUrl: './job-form.component.html',
@@ -81,6 +82,11 @@ export class JobFormComponent implements OnInit {
       this.regenerateParams()
     })
   }
+  updateMarkdown(event)
+  {
+    this.job.markdown = event
+  }
+
   getSteps()
   {
     return this.integrations?.find(item => item.name === this.job.integration)?.steps.map((item)=>item.name)

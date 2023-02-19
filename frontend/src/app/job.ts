@@ -8,4 +8,5 @@ export class Job {
     steps?: Step[];
     parameters?: Array<any>;
 description?: string;
+markdown?: string;
 }

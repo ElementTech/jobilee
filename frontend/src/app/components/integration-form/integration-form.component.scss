@@ -27,3 +27,6 @@
   display: flex;
   flex: 0 0 auto;
 }
+:host ::ng-deep .p-tabview-panels {
+  padding: 0 !important;
+}
