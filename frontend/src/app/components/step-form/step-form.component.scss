@@ -25,4 +25,20 @@
   flex: 0 0 auto;
 }
 
+:host ::ng-deep .p-tabview {
+	display: flex;
+}
+// :host ::ng-deep .p-tabview-nav-content {
+// 	width: 50% !important;
+// }
+
+:host ::ng-deep .p-tabview-panels {
+	width: 80% !important;
+}
+:host ::ng-deep .p-tabview-nav-container {
+	flex: 1;
+}
+:host ::ng-deep .p-tabview-nav {
+	flex-direction: column;
+}
 

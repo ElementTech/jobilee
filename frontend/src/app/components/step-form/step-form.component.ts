@@ -31,6 +31,7 @@ export class StepFormComponent implements OnInit {
     "Basic",
     "Bearer"
   ];
+  
 
   extractCurlyStrings(json: any): string[] {
     let results: string[] = [];
@@ -140,10 +141,13 @@ export class StepFormComponent implements OnInit {
 
      }
   items: MenuItem[];
+
   ngOnInit() {
     this.items = [
-      {label: 'Trigger'},
-    ];
+      {label: 'Step 1'},
+      {label: 'Step 2'},
+      {label: 'Step 3'}
+  ];
     if (this.allSteps?.length == 0)
     {
       this.pushCopy()

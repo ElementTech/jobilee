@@ -1,6 +1,6 @@
 
     
-    
+
     
           <p-panel>
 
@@ -26,351 +26,315 @@
               </ng-template>
               <mat-step *ngFor="let step of allSteps; let index = index">
         
-                <ng-template matStepLabel >
-                  <div class="col-12">
-                    <div class="p-inputgroup">
-                      
-                      <button type="button" (click)="allSteps.splice(index,1)" pButton pRipple icon="pi pi-trash" class="p-button-secondary pl-3 pr-3">
-                        &nbsp;{{step.name}}
-                      </button>      
-              
-                  </div>
-                </div>
-            
+                <ng-template matStepLabel class="flex justify-content-between">
+                    {{step.name}}
                 </ng-template>
-                
-                <p-fieldset legend="Construct API" [toggleable]="false">
-       
-                  <ng-template pTemplate="header" >
-                    <input pInputText class="min-w-full mt-3" type="text" id="{{index}}name" required [(ngModel)]="step.name" name="{{index}}name" placeholder="step name">   
-  
-                    <div class="mt-3">
+                <p-panel>
+                  <ng-template pTemplate="header" class="flex justify-content-between">
+                    <input pInputText class="flex flex-grow-1" type="text" id="{{index}}name" required [(ngModel)]="step.name" name="{{index}}name" placeholder="step name">   
+                    
+                      <div class="flex flex-grow-1">  </div>
                       <p-selectButton [(ngModel)]="step.type" name="{{index}}type" (onChange)="setTable($event,index)"
                       [options]="[{label: 'GET', value: 'get'},{label: 'POST', value: 'post'}]"></p-selectButton>
-                    </div>
-              
+                      <div class="flex flex-grow-1">  </div>
+                      <button type="button" (click)="allSteps.splice(index,1)" pButton pRipple icon="pi pi-trash" class="p-button-danger">
+                      </button>    
                   </ng-template>
-                  <div class="grid">
-                    <div class="col-12">
-  
-                        <p-tabView>
-                          <p-tabPanel>
-                            <ng-template pTemplate="header">
-                              API Definition
-                            </ng-template>
-                            <div class="p-inputgroup pb-3">
-                              <span class="p-inputgroup-addon">{{(URLDefinitionOverride != "") ? URLDefinitionOverride : allSteps.url}}</span>
-                              <input type="text" [(ngModel)]="step.definition" name="{{index}}definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
-                            </div>
-              
+
+                </p-panel>
+                <p-tabView>
+                  <p-tabPanel header="Definition">
+
+ 
+
+                    <div class="p-inputgroup pb-3">
+                      <span class="p-inputgroup-addon">{{(URLDefinitionOverride != "") ? URLDefinitionOverride : allSteps.url}}</span>
+                      <input type="text" [(ngModel)]="step.definition" name="{{index}}definition"  class="min-w-max" pInputText placeholder="/job/{job}/buildWithParameters">      
+                    </div>
+      
+                      <div class="grid">
+                   
+                        <div class="col">
+               
                               <div class="grid">
-                           
-                                <div class="col">
-                                  <p-tabView>
-                                      <p-tabPanel header="Request Options" >
-                                          <div class="grid">
-                                              <div class="col up">
-                                                  <div class="surface-card border-1 border-gray-200 p-3 border-round"  *ngIf="step.type == 'post'">
-                                                      <div class="flex justify-content-between mb-3">
-                                                          <div>
-                                                              <span class="block text-500 font-medium mb-3">
-                                                                <span  pTooltip="Payload Mode will send the payload as a JSON. Query mode will encode the parameters into the URL itself" tooltipPosition="top" class="pi pi-question-circle"></span>
-                                                                
-                                                                Mode</span>
-                                                              <div class="text-900 font-medium text-xl pt-3">
-                                                                
-                                                                  <p-selectButton (onChange)="setTable($event,index)"  name="{{index}}mode" id="{{index}}mode" [(ngModel)]="step.mode"
-                                                                   [options]="[{label: 'Payload', value: 'payload'},{label: 'Query', value: 'query'}]"></p-selectButton>
-  
-  
-                                                              </div>
-                                                          </div>
-                                                          <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
-                                                              <i class="pi pi-database text-blue-500 text-xl"></i>
-                                                          </div>
+                                      <div class="col up">
+                                          <div class="surface-card border-1 border-gray-200 p-3 border-round"  *ngIf="step.type == 'post'">
+                                              <div class="flex justify-content-between mb-3">
+                                                  <div>
+                                                      <span class="block text-500 font-medium mb-3">
+                                                        <span  pTooltip="Payload Mode will send the payload as a JSON. Query mode will encode the parameters into the URL itself" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                                        
+                                                        Mode</span>
+                                                      <div class="text-900 font-medium text-xl pt-3">
+                                                        
+                                                          <p-selectButton (onChange)="setTable($event,index)"  name="{{index}}mode" id="{{index}}mode" [(ngModel)]="step.mode"
+                                                           [options]="[{label: 'Payload', value: 'payload'},{label: 'Query', value: 'query'}]"></p-selectButton>
+
+
                                                       </div>
                                                   </div>
+                                                  <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+                                                      <i class="pi pi-database text-blue-500 text-xl"></i>
+                                                  </div>
                                               </div>
-                                              <div class="col up">
-                                                <div class="surface-card border-1 border-gray-200 p-3 border-round"  >
-                                                    <div class="flex justify-content-between mb-3">
-                                                        <div>
-                                                            <span class="block text-500 font-medium mb-3">
-                                                              Retries</span>
-                                                                <div class="flex align-items-center">
-                                                                  <p-inputNumber [(ngModel)]="step.retryCount"  size="2"  [value]="step.retryCount" mode="decimal" name="{{index}}retryCount" id="{{index}}retryCount" [showButtons]="true" [min]="0" >
-                                                                  </p-inputNumber>
-                                                                  &nbsp;
-                                                                  <label for="{{index}}retryCount" >Count</label>
-  
-                                                                </div>
-                                                                <hr>
-                                                                 <div class="flex align-items-center">
-                                                                  <p-inputNumber [(ngModel)]="step.retryDelay"  size="2"  [value]="step.retryDelay" mode="decimal" name="{{index}}retryDelay" id="{{index}}retryDelay" [showButtons]="true" [min]="0" >
-                                                                  </p-inputNumber>
-                                                                  &nbsp;
-                                                                  <label for="{{index}}retryDelay" >Delay</label>
-  
-                                                                 </div>
-                                                  
-                                                            
-                                                        </div>
-                                                        <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
-                                                            <i class="pi pi-replay text-blue-500 text-xl"></i>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                              </div>
-  
-                                              <div class="col up">
-                                                <div class="surface-card border-1 border-gray-200 p-3 border-round">
-                                                    <div class="flex justify-content-between mb-3">
-                                                        <div>
-                                                            <span class="block text-500 font-medium mb-3">
-                                                              
-                                                              Options</span>
-                                                            <div class="">
-                                                              
-                                                              <div class="flex align-items-center">
-                                                                <p-checkbox [(ngModel)]="step.ignoreSSL" styleClass="mr-2" [binary]="true" name="{{index}}ignoreSSL" id="{{index}}ignoreSSL"  ></p-checkbox>
-                                                                <label for="binary" class="text-900">Ignore SSL</label>
-                                                            </div>
-                                                            <hr>
-                                                            <div class="flex align-items-center">
-                                                              <p-checkbox [(ngModel)]="step.splitMultiChoice"  styleClass="mr-2" [binary]="true" name="{{index}}splitMultiChoice" id="{{index}}splitMultiChoice" ></p-checkbox>
-                                                              <label for="binary">Split Multi Choice Parameters</label>
-                                                              &nbsp;
-                                                              <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
-  
-                                                             </div>
-  
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
-                                                            <i class="pi pi-forward text-blue-500 text-xl"></i>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-  
-                                        
-                                      </div>
-  
-                        
-                         
-                           
-                              
-                                        <p-panel header="Headers" styleClass="min-w-full" [toggleable]="false">
-                                          <ng-template pTemplate="header">
-                                              <span  pTooltip="If [Content-Type=application/json], parameters will be passed as body. Otherwise - as encoded URL query." tooltipPosition="top" class="pi pi-question-circle"></span>
-                                              &nbsp;
-                                          </ng-template>
-                                          <ng-template pTemplate="icons">
-                                                  
-                                                
-                                                  <button type='button' pButton class="p-panel-header-icon p-link" (click)="addHeader(index)">
-                                                      <span class="pi pi-plus"></span>
-                                                  </button>
-                                          </ng-template>
-                                          <ng-template pTemplate="content">
-                                                <div class="p-inputgroup"  *ngFor="let head of step.headers; let i = index">
-                                                  <input pInputText [(ngModel)]="head.key"  type="text"  name="{{index}}headerKey{{i}}" id="{{index}}headerKey{{i}}">
-                                                  <input pInputText [(ngModel)]="head.value"  type="text"  name="{{index}}headerValue{{i}}" id="{{index}}headerValue{{i}}">
-                                                  <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(index,i,head)"></p-button>
-                                              </div>
-                                        </ng-template>
-                                        </p-panel>
-                                        
-                                
-                                      </p-tabPanel>
-                                      <p-tabPanel header="Authentication">
-                                        <ng-template pTemplate="header" >
-                                          <p-checkbox [(ngModel)]="step.overrideAuthentication" [binary]="true" name="{{index}}overrideAuthentication" id="{{index}}overrideAuthentication" ></p-checkbox> &nbsp;
-                                          Authentication Override
-                                          &nbsp;
-                                          <span  pTooltip="Use a different Authentication for this step" tooltipPosition="top" class="pi pi-question-circle"></span>
-                                        </ng-template>
-                                        <div *ngIf="step.overrideAuthentication">
-                                          <p-selectButton name="{{index}}authentication" [options]="authenticationOptions" (onChange)="setAuthData($event,index)" [(ngModel)]="step.authentication"></p-selectButton>
-                                          <div class="p-inputgroup pt-2"  *ngFor="let auth of step.authenticationData; let i = index">
-                                              <div class="p-inputgroup">
-                                                <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
-                                                <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'" id="{{index}}authValue{{i}}" name="{{index}}authValue{{i}}">
-                                            </div>
                                           </div>
+                                      </div>
+                                      <div class="col up">
+                                        <div class="surface-card border-1 border-gray-200 p-3 border-round"  >
+                                            <div class="flex justify-content-between mb-3">
+                                                <div>
+                                                    <span class="block text-500 font-medium mb-3">
+                                                      Retries</span>
+                                                        <div class="flex align-items-center">
+                                                          <p-inputNumber [(ngModel)]="step.retryCount"  size="2"  [value]="step.retryCount" mode="decimal" name="{{index}}retryCount" id="{{index}}retryCount" [showButtons]="true" [min]="0" >
+                                                          </p-inputNumber>
+                                                          &nbsp;
+                                                          <label for="{{index}}retryCount" >Count</label>
+
+                                                        </div>
+                                                        <hr>
+                                                         <div class="flex align-items-center">
+                                                          <p-inputNumber [(ngModel)]="step.retryDelay"  size="2"  [value]="step.retryDelay" mode="decimal" name="{{index}}retryDelay" id="{{index}}retryDelay" [showButtons]="true" [min]="0" >
+                                                          </p-inputNumber>
+                                                          &nbsp;
+                                                          <label for="{{index}}retryDelay" >Delay</label>
+
+                                                         </div>
+                                          
+                                                    
+                                                </div>
+                                                <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+                                                    <i class="pi pi-replay text-blue-500 text-xl"></i>
+                                                </div>
+                                            </div>
                                         </div>
-                        
-                                      </p-tabPanel>
-                                  </p-tabView>
-                                </div>
-                              </div>
-                              <div *ngIf="step.type == 'post' && step.mode == 'payload'" class="pt-3 grid">
-                                <p-panel header="Payload"  class="col" >
-                                  <json-editor [options]="makeOptions()" class="api"  [(ngModel)]="step.payload" [ngModelOptions]=" 
-                                  {standalone: true}"></json-editor>
-                                </p-panel>
-                                <p-panel header="{parameter}"  class="col" >
-                                  <json-editor [options]="makeOptions()"  class="api"   [(ngModel)]="step.parameter" [ngModelOptions]=" 
-                                  {standalone: true}"></json-editor>
-                                </p-panel>
-                              </div>
-                          </p-tabPanel>
-                          <p-tabPanel>
-                            <ng-template pTemplate="header" >
-                              <p-checkbox [(ngModel)]="step.parsing" [binary]="true" name="{{index}}parsing" id="{{index}}parsing" ></p-checkbox> &nbsp;
-                              Response Parsing
-                              &nbsp;
-                              <span  pTooltip="When enabled, put {var} placeholders in the expected response JSON. These will be available to next API steps." tooltipPosition="top" class="pi pi-question-circle"></span>
-                            </ng-template>
-                            <div *ngIf="step.parsing">
-                              <div class="field-checkbox">
-                                <label for="{{index}}parsingTimeout">Timeout</label>
-                                <p-inputNumber [(ngModel)]="step.parsingTimeout"  mode="decimal"  [showButtons]="true" [min]="0" name="{{index}}parsingTimeout" id="{{index}}parsingTimeout" ></p-inputNumber> &nbsp;
-                                <label for="{{index}}parsingDelary">Retry Delay</label>
-                                <p-inputNumber [(ngModel)]="step.parsingDelay"  mode="decimal"  [showButtons]="true" [min]="0" name="{{index}}parsingDelary" id="{{index}}parsingDelary" ></p-inputNumber> &nbsp;
-                              </div>
-                            </div>
-                            <div *ngIf="step.parsing">
-                              <div class="grid">
-                                <div class="col">
-                                  <p-panel header="Expected Response">
-                                    <ng-template  pTemplate="header">
-                                      <span  pTooltip="Wrap the values of the expected response JSON that you would like to parse in { }" tooltipPosition="top" class="pi pi-question-circle"></span>
-                                    </ng-template>
-                                    <ng-template pTemplate="icons">
-                                      <div class="flex justify-content-end">
-                                        <div class="flex align-items-center">
-                                          <span  pTooltip="Force the response to match Dict/List as defined below" tooltipPosition="top" class="pi pi-question-circle"></span>
-                                          &nbsp;
-  
-                                          <label for="{{index}}parsing" class="text-white">Strict</label>
-                                          &nbsp;
-  
-                                          <p-checkbox [(ngModel)]="step.strict" class="mr-2" [binary]="true" name="{{index}}strict" id="{{index}}strict" ></p-checkbox> &nbsp;
+                                      </div>
+
+                                      <div class="col up">
+                                        <div class="surface-card border-1 border-gray-200 p-3 border-round">
+                                            <div class="flex justify-content-between mb-3">
+                                                <div>
+                                                    <span class="block text-500 font-medium mb-3">
+                                                      
+                                                      Options</span>
+                                                    <div class="">
+                                                      
+                                                      <div class="flex align-items-center">
+                                                        <p-checkbox [(ngModel)]="step.ignoreSSL" styleClass="mr-2" [binary]="true" name="{{index}}ignoreSSL" id="{{index}}ignoreSSL"  ></p-checkbox>
+                                                        <label for="binary" class="text-900">Ignore SSL</label>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="flex align-items-center">
+                                                      <p-checkbox [(ngModel)]="step.splitMultiChoice"  styleClass="mr-2" [binary]="true" name="{{index}}splitMultiChoice" id="{{index}}splitMultiChoice" ></p-checkbox>
+                                                      <label for="binary">Split Multi Choice Parameters</label>
+                                                      &nbsp;
+                                                      <span  pTooltip="param=a,b will become param=a&param=b" tooltipPosition="top" class="pi pi-question-circle"></span>
+
+                                                     </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
+                                                    <i class="pi pi-forward text-blue-500 text-xl"></i>
+                                                </div>
+                                            </div>
                                         </div>
-                                        &nbsp;
-                                        <button
-                                          type="button"
-                                          pButton
-                                          class="p-button-rounded p-button-outlined"
-                                          icon="pi pi-filter-slash"
-                                          (click)="step.outputs = {}"
-                                        ></button>
+                                    </div>
+
+                                
+                              </div>
+
+                              <p-panel header="Headers" styleClass="min-w-full" [toggleable]="false">
+                                <ng-template pTemplate="header">
+                                    <span  pTooltip="If [Content-Type=application/json], parameters will be passed as body. Otherwise - as encoded URL query." tooltipPosition="top" class="pi pi-question-circle"></span>
+                                    &nbsp;
+                                </ng-template>
+                                <ng-template pTemplate="icons">
                                         
                                       
-                                      </div>
-                                    </ng-template>
-                                  <json-editor class="api" [options]="makeOptions()" [(ngModel)]="step.outputs" [ngModelOptions]=" 
-                                  {standalone: true}"></json-editor>
-                                  </p-panel>
-                                </div>
-                    
-                                <p-divider layout="vertical">  <i class="pi pi-arrow-right"></i></p-divider>
-                                <div class="col">
-                                  <p-panel header="Outputs">
-                                    <p-listbox [readonly]="true" [options]="extractCurlyStrings(step.outputs)" >
-          
-          
-                                      <ng-template let-output pTemplate="item">
-                                        <div class="">
-  
-                                          <p-chip [label]="output">
-                                          </p-chip>
-                                          &nbsp;
-                                          <input type="text" pInputText placeholder="Regex Match (optional)" name="{{index}}{{output}}regexMatch" [(ngModel)]="step.regexMatch[output]" [ngModelOptions]=" 
-                                          {standalone: true}"> 
-                                          &nbsp;
-                                          <input type="text" pInputText placeholder="Regex Transform (optional)" name="{{index}}{{output}}regex" [(ngModel)]="step.regex[output]" [ngModelOptions]=" 
-                                          {standalone: true}"> 
-                                          <div class="flex align-items-center">
-                                            <p-checkbox [(ngModel)]="step.removeDuplicates[output]" styleClass="mr-2" [binary]="true" name="{{index}}{{output}}duplicates" name="{{index}}{{output}}duplicates"  ></p-checkbox>
-                                            <label for="binary" class="text-900">Remove Duplicates</label>
-                                          </div>
-                                        </div>
-  
-                                        <!-- <input type="text" pInputText name="{{index}}{{output}}regex" [(ngModel)]="step.regex" [ngModelOptions]=" 
-                                        {standalone: true}">  -->
-                                      </ng-template>
-                                    </p-listbox>
-                                    
-                                  </p-panel>
-                                </div>
-                        
-                              </div>
-             
-                              <div>
-                                <div  class="pt-5">
-  
-                                <p-panel header="Defined Parsed Results">
-                                  <ng-template  pTemplate="header">
-                                    <span  pTooltip="Decide Success/Failure based on conditions while parsing your previously defined outputs" tooltipPosition="top" class="pi pi-question-circle"></span>
-                                    &nbsp;
-      
-                                  </ng-template>
-                                    <json-editor [options]="makeOptions()"  class="api" name="{{index}}retryUntil"  [(ngModel)]="step.parsingConfig" [ngModelOptions]=" 
-                                    {standalone: true}"></json-editor> 
-      
-                   
-                                    
-                      
-                                </p-panel>
-                              </div>
-  
-                                <div class="pt-5">
-  
-                                  <p-panel header="Follow Until">
-                                    <ng-template  pTemplate="header">
-                                      <span  pTooltip="Will retry the API until the output equals your string/array/object. Leave empty for just making sure the value exists." tooltipPosition="top" class="pi pi-question-circle"></span>
-                                      &nbsp;
-        
-                                    </ng-template>
-                         
-                                    <query-builder [(ngModel)]='step.retryUntil' [config]='step.parsingConfig' name="{{index}}retryUntil"  [ngModelOptions]=" 
-                                    {standalone: true}"></query-builder>
-  
-                                  </p-panel>
-                                </div>
-  
-                                  <div class="pt-5">
-  
-                                  <p-panel header="Failure When">
-                                    <ng-template  pTemplate="header">
-                                      <span  pTooltip="Immediately Fail when an output equals something" tooltipPosition="top" class="pi pi-question-circle"></span>
-                                      &nbsp;
-        
-                                    </ng-template>
+                                        <button type='button' pButton class="p-panel-header-icon p-link" (click)="addHeader(index)">
+                                            <span class="pi pi-plus"></span>
+                                        </button>
+                                </ng-template>
+                                <ng-template pTemplate="content">
+                                      <div class="p-inputgroup"  *ngFor="let head of step.headers; let i = index">
+                                        <input pInputText [(ngModel)]="head.key"  type="text"  name="{{index}}headerKey{{i}}" id="{{index}}headerKey{{i}}">
+                                        <input pInputText [(ngModel)]="head.value"  type="text"  name="{{index}}headerValue{{i}}" id="{{index}}headerValue{{i}}">
+                                        <p-button icon="pi pi-minus" styleClass="p-button-outlined p-button-danger" (click)="removeHeader(index,i,head)"></p-button>
+                                    </div>
+                              </ng-template>
+                              </p-panel>
                      
-                                    <query-builder [(ngModel)]='step.failWhen' [config]='step.parsingConfig' name="{{index}}failWhen" [ngModelOptions]=" 
-                                    {standalone: true}"></query-builder>
-                               
-                                  </p-panel>
-                                </div>
-        
-                              </div>
-        
-                            </div>
-                          </p-tabPanel>
-                        </p-tabView>
-                    </div>
-                       <!-- <div class="col-2" style="padding-top:3.8rem">
-  
-                        <p-panel>
-                          <ng-template pTemplate="header">
-                            Placeholder Variables
-                          </ng-template>
-                          <p-listbox [options]="makeVariables(index)" optionLabel="name" [readonly]="true">
-                     
-                            <ng-template let-item pTemplate="item">
-                                <div [pTooltip]="item.description">{{item.name}}</div>
-                          </ng-template>
-                          </p-listbox>
+                        </div>
+                      </div>
+                      <div *ngIf="step.type == 'post' && step.mode == 'payload'" class="pt-3 grid">
+                        <p-panel header="Payload"  class="col" >
+                          <json-editor [options]="makeOptions()" class="api"  [(ngModel)]="step.payload" [ngModelOptions]=" 
+                          {standalone: true}"></json-editor>
                         </p-panel>
-                       </div> -->
-  
-                  </div>
+                        <p-panel header="{parameter}"  class="col" >
+                          <json-editor [options]="makeOptions()"  class="api"   [(ngModel)]="step.parameter" [ngModelOptions]=" 
+                          {standalone: true}"></json-editor>
+                        </p-panel>
+                      </div>
                     
+                  </p-tabPanel>
+                  <p-tabPanel>
+                    <ng-template pTemplate="header" >
+                      <p-checkbox [(ngModel)]="step.parsing" [binary]="true" name="{{index}}parsing" id="{{index}}parsing" ></p-checkbox> &nbsp;
+                      Response Parsing
+                      &nbsp;
+                      <span  pTooltip="When enabled, put {var} placeholders in the expected response JSON. These will be available to next API steps." tooltipPosition="top" class="pi pi-question-circle"></span>
+                    </ng-template>
+                    <div *ngIf="step.parsing">
+                      <div class="field-checkbox">
+                        <label for="{{index}}parsingTimeout">Timeout</label>
+                        <p-inputNumber [(ngModel)]="step.parsingTimeout"  mode="decimal"  [showButtons]="true" [min]="0" name="{{index}}parsingTimeout" id="{{index}}parsingTimeout" ></p-inputNumber> &nbsp;
+                        <label for="{{index}}parsingDelary">Retry Delay</label>
+                        <p-inputNumber [(ngModel)]="step.parsingDelay"  mode="decimal"  [showButtons]="true" [min]="0" name="{{index}}parsingDelary" id="{{index}}parsingDelary" ></p-inputNumber> &nbsp;
+                      </div>
+                    </div>
+                    <div *ngIf="step.parsing">
+                      <div class="grid">
+                        <div class="col">
+                          <p-panel header="Expected Response">
+                            <ng-template  pTemplate="header">
+                              <span  pTooltip="Wrap the values of the expected response JSON that you would like to parse in { }" tooltipPosition="top" class="pi pi-question-circle"></span>
+                            </ng-template>
+                            <ng-template pTemplate="icons">
+                              <div class="flex justify-content-end">
+                                <div class="flex align-items-center">
+                                  <span  pTooltip="Force the response to match Dict/List as defined below" tooltipPosition="top" class="pi pi-question-circle"></span>
+                                  &nbsp;
+
+                                  <label for="{{index}}parsing" class="text-white">Strict</label>
+                                  &nbsp;
+
+                                  <p-checkbox [(ngModel)]="step.strict" class="mr-2" [binary]="true" name="{{index}}strict" id="{{index}}strict" ></p-checkbox> &nbsp;
+                                </div>
+                                &nbsp;
+                                <button
+                                  type="button"
+                                  pButton
+                                  class="p-button-rounded p-button-outlined"
+                                  icon="pi pi-filter-slash"
+                                  (click)="step.outputs = {}"
+                                ></button>
+                                
+                              
+                              </div>
+                            </ng-template>
+                          <json-editor class="api" [options]="makeOptions()" [(ngModel)]="step.outputs" [ngModelOptions]=" 
+                          {standalone: true}"></json-editor>
+                          </p-panel>
+                        </div>
+            
+                        <p-divider layout="vertical">  <i class="pi pi-arrow-right"></i></p-divider>
+                        <div class="col">
+                          <p-panel header="Outputs">
+                            <p-listbox [readonly]="true" [options]="extractCurlyStrings(step.outputs)" >
   
-               </p-fieldset>
+  
+                              <ng-template let-output pTemplate="item">
+                                <div class="">
+
+                                  <p-chip [label]="output">
+                                  </p-chip>
+                                  &nbsp;
+                                  <input type="text" pInputText placeholder="Regex Match (optional)" name="{{index}}{{output}}regexMatch" [(ngModel)]="step.regexMatch[output]" [ngModelOptions]=" 
+                                  {standalone: true}"> 
+                                  &nbsp;
+                                  <input type="text" pInputText placeholder="Regex Transform (optional)" name="{{index}}{{output}}regex" [(ngModel)]="step.regex[output]" [ngModelOptions]=" 
+                                  {standalone: true}"> 
+                                  <div class="flex align-items-center">
+                                    <p-checkbox [(ngModel)]="step.removeDuplicates[output]" styleClass="mr-2" [binary]="true" name="{{index}}{{output}}duplicates" name="{{index}}{{output}}duplicates"  ></p-checkbox>
+                                    <label for="binary" class="text-900">Remove Duplicates</label>
+                                  </div>
+                                </div>
+
+                                <!-- <input type="text" pInputText name="{{index}}{{output}}regex" [(ngModel)]="step.regex" [ngModelOptions]=" 
+                                {standalone: true}">  -->
+                              </ng-template>
+                            </p-listbox>
+                            
+                          </p-panel>
+                        </div>
+                
+                      </div>
+     
+                      <div>
+                        <div  class="pt-5">
+
+                        <p-panel header="Defined Parsed Results">
+                          <ng-template  pTemplate="header">
+                            <span  pTooltip="Decide Success/Failure based on conditions while parsing your previously defined outputs" tooltipPosition="top" class="pi pi-question-circle"></span>
+                            &nbsp;
+
+                          </ng-template>
+                            <json-editor [options]="makeOptions()"  class="api" name="{{index}}retryUntil"  [(ngModel)]="step.parsingConfig" [ngModelOptions]=" 
+                            {standalone: true}"></json-editor> 
+
+           
+                            
+              
+                        </p-panel>
+                      </div>
+
+                        <div class="pt-5">
+
+                          <p-panel header="Follow Until">
+                            <ng-template  pTemplate="header">
+                              <span  pTooltip="Will retry the API until the output equals your string/array/object. Leave empty for just making sure the value exists." tooltipPosition="top" class="pi pi-question-circle"></span>
+                              &nbsp;
+
+                            </ng-template>
+                 
+                            <query-builder [(ngModel)]='step.retryUntil' [config]='step.parsingConfig' name="{{index}}retryUntil"  [ngModelOptions]=" 
+                            {standalone: true}"></query-builder>
+
+                          </p-panel>
+                        </div>
+
+                          <div class="pt-5">
+
+                          <p-panel header="Failure When">
+                            <ng-template  pTemplate="header">
+                              <span  pTooltip="Immediately Fail when an output equals something" tooltipPosition="top" class="pi pi-question-circle"></span>
+                              &nbsp;
+
+                            </ng-template>
+             
+                            <query-builder [(ngModel)]='step.failWhen' [config]='step.parsingConfig' name="{{index}}failWhen" [ngModelOptions]=" 
+                            {standalone: true}"></query-builder>
+                       
+                          </p-panel>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </p-tabPanel>
+                  <p-tabPanel header="Authentication">
+                    <ng-template pTemplate="header" >
+                      <p-checkbox [(ngModel)]="step.overrideAuthentication" [binary]="true" name="{{index}}overrideAuthentication" id="{{index}}overrideAuthentication" ></p-checkbox> &nbsp;
+                      Authentication Override
+                      &nbsp;
+                      <span  pTooltip="Use a different Authentication for this step" tooltipPosition="top" class="pi pi-question-circle"></span>
+                    </ng-template>
+                    <div *ngIf="step.overrideAuthentication">
+                      <p-selectButton name="{{index}}authentication" [options]="authenticationOptions" (onChange)="setAuthData($event,index)" [(ngModel)]="step.authentication"></p-selectButton>
+                      <div class="p-inputgroup pt-2"  *ngFor="let auth of step.authenticationData; let i = index">
+                          <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon text-color">{{auth.key}}</span>
+                            <input pInputText [(ngModel)]="auth.value"  [type]="auth.key != 'Username' ? 'password' :'text'" id="{{index}}authValue{{i}}" name="{{index}}authValue{{i}}">
+                        </div>
+                      </div>
+                    </div>
+    
+                  </p-tabPanel>
+              
+                </p-tabView>
+       
               </mat-step>
             </mat-stepper>
         </p-panel>
