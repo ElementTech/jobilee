@@ -9,14 +9,14 @@
             
             <ng-template pTemplate="header" class="flex justify-content-between">
               <span class="p-buttonset flex-none">
-                <button type="button" pButton (click)="goBack(indexper)">Back</button>
+                <button type="button" pButton (click)="goBack(stepper)">Back</button>
               
-                <button type="button" pButton (click)="goForward(indexper)">Next</button>
+                <button type="button" pButton (click)="goForward(stepper)">Next</button>
              </span>
             
                 <div class="flex flex-grow-1"></div>
               <span class="p-buttonset flex-none">
-                <button type="button" (click)="pushCopy();goForward(indexper)"  icon="pi pi-plus-circle" pButton >&nbsp;Add Step</button>
+                <button type="button" (click)="pushCopy();goForward(stepper)"  icon="pi pi-plus-circle" pButton >&nbsp;Add Step</button>
               </span>
             </ng-template>
             <mat-stepper orientation="vertical"  #stepper>
