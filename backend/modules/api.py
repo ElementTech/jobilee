@@ -7,11 +7,16 @@ from pymongo import MongoClient
 import pymongo
 import os
 import yaml
-# Import Libraries 
+# Import Libraries
 from app import app
+
+
 def parse_json(data):
     return json.loads(json_util.dumps(data))
-db = MongoClient(os.environ.get('MONGODB_URI') or yaml.load(open('database.yaml'),Loader=yaml.FullLoader)['uri'])['jobilee']
+
+
+db = MongoClient(os.environ.get('MONGODB_URI') or yaml.load(
+    open('database.yaml'), Loader=yaml.FullLoader)['uri'])['jobilee']
 
 
 def extract_values(obj):
@@ -30,14 +35,16 @@ def extract_values(obj):
     else:
         return []
 
-@app.route('/api/jobs/outputs', methods=['GET','POST'])
+
+@app.route('/api/jobs/outputs', methods=['GET', 'POST'])
 def outputs():
     # GET all data from database
     if request.method == 'GET':
         output = []
         allData = db["jobs"].find()
         for job in allData:
-            integration = db['integrations'].find_one({'name': job['integration']})
+            integration = db['integrations'].find_one(
+                {'name': job['integration']})
             if integration:
                 output.append({
                     "label": job['name'],
@@ -46,20 +53,20 @@ def outputs():
                     "collapsedIcon": "pi pi-folder",
                     "type": "job",
                     "children": [
-                        {"label": step['name'], "icon": "pi pi-bolt", 
-                        "expandedIcon": "pi pi-folder-open",
-                        "collapsedIcon": "pi pi-folder",
-                        "job": job['name'],
-                        "type": "step",
-                        "data": step['name'], 'children': [
-                            {"label": out, "icon": "pi pi-cloud-download", 
-                            "expandedIcon": "pi pi-folder-open",
-                            "job": job['name'],
-                            "step": step['name'],
-                            "type": "output",
-                            "selectable": False,
-                            "collapsedIcon": "pi pi-folder",
-                            "data": out} for out in extract_values(step['outputs'])
+                        {"label": step['name'], "icon": "pi pi-bolt",
+                         "expandedIcon": "pi pi-folder-open",
+                         "collapsedIcon": "pi pi-folder",
+                         "job": job['name'],
+                         "type": "step",
+                         "data": step['name'], 'children': [
+                            {"label": out, "icon": "pi pi-cloud-download",
+                             "expandedIcon": "pi pi-folder-open",
+                             "job": job['name'],
+                             "step": step['name'],
+                             "type": "output",
+                             "selectable": False,
+                             "collapsedIcon": "pi pi-folder",
+                             "data": out} for out in extract_values(step['outputs'])
                         ]} for step in (integration['steps']+(job.get('steps') or [])) if ('outputs' in step)
                     ]
                 })
@@ -68,9 +75,21 @@ def outputs():
         data = combine_outputs(extract_data(request.json))
         for dict_item in data:
             for key in dict_item:
-                if isinstance(dict_item[key],dict):
+                if isinstance(dict_item[key], dict):
                     dict_item[key] = dict_item[key]['data']
         return jsonify(parse_json(data))
+
+
+# @app.route('/api/job/steps/<name>', methods=['GET'])
+# def steps(name):
+#     # GET all data from database
+#     if request.method == 'GET':
+#         output = []
+#         job = db["jobs"].find_one({'name': name})
+#         integration = db['integrations'].find_one({'name': job['integration']})
+#         output.append({'name': step['name'], 'outputs': (out for out in extract_values(step['outputs']))} for step in (
+#             integration['steps']+(job.get('steps') or [])) if ('outputs' in step))
+#         return jsonify(parse_json(output))
 
 def combine_outputs(input_list):
     result = {}
@@ -103,7 +122,7 @@ def extract_data(input_list):
                 "job": input_dict["job"],
                 "step": input_dict["step"],
                 "outputs": input_dict["data"],
-            })      
+            })
         elif input_dict["type"] == "step":
             outputs = [out["data"] for out in input_dict["children"]]
             if len(outputs) > 0:
@@ -115,45 +134,64 @@ def extract_data(input_list):
     return result
 
 
-@app.route('/api/<collection>', methods=['POST', 'GET','DELETE'])
+@app.route('/api/<collection>', methods=['POST', 'GET', 'DELETE'])
 def data(collection):
     # POST a data to database
     if request.method == 'POST':
-        db_doc = {k: (str(v) if k == '_id' else v) for k, v in request.json.items()}
+        db_doc = {k: (str(v) if k == '_id' else v)
+                  for k, v in request.json.items()}
         db[collection].insert_one(db_doc)
         db_doc.update({'_id': str(db_doc['_id'])} if '_id' in db_doc else {})
         return jsonify({'status': 'Data is posted to MongoDB!', **db_doc})
-        
+
     # GET all data from database
     if request.method == 'GET':
         allData = db[collection].find()
-        dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
+        dataJson = [{k: (str(v) if k == '_id' else v)
+                     for k, v in data.items()} for data in allData]
         return jsonify(parse_json(dataJson))
+
+@app.route('/api/jobs/extended', methods=['GET'])
+def steps():
+    # GET all data from database
+    if request.method == 'GET':
+        allData = db['jobs'].find()
+        dataJson = [{k: (str(v) if k == '_id' else v)
+                     for k, v in data.items()} for data in allData]
+        for job in dataJson:
+            integration = db['integrations'].find_one({'name': job['integration']})
+            dataJson[dataJson.index(job)]["steps"] = [{'name': (step['name'] if isinstance(step,dict) else step), 'outputs': (step['outputs'].keys() if isinstance(step['outputs'] if 'outputs' in step else [],dict) else [])} for step in (integration['steps'] + dataJson[dataJson.index(job)]["steps"])]
+        return jsonify(parse_json(dataJson))    
 
 @app.route('/api/history', methods=['GET'])
 def history(collection='jobs'):
     allData = db[collection].find()
-    dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
+    dataJson = [{k: (str(v) if k == '_id' else v)
+                 for k, v in data.items()} for data in allData]
     for job in dataJson:
-        history = db['tasks'].find({'job_id':job['_id']}).sort('creation_time', -1).limit(10)
-        dataJson[dataJson.index(job)]["history"] = [{'result':d['result'],'creation_time':d['creation_time']} for d in history if 'result' in d]
+        history = db['tasks'].find({'job_id': job['_id']}).sort(
+            'creation_time', -1).limit(10)
+        dataJson[dataJson.index(job)]["history"] = [
+            {'result': d['result'], 'creation_time':d['creation_time']} for d in history if 'result' in d]
     return jsonify(parse_json(dataJson))
 
 
 @app.route('/api/<collection>/<string:id>', methods=['GET', 'DELETE', 'PUT'])
-@app.route('/api/<collection>/<string:key>/<string:value>', methods=['GET','DELETE'])
-def onedata(collection,id=None,key=None,value=None):
+@app.route('/api/<collection>/<string:key>/<string:value>', methods=['GET', 'DELETE'])
+def onedata(collection, id=None, key=None, value=None):
     if id:
         # GET all data from database
         if request.method == 'GET':
             data = db[collection].find_one({'_id': ObjectId(id)})
             if data:
-                db_doc = {k: v if k != '_id' else str(v) for k, v in data.items()}
-                db_doc.update({'_id': str(db_doc['_id'])} if '_id' in db_doc else {})    
+                db_doc = {k: v if k != '_id' else str(
+                    v) for k, v in data.items()}
+                db_doc.update(
+                    {'_id': str(db_doc['_id'])} if '_id' in db_doc else {})
             else:
                 db_doc = {}
             return jsonify(parse_json(db_doc))
-            
+
         # DELETE a data
         if request.method == 'DELETE':
             db[collection].delete_many({'_id': ObjectId(id)})
@@ -165,22 +203,24 @@ def onedata(collection,id=None,key=None,value=None):
             update_doc = {k: v for k, v in request.json.items() if k != '_id'}
             db[collection].update_one(
                 {'_id': ObjectId(id)},
-                { "$set": update_doc }
+                {"$set": update_doc}
             )
             return jsonify({'status': 'Data id: ' + id + ' is updated!'})
     else:
         # GET all data from database
         if request.method == 'GET':
-            allData = db[collection].find({key:value}).limit(100).sort('creation_time', -1)
-            dataJson = [{k: (str(v) if k == '_id' else v) for k, v in data.items()} for data in allData]
+            allData = db[collection].find({key: value}).limit(
+                100).sort('creation_time', -1)
+            dataJson = [{k: (str(v) if k == '_id' else v)
+                         for k, v in data.items()} for data in allData]
             return jsonify(parse_json(dataJson))
-            
+
         # DELETE a data
         if request.method == 'DELETE':
-            db[collection].delete_many({key:value})
+            db[collection].delete_many({key: value})
             print('\n # Deletion successful # \n')
             return jsonify({'status': 'collection: ' + collection + ' is clear of ' + key + ":" + value})
-    
+
 
 if __name__ == '__main__':
     app.debug = True
