@@ -170,9 +170,9 @@ def history(collection='jobs'):
                  for k, v in data.items()} for data in allData]
     for job in dataJson:
         history = db['tasks'].find({'job_id': job['_id']}).sort(
-            'creation_time', -1).limit(10)
+            'creation_time', -1).limit(12)
         dataJson[dataJson.index(job)]["history"] = [
-            {'result': d['result'], 'creation_time':d['creation_time']} for d in history if 'result' in d]
+            {'result': d['result'], 'creation_time':d['creation_time'], 'task_id':str(d['_id'])} for d in history if 'result' in d]
     return jsonify(parse_json(dataJson))
 
 
@@ -210,7 +210,7 @@ def onedata(collection, id=None, key=None, value=None):
         # GET all data from database
         if request.method == 'GET':
             allData = db[collection].find({key: value}).limit(
-                100).sort('creation_time', -1)
+                100).sort('creation_time', 1)
             dataJson = [{k: (str(v) if k == '_id' else v)
                          for k, v in data.items()} for data in allData]
             return jsonify(parse_json(dataJson))
