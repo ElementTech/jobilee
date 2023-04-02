@@ -1,0 +1,125 @@
+<app-breadcrumb [title]="'Job Result'" [items]="['Jobs',(job | async)?.name]" [active_item]="task_id"></app-breadcrumb>
+
+
+<p-dialog [maximizable]="true" header="Parameters" position="bottom-right"  [(visible)]="display">
+  <p-table [value]="task?.chosen_params |keyvalue"  styleClass="p-datatable-sm">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-param>
+        <tr>
+            <td>{{param.key}}</td>
+            <td>{{param.value}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+</p-dialog>
+<!-- 
+<div *ngIf="task.done" [innerHtml]="task.markdown">
+</div> -->
+
+<div class="col-lg-12">
+  <div class="card">
+    <div class="card-header faq-header">
+      <div class="d-inline-block">
+        <h5 [routerLink]="['/','jobs','run', _id]" style="cursor:pointer;">{{(job | async)?.name}}</h5>
+        <small>{{this.task_id}}</small>
+        <br>
+        <small>
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+          {{toHoursMinutesSeconds(
+          (task?.run_time | number: '1.0-0')
+        )}}</small>
+      </div>
+ 
+      <span class="pull-right d-inline-block">
+        <button  ngbTooltip="Retry a finished run" tooltipPosition="top" (click)="retry()" [disabled]="!task?.done" class="btn btn-link">
+          Retry <i class="fa fa-reply"></i>
+        </button>
+
+        <button [routerLink]="['/','jobs','history', _id]" class="btn btn-link" >
+          History <i class="fa fa-history"></i>
+        </button>
+        <button type="button" (click)="this.display = !this.display"   class="btn btn-link">
+          Parameters<i class="fa fa-info-circle"></i>
+        </button>
+        <!-- <button  [routerLink]="['/','jobs','output', _id, task_id]" class="btn btn-link">
+          Output <i class="fa fa-list"></i>
+        </button> -->
+
+      </span>
+    </div>
+    <div class="card-body faq-body">
+
+      
+      <div class="media updates-faq-main" *ngFor="let step of (task)?.steps; let index = index">
+        <div class="updates-faq" [style.border]="getIcon(index,'border')">
+          <div class="loader-box" *ngIf="shouldISpin(index)">
+            <div class="loader-1"></div>
+          </div>
+            <i class=""  [class]="getIcon(index,'icon')"></i> 
+        </div>
+        <div class="media-body updates-bottom-time">
+          <p><a href="{{step['url']}}">{{step['url']}}  </a>
+            <span class="pull-right d-inline-block">
+            <button [routerLink]="['/','jobs','response', _id,task_id,step.step,'items']" type="button"  class="btn btn-link">
+     
+              <i class="fa fa-external-link"ngbTooltip="View Raw Extracted Outputs"></i>
+              </button>
+            
+            <button [routerLink]="['/','jobs','response', _id,task_id,step.step,'payload']" type="button"  class="btn btn-link">
+    
+              <i class="fa fa-send" ngbTooltip="Sent Payload"></i>
+            </button>
+            <button [routerLink]="['/','jobs','response', _id,task_id,step.step,'response']" type="button"  class="btn btn-link">
+             <i class="fa fa-file-code-o" ngbTooltip="View Response"></i>
+            </button> 
+          </span>
+          <br>
+          {{step.message}}
+          </p>
+       
+          <p>{{toHoursMinutesSeconds((step['run_time'] | number: '1.0-0'))}}</p>
+
+            <table class="table table-sm table-bordered table-responsive" >
+
+                  <tr *ngFor="let o of step.outputs |keyvalue">
+                      <td [style.width]="'20%'">
+                        {{o.key}}
+                     </td>
+                      <td [style.width]="'80%'">
+                          <code *ngFor="let item of o.value.toString().split(',')">{{item}}</code>
+                    </td>
+                  </tr>
+            </table>
+
+        </div>
+
+
+      </div>
+
+      
+
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <p-table [value]="step.outputs | keyvalue" styleClass="p-datatable-sm" >
+
+  <ng-template pTemplate="body" let-o>
+      <tr>
+          <td [style.width]="'20%'">{{o.key}}</td>
+          <td [style.width]="'80%'">
+              <p-chip [label]="item" *ngFor="let item of o.value.toString().split(',')"> </p-chip>
+         </td>
+      </tr>
+  </ng-template>
+</p-table> -->
+

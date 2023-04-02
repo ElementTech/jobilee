@@ -1,0 +1,44 @@
+
+<app-breadcrumb [title]="'Manage Jobs'" [items]="['Jobs']" [active_item]="'Manage'"></app-breadcrumb>
+<!-- Container-fluid starts -->
+<app-manage *ngIf="data"
+  [title]="'jobs'" 
+  [tableHeaders]="['Name','Integration','Parameters','Steps','Healthy']"
+  [tableProperties]="['name','integration','parameters','steps','history']"
+  [data]="data"
+  [customTemplates]="customTemplates"
+></app-manage>
+
+<ng-template #name let-element="element" let-prop="prop">
+  <img class="img-20 me-2" 
+  [src]="templateContext.getIntegrationIcon(integrations[element?.integration],element?.integration)" alt="" />
+  <ngb-highlight  [result]="element[prop]" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+<ng-template #history let-element="element" let-prop="prop">
+  <span class="badge"
+  [ngbTooltip]="templateContext.failedJobs(element[prop])+' failed jobs in the last '+element[prop].length+' runs'" placement="top"
+  [ngClass]="'badge-light-'+templateContext.isHealthy(element[prop])[0]">
+    <ngb-highlight [result]="templateContext.isHealthy(element[prop])[0]" [term]="filter?.value"></ngb-highlight>
+  </span>
+</ng-template>
+<ng-template #parameters let-element="element" let-prop="prop">
+  <ngb-highlight [result]="element[prop]?.length" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+<ng-template #steps let-element="element" let-prop="prop">
+  <ngb-highlight [result]="element[prop]?.length" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+<ng-template #actions let-element="element" let-prop="prop" >
+  <div class="action">
+    <li class="edit">
+      <a placement="top" ngbTooltip="Edit" [routerLink]="['/jobs/edit', element?._id]"><i class="icon-pencil-alt"></i></a>
+    </li>
+    <li class="">
+      <a placement="top" ngbTooltip="View Code" [routerLink]="['/jobs/code', element?._id]"><i class="icon-shortcode"></i></a>
+    </li>        
+    <li class="delete">
+  
+      <a placement="top" ngbTooltip="Delete" (click)="templateContext.deleteItem(element)" style="cursor:pointer;"><i class="icon-trash"></i></a>
+    </li>              
+  </div>
+</ng-template>
+

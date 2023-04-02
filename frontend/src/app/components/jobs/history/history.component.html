@@ -1,0 +1,44 @@
+
+<app-breadcrumb [title]="'History'" [items]="['Jobs']" [active_item]="'History'"></app-breadcrumb>
+<!-- Container-fluid starts -->
+<app-manage *ngIf="data"
+  [title]="'history'" 
+  [tableHeaders]="['Status','ID','Time','Started','Finished']"
+  [tableProperties]="['result','_id','run_time','creation_time','update_time']"
+  [data]="data"
+  [customTemplates]="customTemplates"
+></app-manage>
+<ng-template #result let-element="element" let-prop="prop">
+  <i [ngClass]="templateContext.getIcon(element)"
+  [routerLink]="['/jobs','result',templateContext.job_id,element?._id]"
+  >
+  <ngb-highlight  [term]="filter?.value"></ngb-highlight>
+
+  </i>
+
+</ng-template>
+
+<ng-template #run_time let-element="element" let-prop="prop">
+  <ngb-highlight [result]="templateContext.toHoursMinutesSeconds((element[prop] | number: '1.0-0'))" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+
+<ng-template #creation_time let-element="element" let-prop="prop">
+  <ngb-highlight [result]="element[prop] | date:'medium'" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+
+<ng-template #update_time let-element="element" let-prop="prop">
+  <ngb-highlight [result]="element[prop] | date:'medium'" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+
+<ng-template #actions let-element="element" let-prop="prop">
+  <div class="action flex justify-content-around">
+
+    <li class="View">
+      <a placement="top" [routerLink]="['/jobs/result', element?.job_id,element?._id]"  style="cursor:pointer;"><i class="icon-agenda"></i></a>
+    </li>       
+    <li class="delete">
+  
+      <a placement="top" ngbTooltip="Delete" (click)="templateContext.deleteItem(element?._id)" style="cursor:pointer;"><i class="icon-trash"></i></a>
+    </li>        
+  </div>
+</ng-template>

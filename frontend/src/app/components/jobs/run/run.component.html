@@ -1,0 +1,105 @@
+<app-breadcrumb [title]="'Run Job'" *ngIf="job?.name" [items]="['Jobs', job?.name]"
+  [active_item]="'Run'"></app-breadcrumb>
+<div class="container-fluid">
+  <div class="edit-profile">
+    <div class="row">
+      <div class="col-xl-4">
+        <div class="card ">
+          <div class="card-header ">
+            <h4 class="card-title mb-0">Details
+            
+              <div class="btn-group rounded-0 pull-right gap-2" role="group">
+
+                <button class="btn btn-outline-primary border-0 btn-sm flex-1 rounded-0" [routerLink]="['/','jobs','edit', job._id]">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                  Edit</button>
+
+                  <button class="btn btn-outline-primary border-0 btn-sm flex-1 rounded-0"
+                  [routerLink]="['/','jobs','history', job._id]">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                  History</button>
+              </div>
+
+            </h4>
+
+       
+            <div class="card-options">
+              <a class="card-options-collapse" href="javascript:void(0)" data-bs-toggle="card-collapse"><i
+                  class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="javascript:void(0)"
+                data-bs-toggle="card-remove"><i class="fe fe-x"></i></a>
+
+            </div>
+
+          </div>
+
+          <div class="card-body">
+
+
+
+
+            <div class="row mb-2">
+              <div class="col">
+                <a [routerLink]="['/','jobs','update', _id]">
+                  <h3 class="mb-1">{{job.name}}</h3>
+                </a>
+                <p class="mb-4">{{job.integration}}</p>
+              </div>
+            </div>
+
+            <label>Description</label>
+            <textarea class="form-control" rows="10" readonly>{{job.description}}</textarea>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8">
+        <form class="card" [formGroup]="jobPayload" (ngSubmit)="run()">
+          <div class="card-header">
+            <h4 class="card-title mb-0">
+              Parameters
+
+              <div class="btn-group rounded-0 pull-right" role="group">
+
+                <button ngbTooltip="Refresh Dynamic Parameters" placement="top" type="button"
+                  class="btn btn-outline-primary rounded-0" (click)="regenerateParams()" *ngIf="hasDynamic()">
+                  <i class="fa fa-bolt" aria-hidden="true"></i>
+                </button>
+
+                <button *ngIf="hiddenCount()" (click)="toHide = !toHide" placement="top" type="button"
+                  ngbTooltip="Toggle Hidden Parameters" class="btn btn-outline-primary border-0 btn-sm  rounded-0">
+                  <i class="fa" [ngClass]="{'fa-eye':!toHide,'fa-eye-slash': toHide}" aria-hidden="true">{{hiddenCount()
+                    || ''}}</i>
+                </button>
+
+              </div>
+
+            </h4>
+            <div class="card-options">
+              <a class="card-options-collapse" href="javascript:void(0)" data-bs-toggle="card-collapse"><i
+                  class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="javascript:void(0)"
+                data-bs-toggle="card-remove"><i class="fe fe-x"></i></a>
+
+
+
+
+
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <form class="col-4" *ngFor="let param of parameters.controls; let i = index" [formGroup]="param"
+                [hidden]="param.value.hidden && toHide">
+                <app-parameter [param]="param"></app-parameter>
+              </form>
+
+            </div>
+          </div>
+          <div class="card-footer text-end">
+            <button class="btn btn-primary" type="submit"><i class="fa fa-play" aria-hidden="true"></i> Run</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

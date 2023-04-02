@@ -1,0 +1,64 @@
+<!-- notification-box -->
+<div class="" (click)="openBookMark()">
+  <svg>
+    <use href="assets/svg/icon-sprite.svg#star"></use>
+  </svg>
+</div>
+<div class="onhover-show-div bookmark-flip" [class.active]="bookmarkFlip || bookmark">
+  <div class="flip-card">
+    <div class="flip-card-inner" [class.flipped]="bookmarkFlip">
+      <div class="front">
+        <h6 class="f-18 mb-0 dropdown-title">Bookmark</h6>
+        <ul class="bookmark-dropdown">
+          <li>
+            <div class="row bookmark-scroll">
+              <div class="col-4 text-center" *ngFor="let item of bookmarkItems">
+                <div class="bookmark-content">
+                  <a [routerLink]="item?.path" routerLinkActive="item?.active">
+                    <div class="bookmark-icon">
+                      <app-svg-icon [icon]="item?.icon"></app-svg-icon>
+                    </div>
+                    <span>{{ item.title }}</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="text-center pb-0" (click)="flipBookMark()"><a class="flip-btn f-w-700" id="flip-btn" href="javascript:void(0)">Add New Bookmark</a></div>
+      </div>
+      <div class="back">
+        <ul>
+          <li>
+            <div class="bookmark-dropdown flip-back-content bookmark-wrapper">
+              <input type="text" [(ngModel)]="text" [ngModelOptions]="{ standalone: true }" (keyup)="searchTerm(text)" placeholder="search..." />
+              <div class="Typeahead-menu custom-scrollbar" [class.is-open]="searchResult" *ngIf="menuItems?.length" id="boomark-search-outer">
+                <div class="ProfileCard u-cf" *ngFor="let item of menuItems | slice : 0 : 8">
+                  <div class="ProfileCard-avatar">
+                    <app-svg-icon [icon]="item?.icon"></app-svg-icon>
+                  </div>
+                  <div class="ProfileCard-details">
+                    <div class="ProfileCard-realName d-flex">
+                      <a [routerLink]="item?.path" (click)="removeFix()">{{ item?.title }}</a>
+                      <span class="pull-right ms-auto" (click)="addToBookmark(item)">
+                        <a>
+                          <i class="fa fa-star-o f-18" [class.starred]="item.bookmark"></i>
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="Typeahead-menu is-open" [class.is-open]="searchResultEmpty">
+                <div class="tt-dataset tt-dataset-0">
+                  <div class="EmptyMessage">Opps!! There are no result found.</div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li (click)="flipBookMark()"><a class="f-w-700 d-block flip-back" id="flip-back" href="javascript:void(0)">Back</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

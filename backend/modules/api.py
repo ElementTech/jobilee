@@ -170,9 +170,9 @@ def history(collection='jobs'):
                  for k, v in data.items()} for data in allData]
     for job in dataJson:
         history = db['tasks'].find({'job_id': job['_id']}).sort(
-            'creation_time', -1).limit(12)
+            'creation_time', -1).limit(10)
         dataJson[dataJson.index(job)]["history"] = [
-            {'result': d['result'], 'creation_time':d['creation_time'], 'task_id':str(d['_id'])} for d in history if 'result' in d]
+            {'result': d['result'], 'creation_time':d['creation_time'], 'task_id':str(d['_id']), 'done':d.get('done')} for d in history if 'result' in d]
     return jsonify(parse_json(dataJson))
 
 

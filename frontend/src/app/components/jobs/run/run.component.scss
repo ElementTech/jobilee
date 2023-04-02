@@ -1,0 +1,24 @@
+::ng-deep .ng-select.is-invalid .ng-arrow-wrapper .ng-arrow {
+  display: none;
+}
+::ng-deep .ng-select.is-valid .ng-arrow-wrapper .ng-arrow {
+  display: none;
+}
+
+
+::ng-deep .ng-select.is-invalid span.ng-arrow-wrapper:before {
+  content: "\f0ab";
+  display: inline-block;
+  color:red;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+}
+::ng-deep .ng-select.is-valid span.ng-arrow-wrapper:before {
+  content: "\f0ab";
+  display: inline-block;
+  color:green;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+}

@@ -1,0 +1,219 @@
+<app-breadcrumb [title]="'Catalog'" [items]="[]" [active_item]="'Catalog'"></app-breadcrumb>
+<div class="container-fluid">
+  <!-- <p-paginator 
+#paginator
+[rows]="20"
+[totalRecords]="jobs?.length" (onPageChange)="paginate($event)"></p-paginator> -->
+
+    <div class="row">
+      <div class="col-xl-3 xl-20 box-col-12">
+        <div class="md-sidebar">
+          <a class="btn btn-primary email-aside-toggle md-sidebar-toggle">Job filter</a>
+          <div class="md-sidebar-aside job-sidebar">
+            <div class="default-according style-1 faq-accordion job-accordion" id="accordionoc">
+              <div class="accordion">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" (click)="isFilter = !isFilter" [attr.aria-expanded]="!isFilter" aria-controls="collapse">Filter</button>
+                    </h5>
+                  </div>
+                  <button class="btn btn-sm btn-outline-light text-center rounded-0 border-0" 
+                  (click)="clear()"
+                  type="button">Clear</button>
+                  <div class="collapse show" id="collapseicon" [ngbCollapse]="isFilter">
+                    <div class="card-body filter-cards-view animate-chk">
+
+                      <div class="job-filter">
+                        <div class="faq-form">
+                          <input class="form-control" (keyup)="filter()"  type="text" placeholder="Search.." [(ngModel)]="search" />
+                          <i class="search-icon" data-feather="search"></i>
+                        </div>
+                      </div>
+                      <!-- <div class="job-filter">
+                        <div class="faq-form">
+                          <input class="form-control" type="text" placeholder="location.." />
+                          <i class="search-icon" data-feather="map-pin"></i>
+                        </div>
+                      </div> -->  
+                      
+                      <ng-container *ngIf="integrationIcons">
+                        <div class="checkbox checkbox-dark m-squar"
+                        *ngFor="let i of (integrations | orderBy: 'integration': 'desc')"  
+                         [for]="i.integration">
+                         <input  [id]="i.integration" type="checkbox" (change)="filter()" [(ngModel)]="integrationIcons[i.integration].checked" [checked]="integrationIcons[i.integration]?.checked">
+                         <label class="mt-0" [for]="i.integration">
+                           {{i.integration}} ({{i.count}})
+                         </label>
+                         <img width="15px" src="{{integrationIcons[i.integration]?.icon}}"/>
+ 
+                       </div>
+                      </ng-container>
+
+<!-- 
+                                      <div class="checkbox checkbox-dark m-squar">
+                  <input id="inline-sqr-1" type="checkbox">
+                  <label class="mt-0" for="inline-sqr-1">Default</label>
+                </div> -->
+
+                      <!-- <div class="checkbox-animated">
+                       
+                        <hr>
+                          <label *ngFor="let i of (integrations | orderBy: 'integration': 'desc')"  class="d-block" [for]="i.integration">
+                          <input class="checkbox_animated" (change)="filter()" [(ngModel)]="integrationIcons[i.integration].checked" [id]="i.integration" type="checkbox" />
+                          
+                          <img width="15px" src="{{integrationIcons[i.integration]?.icon}}"/>
+                          {{i.integration}} ({{i.count}}) </label>
+                      </div> -->
+
+                      <!-- <button class="btn btn-primary text-center" (click)="filter()" type="button">Filter</button> -->
+
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" (click)="isLocation = !isLocation" [attr.aria-expanded]="!isLocation" aria-controls="collapse">Location</button>
+                    </h5>
+                  </div>
+                  <div class="collapse" id="collapseicon1" [ngbCollapse]="isLocation">
+                    <div class="card-body animate-chk">
+                      <div class="location-checkbox">
+                        <label class="d-block" for="chk-ani6"> <input class="checkbox_animated" id="chk-ani6" type="checkbox" /> New York<span class="d-block"> NY (399)</span> </label>
+                        <label class="d-block" for="chk-ani7"> <input class="checkbox_animated" id="chk-ani7" type="checkbox" /> San Francisco<span class="d-block">CA (252)</span> </label>
+                        <label class="d-block" for="chk-ani8"> <input class="checkbox_animated" id="chk-ani8" type="checkbox" /> Washington<span class="d-block">DC (226)</span> </label>
+                        <label class="d-block" for="chk-ani9"> <input class="checkbox_animated" id="chk-ani9" type="checkbox" /> Seattle<span class="d-block">WA (242)</span> </label>
+                        <label class="d-block mb-0" for="chk-ani10"> <input class="checkbox_animated" id="chk-ani10" type="checkbox" /> Chicago<span class="d-block">IL (187)</span> </label>
+                      </div>
+                    </div>
+                    <button class="btn d-block w-100 btn-primary text-center" type="button">All Locations</button>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" (click)="isJob_Title = !isJob_Title" [attr.aria-expanded]="!isJob_Title" aria-controls="collapse">Job Title</button>
+                    </h5>
+                  </div>
+                  <div class="collapse" id="collapseicon2" [ngbCollapse]="isJob_Title">
+                    <div class="card-body animate-chk">
+                      <label class="d-block" for="chk-ani11"> <input class="checkbox_animated" id="chk-ani11" type="checkbox" /> UI/Ux designer(25) </label>
+                      <label class="d-block" for="chk-ani12"> <input class="checkbox_animated" id="chk-ani12" type="checkbox" /> Graphic designer(10) </label>
+                      <label class="d-block" for="chk-ani13"> <input class="checkbox_animated" id="chk-ani13" type="checkbox" /> Front end designer(15) </label>
+                      <label class="d-block" for="chk-ani14"> <input class="checkbox_animated" id="chk-ani14" type="checkbox" /> PHP developer(42) </label>
+                      <label class="d-block mb-0" for="chk-ani15"> <input class="checkbox_animated" id="chk-ani15" type="checkbox" /> React Developer(5) </label>
+                    </div>
+                    <button class="btn d-block w-100 btn-primary text-center" type="button">All Job Title</button>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" (click)="isIndustry = !isIndustry" [attr.aria-expanded]="!isIndustry" aria-controls="collapse">Industry</button>
+                    </h5>
+                  </div>
+                  <div class="collapse" id="collapseicon3" [ngbCollapse]="isIndustry">
+                    <div class="card-body animate-chk">
+                      <label class="d-block" for="chk-ani16"> <input class="checkbox_animated" id="chk-ani16" type="checkbox" /> Computer Software(14) </label>
+                      <label class="d-block" for="chk-ani17"> <input class="checkbox_animated" id="chk-ani17" type="checkbox" /> IT Engineer(10) </label>
+                      <label class="d-block" for="chk-ani18"> <input class="checkbox_animated" id="chk-ani18" type="checkbox" /> Service industry(20) </label>
+                      <label class="d-block" for="chk-ani19"> <input class="checkbox_animated" id="chk-ani19" type="checkbox" /> Accounting(34) </label>
+                      <label class="d-block mb-0" for="chk-ani20"> <input class="checkbox_animated" id="chk-ani20" type="checkbox" /> Financial Services(5) </label>
+                    </div>
+                    <button class="btn d-block w-100 btn-primary text-center" type="button">All Industries</button>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" (click)="isSpecific_skills = !isSpecific_skills" [attr.aria-expanded]="!isSpecific_skills" aria-controls="collapse">Specific skills</button>
+                    </h5>
+                  </div>
+                  <div class="collapse" id="collapseicon4" [ngbCollapse]="isSpecific_skills">
+                    <div class="card-body animate-chk">
+                      <label class="d-block" for="chk-ani21"> <input class="checkbox_animated" id="chk-ani21" type="checkbox" /> HTML,scss & sass </label>
+                      <label class="d-block" for="chk-ani22"> <input class="checkbox_animated" id="chk-ani22" type="checkbox" /> Javascript </label>
+                      <label class="d-block" for="chk-ani23"> <input class="checkbox_animated" id="chk-ani23" type="checkbox" /> Node.js </label>
+                      <label class="d-block" for="chk-ani24"> <input class="checkbox_animated" id="chk-ani24" type="checkbox" /> Gulp & Pug </label>
+                      <label class="d-block mb-0" for="chk-ani25"> <input class="checkbox_animated" id="chk-ani25" type="checkbox" /> Angular.js </label>
+                    </div>
+                    <button class="btn d-block w-100 btn-primary text-center" type="button">All Skills</button>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="col-xl-9 xl-80 box-col-12">
+        <div class="d-flex justify-content-between col-xl-12 xl-100 mb-3">
+          <select class="form-select text-dark" style="width: auto" name="pageSize" (change)="paginate()" [(ngModel)]="pageSize">
+            <option [ngValue]="5">5 items per page</option>
+            <option [ngValue]="10">10 items per page</option>
+            <option [ngValue]="20">20 items per page</option>
+            <option [ngValue]="100">100 items per page</option>
+          </select>
+          <ngb-pagination #paginator [collectionSize]="jobs?.length" [(page)]="page" (pageChange)="paginate()" [pageSize]="pageSize"> </ngb-pagination>
+        </div>
+        <div class="container-grid">
+          <div class="grid-column" *ngFor="let job of jobsPaginated" [id]="job._id">
+            <div class="card w-100 h-100">
+              <div class="job-search">
+                
+                <div class="card-body">
+                  <div class="media">
+                    <!-- <img class="img-40 img-fluid m-r-20" [src]='job.logo' alt=""> -->
+                    <div class="media-body">
+
+                      <h6 class="f-w-600">
+                        
+                        <a [routerLink]="['/jobs/run', job._id]">{{job.name}}</a>
+
+                        <!-- <span
+                          *ngIf="job.type =='new'" 
+                          class="badge badge-primary pull-right">
+                          New
+                        </span> -->
+                        <br>
+                        <span 
+                       
+                          class="">
+                          {{job.history[0]?.creation_time ? (job.history[0]?.creation_time | date:'short'): "Never Triggered"}}
+                        </span>
+
+
+                    </h6>
+                      <p> <span> {{job.integration}} </span> </p>
+                    </div>
+                
+                  </div>
+              
+                  <!-- <p>{{job.description}}</p> -->
+                  <div class="card-footer flex justify-content-between" >
+                    
+                    <i  
+                    *ngFor="let r of job.history; let i = index" 
+                    class="fa cursor-pointer" 
+                    [ngbTooltip]="r['creation_time'] | date:'short'" 
+                    [routerLink]="['/jobs/result', job._id,r.task_id]" 
+                    [ngClass]="{
+                      'fa-question font-primary':!r['done'],
+                      'fa-check font-success':r['result']&&r['done'],
+                      'fa-times font-danger':!r['result']&&r['done'],
+                      'border rounded-circle':(i==0)}">
+                  </i>
+
+                  </div>
+                </div>
+           
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+</div>

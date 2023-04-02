@@ -1,0 +1,55 @@
+<div class="mb-3" [formGroup]="formGroup">
+    <label class="form-label">
+      <i *ngIf="formGroup.value.type == 'text'" class="fa fa-font "></i>
+      <i *ngIf="formGroup.value.type == 'number'" class="fa fa-hashtag"></i>
+      <i *ngIf="formGroup.value.type == 'choice'" class="fa fa-list "></i>
+      <i *ngIf="formGroup.value.type == 'multi-choice'" class="fa fa-check-square "></i>
+      <i *ngIf="formGroup.value.type == 'dynamic'" class="fa fa-bolt "></i>
+
+      {{formGroup.value.name}}</label>
+
+    <input *ngIf="formGroup.value.type == 'text'" class="form-control" type="text" formControlName="default"
+      [value]="formGroup.value.default" />
+
+      
+      
+    <fieldset *ngIf="formGroup.value.type == 'number'">
+      <div class="touchspin-vertical-tab">
+        <div class="input-group bootstrap-touchspin">
+          <input class="touchspin-vertical form-control" type="number"  formControlName="default"
+          [value]="formGroup.value.default">
+          <!-- <span class="input-group-btn-vertical">
+            <button (click)="decrement()" class="btn btn-primary btn-square bootstrap-touchspin-up" type="button"
+              >
+              <i class="fa fa-angle-up"></i></button>
+            <button (click)="increment()" class="btn btn-primary btn-square bootstrap-touchspin-down" type="button"
+             >
+              <i class="fa fa-angle-down"></i></button>
+          </span> -->
+  
+        </div>
+      </div>
+
+
+
+
+    </fieldset>
+
+    <ng-select *ngIf="formGroup.value.type == 'choice'" [searchable]="true" [items]="formGroup.value.choices"
+      class="js-example-basic-single" formControlName="default" [virtualScroll]="true">
+
+    </ng-select>
+
+
+    <ng-select [items]="formGroup.value.choices" *ngIf="formGroup.value.type == 'multi-choice'" [multiple]="true"
+      [virtualScroll]="true" [searchable]="true" [closeOnSelect]="false" formControlName="default">
+
+    </ng-select>
+    <ng-select [loading]="!formGroup.value.done" [items]="formGroup.value.choices || formGroup.value.default"
+      *ngIf="formGroup.value.type == 'dynamic'" [closeOnSelect]="false" [virtualScroll]="true"
+      [ngClass]="{ 'is-invalid': formGroup.value.error, 'is-valid': !formGroup.value.error }"
+      [ngbTooltip]="formGroup.value.error" placement="top" [multiple]="true" [searchable]="true"
+      formControlName="default">
+    </ng-select>
+
+</div>

@@ -1,0 +1,6 @@
+
+<app-breadcrumb [title]="'Edit'" [items]="['Jobs']" [active_item]="'Edit'"></app-breadcrumb>
+<!-- Container-fluid starts -->
+<div class="container-fluid" *ngIf="(job | async) as j">
+  <app-job-form [job]="j" [formType]="'Edit'"></app-job-form>
+</div>

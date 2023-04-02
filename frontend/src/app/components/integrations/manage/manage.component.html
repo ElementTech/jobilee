@@ -1,0 +1,34 @@
+
+<app-breadcrumb [title]="'Manage Integrations'" [items]="['Integrations']" [active_item]="'Manage'"></app-breadcrumb>
+<!-- Container-fluid starts -->
+<app-manage *ngIf="data"
+  [title]="'integrations'" 
+  [tableHeaders]="['Name','Steps','Authentication','Url']"
+  [tableProperties]="['name','steps','authentication','url']"
+  [data]="data"
+  [customTemplates]="customTemplates"
+></app-manage>
+
+<ng-template #name let-element="element" let-prop="prop">
+  <img class="img-20 me-2" [src]="element.icon" alt="" />
+  <ngb-highlight  [result]="element[prop]" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+
+<ng-template #steps let-element="element" let-prop="prop">
+  <ngb-highlight [result]="element[prop].length" [term]="filter?.value"></ngb-highlight>
+</ng-template>
+
+<ng-template #actions let-element="element" let-prop="prop">
+  <div class="action">
+    <li class="edit">
+      <a placement="top" ngbTooltip="Edit" [routerLink]="['/'+title+'/edit', element?._id]"><i class="icon-pencil-alt"></i></a>
+    </li>
+    <li class="">
+      <a placement="top" ngbTooltip="View Code" [routerLink]="['/'+title+'/code', element?._id]"><i class="icon-shortcode"></i></a>
+    </li>        
+    <li class="delete">
+  
+      <a placement="top" ngbTooltip="Delete" (click)="deleteItem(element?._id)" style="cursor:pointer;"><i class="icon-trash"></i></a>
+    </li>              
+  </div>
+</ng-template>

@@ -1,0 +1,770 @@
+<!-- Container-fluid starts-->
+  <div class="email-wrap bookmark-wrap">
+    <form class="theme-form" [formGroup]="jobPayload" (ngSubmit)="save()">
+
+    <div class="row">
+      <div class="col-xl-5 box-col-5">
+        <div class="email-left-aside">
+          <div class="card">
+            <div class="card-header">
+                  
+                <h5>Create Job</h5>
+            </div>
+            <div class="card-body">
+                    <div class="mb-3 row">
+                      <label class="col-sm-3 col-form-label" for="name">Name</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="name" formControlName="name" type="text" placeholder="Name" required>
+                      </div>
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-sm-3 col-form-label" for="integration">Integration</label>
+                      <div class="col-sm-9">
+                        <ng-select [searchable]="true" [items]="integrations" bindValue="name" bindLabel="name" required
+                          class="js-example-basic-single" formControlName="integration" [virtualScroll]="true">
+    
+                        </ng-select>
+                      </div>
+                
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-sm-3 col-form-label" for="apiId">Job API ID</label>
+                      <div class="col-sm-9">
+                        <div class="input-group input-group-sm mb-3">
+                          <span class="input-group-text bg-primary">{{getURL(jobPayload.get('integration').value)}}{{getPrefix(jobPayload.get('integration').value)}}</span>  
+                          <input class="form-control" type="text" formControlName="apiID" name="apiID" [placeholder]="jobPayload.get('name').value"/>
+                          <span class="input-group-text bg-primary" *ngIf="getSuffix(jobPayload.get('integration').value) != ''">{{getSuffix(jobPayload.get('integration').value)}}</span>      
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-sm-3 col-form-label" for="name">Description</label>
+                      <div class="col-sm-9">
+                        <textarea class="form-control" id="description" formControlName="description" [rows]="5" type="text" placeholder="Description"></textarea>
+                      </div>
+                    </div>
+          
+ 
+            </div>
+            <div class="card-footer text-end">
+              <button class="btn btn-primary me-1" type="submit">Submit</button>
+              <button class="btn btn-secondary" type="button">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-7 box-col-7">
+        <div class="card">
+          <div class="card-header">
+            <h5>
+              <i (click)="showHistory()" class="fa fa-question-circle" style="cursor: pointer;" ngbTooltip="Help"></i>
+              Parameters</h5>
+          </div>
+          <div class="card-body">
+            <div class="todo">
+              <div class="todo-list-wrapper">
+                <div class="todo-list-container">
+                  <div class="mark-all-tasks">
+                    <!-- <div class="mark-all-tasks-container">
+                      <span class="mark-all-btn" id="mark-all-finished" role="button" [ngClass]="{ 'move-up': completed }" id="mark-all-finished" role="button">
+                        <span class="btn-label">Mark all as finished</span>
+                        <span class="action-box completed" (click)="markAllAction(true)">
+                          <i class="icon">
+                            <i class="icon-check"></i>
+                          </i>
+                        </span>
+                      </span>
+                      <span class="mark-all-btn move-down" id="mark-all-incomplete" role="button" [ngClass]="{ 'move-down': !completed }">
+                        <span class="btn-label">Mark all as Incomplete</span
+                        ><span class="action-box">
+                          <i class="icon" (click)="markAllAction(false)">
+                            <i class="icon-check"></i>
+                          </i>
+                        </span>
+                      </span>
+                    </div> -->
+                    <div class="todo-list-footer ms-2">
+                      <div class="add-task-btn-wrapper">
+                        <span class="add-task-btn">
+                          <button class="btn btn-primary" (click)="openModal(true,false,false)" type="button"><i class="icon-plus"></i> Add Parameter</button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+  
+                  <div class="todo-list-body">
+                    <ul id="todo-list">
+                      <li
+                        class="task"
+                        [ngClass]="{
+                          completed: param.completed ? param.completed : completed
+                        }"
+                        *ngFor="let param of parameters.controls; let i = index"
+                      >
+                        <div class="task-container">
+                          <h4 class="task-label">{{ param.value.name }}</h4>
+                          <div class="d-flex align-items-center gap-4">
+                            <div>
+                              <span class="task-priority badge badge-primary">
+                                <i *ngIf="param.value.type == 'text'" class="fa fa-font "></i>
+                                <i *ngIf="param.value.type == 'number'" class="fa fa-hashtag"></i>
+                                <i *ngIf="param.value.type == 'choice'" class="fa fa-list "></i>
+                                <i *ngIf="param.value.type == 'multi-choice'" class="fa fa-check-square "></i>
+                                <i *ngIf="param.value.type == 'dynamic'" class="fa fa-bolt "></i>
+                                {{ param.value.type }}</span>
+                            </div>
+                            <!-- <h5 class="assign-name">{{ param.value }}</h5> -->
+                            <span class="task-action-btn">
+                              <span class="action-box large delete-btn" title="Edit Param" (click)="openModal(true,i,param.value)"
+                              ><i class="icon"><i class="icon-pencil" ></i></i>
+                              </span>
+                              <span class="action-box large delete-btn " title="Delete Oaran" (click)="deleteParam(i)"
+                                ><i class="icon"><i class="icon-trash text-danger"></i></i>
+                              </span>
+                              <!-- <span class="action-box large complete-btn" title="Mark Complete" (click)="taskCompleted(todo)"
+                                ><i class="icon"><i class="icon-check"></i></i>
+                              </span> -->
+                            </span>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- <div class="todo-list-footer h-100">
+
+   
+
+
+        
+                  </div> -->
+                </div>
+              </div>
+              <div class="notification-popup hide">
+                <p><span class="task"></span><span class="notification-text"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+
+
+  <div id="right-history" [class.show]="history">
+    <div class="modal-header p-20" (click)="showHistory()">
+      <h6 class="modal-title w-100">Contact History<span class="pull-right"><a class="closehistory"
+            href="javascript:void(0)"><i class="icofont icofont-close"></i></a></span></h6>
+    </div>
+    <div class="history-details">
+      <div class="text-center"><i class="icofont icofont-ui-edit"></i>
+        <p>Contact has not been modified yet.</p>
+      </div>
+      <div class="media"><i class="icofont icofont-star me-3"></i>
+        <div class="media-body mt-0">
+          <h6 class="mt-0">Contact Created</h6>
+          <p class="mb-0">Contact is created via mail</p><span class="f-12">Sep 10, 2022 4:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- <form (ngSubmit)="onSubmit()"><p-tabView>
+  <p-tabPanel header="{{formType}}">
+  <p-fieldset legend="{{formType}} Job" [toggleable]="false">
+      <div class="grid">
+        <div class="col-6">
+          <h5>Name</h5>
+          <input pInputText class="min-w-full" type="text" id="name" required [(ngModel)]="job.name" name="name" placeholder="myapi">
+        </div>
+        <div class="col-6">
+          <h5>Integration</h5>
+          <p-dropdown name="integration"  
+          
+          [filter]="true" filterBy="name" 
+          class="min-w-max" [options]="integrations"  [(ngModel)]="job.integration" optionValue="name" optionLabel="name"></p-dropdown>
+        </div>
+        <div class="col-6">
+ 
+          <h5>API ID</h5>
+          <div class="p-inputgroup">
+              <span class="p-inputgroup-addon min-w-min">{{getURL(job.integration)}}{{getPrefix(job.integration)}}</span>  
+              <input pInputText class="min-w-min" type="text" id="apiID" required [(ngModel)]="job.apiID" name="apiID" placeholder="id">
+              <span class="p-inputgroup-addon" *ngIf="getSuffix(job.integration) != ''">{{getSuffix(job.integration)}}</span>      
+          </div>
+        </div>
+
+  
+      </div>
+      <div class="col-12">
+        <h5>Description</h5>
+        <textarea pInputTextarea class="min-w-max"  
+        id="name" required [(ngModel)]="job.description" name="description"
+        [rows]="5" [cols]="30"  [autoResize]="true"></textarea>
+      </div>
+        <p-panel header="Parameters" styleClass="pt-2" [toggleable]="true">
+          <ng-template pTemplate="icons">
+                  <button type="button" pButton class="p-panel-header-icon p-link" (click)="job.parameters=examples;dynamicResultsError=[];dynamicResults=[];regenerateParams()">
+                    <span pTooltip="Reset"class="pi pi-history"></span>
+                </button>
+                  <button type="button" pButton class="p-panel-header-icon p-link" (click)="regenerateParams()">
+                      <span pTooltip="Refresh Dynamic Parameters"class="pi pi-bolt"></span>
+                  </button>
+                  <button type="button" pButton class="p-panel-header-icon p-link" (click)="job.parameters=[]">
+                    <span pTooltip="Clear"class="pi pi-trash"></span>
+                </button>                  
+          </ng-template>
+          <div class="grid">
+            <json-editor class="col" style="min-width:30rem" [options]="editorOptions" [(ngModel)]="job.parameters" [ngModelOptions]=" 
+            {standalone: true}"></json-editor>
+            <p-divider layout="vertical">  <i class="pi pi-arrow-right"></i></p-divider>
+            <div class="col" style="max-width:35rem;width:100%">
+                <p-scrollPanel [style]="{height: '400px'}">
+                  <div class="grid">
+                    <div *ngFor="let param of job.parameters" class="col-6">
+                      <p-divider align="left" type="dashed">
+                        <div class="inline-flex align-items-center">
+                          <ng-container>
+                            <i *ngIf="param.type == 'text'" class="pi pi-book mr-2"></i>
+                            <i *ngIf="param.type == 'number'" class="pi pi-sort-numeric-up mr-2"></i>
+                            <i *ngIf="param.type == 'choice'" class="pi pi-qrcode mr-2"></i>
+                            <i *ngIf="param.type == 'multi-choice'" class="pi pi-check-square mr-2"></i>
+                            <i *ngIf="param.type == 'dynamic'" class="pi pi-bolt mr-2"></i>
+                            <b>{{param.name}}</b>
+                          </ng-container>
+                        </div>
+                      </p-divider>
+                      <input *ngIf="param.type == 'text'" class="min-w-full" type="text" pInputText [value]="param.default ? param.default : ''" />
+                      <p-inputNumber *ngIf="param.type == 'number'" [value]="param.default ? param.default : 0"  [(ngModel)]="param.default" [ngModelOptions]="{standalone: true}"  [showButtons]="true" mode="decimal">        </p-inputNumber>
+                      <p-dropdown  *ngIf="param.type == 'choice'" appendTo="body" placeholder="{{param.choices[0]}}"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="param.choices"></p-dropdown>
+                      <p-multiSelect  defaultLabel="{{param.choices}}"  *ngIf="param.type == 'multi-choice'" appendTo="body"  [ngModelOptions]="{standalone: true}" [(ngModel)]="param.default" [options]="toSelectItem(param.choices)"></p-multiSelect>
+                      <p-multiSelect  appendTo="body"
+                        *ngIf="param.type == 'dynamic'" 
+                        display="chip"
+                        
+                        [ngModelOptions]="{standalone: true}" 
+                        [pTooltip]="dynamicResultsError[param.name]"
+                        [(ngModel)]="param.default" 
+                        [dropdownIcon]="dynamicResultsError[param.name] ? 'pi pi-times' : dynamicResults[param.name]?.length == 0 ? 'pi pi-spin pi-spinner' : 'pi pi-chevron-down'"
+                        [options]="toSelectItem(dynamicResults[param.name])"
+                        >
+                      </p-multiSelect>
+                    </div>
+                  </div>
+                </p-scrollPanel>
+            </div>
+          </div>
+        </p-panel>
+
+    
+        <app-step-form [URLDefinitionOverride]="getURL(job.integration)" [allSteps]="job.steps"></app-step-form>
+
+
+  </p-fieldset>
+  </p-tabPanel>
+  <p-tabPanel header="Code">
+    <json-editor [options]="makeOptions()" class="code"  [(ngModel)]="job" [ngModelOptions]=" 
+    {standalone: true}"></json-editor>
+  </p-tabPanel>
+  <p-tabPanel header="Result Parser">
+
+    <p-editor  [ngModelOptions]="   
+    {standalone: true}" [(ngModel)]="job.markdown" [style]="{'height':'80vh'}"></p-editor>
+
+  </p-tabPanel>  
+</p-tabView>
+  <p-button type="submit" label="{{formType}}" icon="pi pi-check" class="fixed submitBtn" styleClass="p-button-lg"></p-button>
+</form> -->
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<div class="col-xl-8 col-md-12 box-col-8">
+  <div class="email-right-aside bookmark-tabcontent contacts-tabs">
+    <div class="card email-body radius-left">
+      <div class="ps-0">
+        <div class="tab-content">
+          <div class="tab-pane fade active show" id="pills-personal" role="tabpanel"
+            aria-labelledby="pills-personal-tab">
+            <div class="card mb-0">
+              <div class="card-header d-flex">
+                <h5>Personal</h5><span class="f-14 pull-right mt-0">5 Contacts</span>
+              </div>
+              <div class="card-body p-0">
+                <div class="row list-persons" id="addcon">
+                  <div class="col-xl-4 xl-50 col-md-5">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                      aria-orientation="vertical"><a class="contact-tab-0 nav-link active" id="v-pills-user-tab"
+                        data-bs-toggle="pill" href="#v-pills-user" role="tab" aria-controls="v-pills-user"
+                        aria-selected="true">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle update_img_0"
+                            src="assets/images/user/2.png" alt="">
+                          <div class="media-body">
+                            <h6> <span class="first_name_0">Bucky </span><span class="last_name_0">Barnes</span>
+                            </h6>
+                            <p class="email_add_0">barnes@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="contact-tab-1 nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
+                        href="javascript:void(0)" role="tab" aria-controls="v-pills-profile"
+                        aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle update_img_1"
+                            src="assets/images/user/8.jpg" alt="">
+                          <div class="media-body">
+                            <h6> <span class="first_name_1">Comeren </span><span class="last_name_1">Diaz</span>
+                            </h6>
+                            <p class="email_add_1">comeren@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="contact-tab-2 nav-link" id="v-pills-messages-tab" data-bs-toggle="pill"
+                        href="javascript:void(0)" role="tab" aria-controls="v-pills-messages"
+                        aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle update_img_2"
+                            src="assets/images/user/1.jpg" alt="">
+                          <div class="media-body">
+                            <h6> <span class="first_name_2">Issa </span><span class="last_name_2">Bell</span></h6>
+                            <p class="email_add_2">issabell@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="contact-tab-3 nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                        href="javascript:void(0)" role="tab" aria-controls="v-pills-settings"
+                        aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle update_img_3"
+                            src="assets/images/user/14.png" alt="">
+                          <div class="media-body">
+                            <h6> <span class="first_name_3">Andew </span><span class="last_name_3">Jon</span></h6>
+                            <p class="email__3">andewjon@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="contact-tab-4 nav-link" id="v-pills-contact1-tab" data-bs-toggle="pill"
+                        href="javascript:void(0)" role="tab" aria-controls="v-pills-settings"
+                        aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle update_img_4"
+                            src="assets/images/user/5.jpg" alt="">
+                          <div class="media-body">
+                            <h6> <span class="first_name_4">Jason </span><span class="last_name_4">Borne</span>
+                            </h6>
+                            <p class="email_add_4">jasonb@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="contact-tab-5 nav-link" id="v-pills-contact8-tab" data-bs-toggle="pill"
+                        href="javascript:void(0)" role="tab" aria-controls="v-pills-settings"
+                        aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle update_img_5"
+                            src="assets/images/avtar/11.jpg" alt="">
+                          <div class="media-body">
+                            <h6> <span class="first_name_5">Monty </span><span class="last_name_5">Carlo</span>
+                            </h6>
+                            <p class="email_add_5">monty@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="contact-tab-6 nav-link" id="v-pills-contact3-tab" data-bs-toggle="pill"
+                        href="javascript:void(0)" role="tab" aria-controls="v-pills-settings"
+                        aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle update_img_6"
+                            src="assets/images/avtar/16.jpg" alt="">
+                          <div class="media-body">
+                            <h6> <span class="first_name_6">Brock </span><span class="last_name_6">Lee</span></h6>
+                            <p class="email_add_6">lee@gmail.com</p>
+                          </div>
+                        </div>
+                      </a></div>
+                  </div>
+                  <div class="col-xl-8 xl-50 col-md-7">
+                    <div class="tab-content" id="v-pills-tabContent"
+                      [ngStyle]="{ 'display': editContact ? 'none' : ''}">
+                      <div class="tab-pane contact-tab-0 tab-content-child fade show active" id="v-pills-user"
+                        role="tabpanel" aria-labelledby="v-pills-user-tab">
+                        <div class="profile-mail">
+                          <div class="media"><img class="img-100 img-fluid m-r-20 rounded-circle update_img_0"
+                              src="assets/images/user/2.png" alt="">
+                            <input class="updateimg" type="file" name="img">
+                            <div class="media-body mt-0">
+                              <h5><span class="first_name_0">Bucky </span><span class="last_name_0">Barnes</span>
+                              </h5>
+                              <p class="email_add_0">barnes@gmail.com</p>
+                              <ul>
+                                <li><a href="javascript:void(0)" (click)="editContact = true">Edit</a></li>
+                                <li><a href="javascript:void(0)">Delete</a></li>
+                                <li><a href="javascript:void(0)" (click)="showHistory()">History</a></li>
+                               <li><a href="javascript:void(0)" (click)="Print.openModal()">Print</a></li> 
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="email-general">
+                            <h6 class="mb-3">General</h6>
+                            <ul>
+                              <li>Name <span class="font-primary first_name_0">Bucky</span></li>
+                              <li>Gender <span class="font-primary">Male</span></li>
+                              <li>Birthday<span class="font-primary"> <span class="birth_day_0">18</span><span
+                                    class="birth_month_0 ms-1">May</span><span
+                                    class="birth_year_0 ms-1">1994</span></span></li>
+                              <li>Personality<span class="font-primary personality_0">Cool</span></li>
+                              <li>City<span class="font-primary city_0">moline acres</span></li>
+                              <li>Mobile No<span class="font-primary mobile_num_0">+0 1800 76855</span></li>
+                              <li>Email Addr <span class="font-primary email_add_0">barnes@gmail.com </span>
+                              </li>
+                              <li>Website<span class="font-primary url_add_0">www.test.com</span></li>
+                              <li>Interest<span class="font-primary interest_0">photography</span></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="contact-editform ps-0" [ngStyle]="{ 'display': !editContact ? 'none' : ''}">
+                      <form>
+                        <div class="row g-2">
+                          <div class="mt-0 mb-3 col-md-12">
+                            <label>Name</label>
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <input class="form-control" id="first_name" type="text" required="" placeholder="First Name" value="first_name">
+                              </div>
+                              <div class="col-sm-6">   
+                                <input class="form-control" id="last_name" type="text" required="" placeholder="Last Name" value="last_name">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-0 mb-3 col-md-12">
+                            <label>Email Address</label>
+                            <input class="form-control" id="email_add" type="text" required="" autocomplete="off">
+                          </div>
+                          <div class="mt-0 mb-3 col-md-12">
+                            <label>Phone</label>
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <input class="form-control" id="mobile_num" type="text" required="" autocomplete="off">
+                              </div>
+                              <div class="col-sm-6">
+                                <select class="form-control">
+                                  <option>Mobile</option>
+                                  <option>Work</option>
+                                  <option>Others</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row more-data">
+                          <div class="form-group mb-3 col-md-12">
+                            <label>URLS</label>
+                            <div class="row">
+                              <div class="col-lg-6 col-sm-6">
+                                <input class="form-control" id="url_add" type="text" required="">
+                              </div>
+                              <div class="col-lg-4 col-sm-6">   
+                                <select class="js-example-basic-single">
+                                  <option value="pw">Personal web address</option>
+                                  <option value="cw">Company web address</option>
+                                  <option value="fb">Fabebook URL</option>
+                                  <option value="tw">Twitter URL</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-0 mb-3 col-md-12">
+                            <label>Personal</label>
+                            <div class="d-block">
+                              <label class="me-3" for="edo-ani">
+                                <input class="radio_animated" id="edo-ani" type="radio" name="rdo-ani" checked=""><span>Male</span>
+                              </label>
+                              <label for="edo-ani1">
+                                <input class="radio_animated" id="edo-ani1" type="radio" name="rdo-ani"><span>Female</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="mt-0 mb-3 col-md-12">
+                            <div class="row">
+                              <div class="col-lg-2 col-sm-4">
+                                <select class="form-control" id="birth_day">
+                                  <option class="f-w-600">Day</option>
+                                  <option>01</option>
+                                  <option>02</option>
+                                  <option>03</option>
+                                  <option>04</option>
+                                  <option>05</option>
+                                  <option>06</option>
+                                  <option>07</option>
+                                  <option>08</option>
+                                  <option>09</option>
+                                  <option>10</option>
+                                  <option>11</option>
+                                  <option>12</option>
+                                  <option>13</option>
+                                  <option>14</option>
+                                  <option>15</option>
+                                  <option>16</option>
+                                  <option>17</option>
+                                  <option>18</option>
+                                  <option>19</option>
+                                  <option>20</option>
+                                  <option>21</option>
+                                  <option>22</option>
+                                  <option>23</option>
+                                  <option>24</option>
+                                  <option>25</option>
+                                  <option>26</option>
+                                  <option>27</option>
+                                  <option>28</option>
+                                  <option>29</option>
+                                  <option>30</option>
+                                  <option>31</option>
+                                </select>
+                              </div>
+                              <div class="col-lg-3 col-sm-4">
+                                <select class="form-control" id="birth_month">
+                                  <option class="f-w-600">Month</option>
+                                  <option>January</option>
+                                  <option>February</option>
+                                  <option>March</option>
+                                  <option>April</option>
+                                  <option>May</option>
+                                  <option>June</option>
+                                  <option>July</option>
+                                  <option>August</option>
+                                  <option>September</option>
+                                  <option>October</option>
+                                  <option>November</option>
+                                  <option>December</option>
+                                </select>
+                              </div>
+                              <div class="col-lg-3 col-sm-4">
+                                <input class="form-control" id="birth_year" type="text">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-0 mb-3 col-md-12">
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <label>Personality</label>
+                                <input class="form-control" id="personality" type="text" required="" autocomplete="off">
+                              </div>
+                              <div class="col-sm-6">
+                                <label>Interest</label>
+                                <input class="form-control" id="interest" type="text" required="" autocomplete="off">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mb-3 col-md-12">
+                            <label>Home Address</label>
+                            <div class="row">
+                              <div class="col-12">
+                                <div class="mb-2">
+                                  <input class="form-control" type="text" placeholder="Address">
+                                </div>
+                              </div>
+                              <div class="col-sm-6">
+                                <div class="mb-2">
+                                  <input class="form-control" id="city" type="text" placeholder="City">
+                                </div>
+                              </div>
+                              <div class="col-sm-6">
+                                <div class="mb-2">
+                                  <input class="form-control" type="text" placeholder="State">
+                                </div>
+                              </div>
+                              <div class="col-sm-6">
+                                <div>
+                                  <input class="form-control" type="text" placeholder="Country">
+                                </div>
+                              </div>
+                              <div class="col-sm-6">
+                                <div>
+                                  <input class="form-control" type="text" placeholder="Pin Code">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="btn btn-secondary update-contact" type="button">Save</button>
+                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fade tab-pane" id="pills-organization" role="tabpanel" aria-labelledby="pills-organization">
+            <div class="card mb-0">
+              <div class="card-header d-flex">
+                <h5>Organization</h5><span class="f-14 pull-right mt-0">10 Contacts</span>
+              </div>
+              <div class="card-body p-0">
+                <div class="row list-persons">
+                  <div class="col-xl-4 xl-50 col-md-5">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab1" role="tablist"
+                      aria-orientation="vertical"><a class="nav-link active" id="v-pills-iduser-tab"
+                        data-bs-toggle="pill" href="#v-pills-iduser" role="tab" aria-controls="v-pills-iduser"
+                        aria-selected="true">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle"
+                            src="assets/images/user/user.png" alt="">
+                          <div class="media-body">
+                            <h6>Mark jecno</h6>
+                            <p>markjecno@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="nav-link" id="v-pills-iduser1-tab" data-bs-toggle="pill" href="#v-pills-iduser1"
+                        role="tab" aria-controls="v-pills-iduser1" aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle"
+                            src="assets/images/user/3.jpg" alt="">
+                          <div class="media-body">
+                            <h6>Jason Borne</h6>
+                            <p>jasonb@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="nav-link" id="v-pills-iduser2-tab" data-bs-toggle="pill" href="#v-pills-iduser2"
+                        role="tab" aria-controls="v-pills-iduser2" aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle"
+                            src="assets/images/user/4.jpg" alt="">
+                          <div class="media-body">
+                            <h6>Sarah Loren</h6>
+                            <p>barnes@gmail.com</p>
+                          </div>
+                        </div>
+                      </a><a class="nav-link" id="v-pills-iduser3-tab" data-bs-toggle="pill" href="#v-pills-iduser3"
+                        role="tab" aria-controls="v-pills-iduser3" aria-selected="false">
+                        <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle"
+                            src="assets/images/user/10.jpg" alt="">
+                          <div class="media-body">
+                            <h6>Andew Jon</h6>
+                            <p>andrewj@gmail.com</p>
+                          </div>
+                        </div>
+                      </a></div>
+                  </div>
+                  <div class="col-xl-8 xl-50 col-md-7">
+                    <div class="tab-content" id="v-pills-tabContent1">
+                      <div class="tab-pane fade show active" id="v-pills-iduser" role="tabpanel"
+                        aria-labelledby="v-pills-iduser-tab">
+                        <div class="profile-mail">
+                          <div class="media"><img class="img-100 img-fluid m-r-20 rounded-circle update_img_5"
+                              src="assets/images/user/user.png" alt="">
+                            <div class="media-body mt-0">
+                              <h5><span class="first_name_5">Mark </span><span class="last_name_5">jecno</span>
+                              </h5>
+                              <p class="email_add_5">markjecno@gmail.com</p>
+                              <ul>
+                                <li><a href="javascript:void(0)" (click)="Print.openModal()">Print</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="email-general">
+                            <h6>General</h6>
+                            <p>Email Address: <span class="font-primary email_add_5">markjecno@gmail.com</span>
+                            </p>
+                            <div class="gender">
+                              <h6>Personal</h6>
+                              <p>Gender: <span>Male</span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-iduser1" role="tabpanel"
+                        aria-labelledby="v-pills-iduser1-tab">
+                        <div class="profile-mail">
+                          <div class="media"><img class="img-100 img-fluid m-r-20 rounded-circle update_img_6"
+                              src="assets/images/user/3.jpg" alt="">
+                            <div class="media-body mt-0">
+                              <h5><span class="first_name_6">Jason </span><span class="last_name_6">Borne</span>
+                              </h5>
+                              <p class="email_add_6">jasonb@gmail.com</p>
+                              <ul>
+                                <li><a href="javascript:void(0)" (click)="Print.openModal()">Print</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="email-general">
+                            <h6>General</h6>
+                            <p>Email Address: <span class="font-primary email_add_6">jasonb@gmail.com</span></p>
+                            <div class="gender">
+                              <h6>Personal</h6>
+                              <p>Gender: <span>Male</span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-iduser2" role="tabpanel"
+                        aria-labelledby="v-pills-iduser2-tab">
+                        <div class="profile-mail">
+                          <div class="media"><img class="img-100 img-fluid m-r-20 rounded-circle update_img_7"
+                              src="assets/images/user/4.jpg" alt="">
+                            <div class="media-body mt-0">
+                              <h5> <span class="first_name_7">Sarah </span><span class="last_name_7">Loren</span>
+                              </h5>
+                              <p class="email_add_7">barnes@gmail.com</p>
+                              <ul>
+                                <li><a href="javascript:void(0)" (click)="Print.openModal()">Print</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="email-general">
+                            <h6>General</h6>
+                            <p>Email Address: <span class="font-primary email_add_7">barnes@gmail.com</span></p>
+                            <div class="gender">
+                              <h6>Personal</h6>
+                              <p>Gender: <span>Female</span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-iduser3" role="tabpanel"
+                        aria-labelledby="v-pills-iduser3-tab">
+                        <div class="profile-mail">
+                          <div class="media"><img class="img-100 img-fluid m-r-20 rounded-circle update_img_8"
+                              src="assets/images/user/10.jpg" alt="">
+                            <div class="media-body mt-0">
+                              <h5> <span class="first_name_8">Andew </span><span class="last_name_8">Jon</span>
+                              </h5>
+                              <p class="email_add_8">andrewj@gmail.com</p>
+                              <ul>
+                                <li><a href="javascript:void(0)" (click)="Print.openModal()">Print</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="email-general">
+                            <h6>General</h6>
+                            <p>Email Address: <span class="font-primary email_add_8">andrewj@gmail.com</span></p>
+                            <div class="gender">
+                              <h6>Personal</h6>
+                              <p>Gender: <span>Female</span></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="right-history" [class.show]="history">
+            <div class="modal-header p-20" (click)="showHistory()">
+              <h6 class="modal-title w-100">Contact History<span class="pull-right"><a class="closehistory"
+                    href="javascript:void(0)"><i class="icofont icofont-close"></i></a></span></h6>
+            </div>
+            <div class="history-details">
+              <div class="text-center"><i class="icofont icofont-ui-edit"></i>
+                <p>Contact has not been modified yet.</p>
+              </div>
+              <div class="media"><i class="icofont icofont-star me-3"></i>
+                <div class="media-body mt-0">
+                  <h6 class="mt-0">Contact Created</h6>
+                  <p class="mb-0">Contact is created via mail</p><span class="f-12">Sep 10, 2022 4:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

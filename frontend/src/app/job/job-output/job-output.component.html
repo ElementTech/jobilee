@@ -1,4 +1,0 @@
-
-<p-panel header="Job {{(job|async)?.name}} - Task {{(task|async)?._id}} - Output">
-  <div *ngIf="(task|async)?.done" [innerHtml]="(task|async)?.markdown"></div>
-</p-panel>

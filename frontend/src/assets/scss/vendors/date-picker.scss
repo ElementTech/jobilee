@@ -1,0 +1,318 @@
+//Datepicker
+@import "date-picker/all-in-one";
+
+.date-range-picker {
+   .theme-form {
+     margin-bottom: 30px;
+   }
+   > div {
+     &:last-child {
+       .theme-form {
+         margin-bottom: 0px;
+       }
+     }
+   }
+ }
+ 
+ .ngb-dp-arrow-btn {
+   padding: 0.25rem;
+ }
+ .custom-datepicker {
+   border: 1px solid $transparent-color !important;
+   .custom-day {
+     font-size: 14px;
+     text-align: center;
+     padding: 0;
+     display: inline-block;
+     width: 2rem;
+     height: 2rem;
+     line-height: 2rem;
+   }
+   ngb-datepicker,
+   .dropdown-menu {
+     border: none;
+     box-shadow: 0 4px 14px rgba($primary-color, 0.15);
+     border-radius: 8px;
+     width: 295px;
+   }
+   .ngb-dp-header {
+     padding: 20px 0 10px 0;
+   }
+   .ngb-dp-months {
+     display: inherit;
+     width: 100%;
+     background-color: $white;
+   }
+   .ngb-dp-weekday {
+     color: $theme-body-font-color;
+     font-weight: 600;
+     text-transform: uppercase;
+     font-size: 11.2px;
+   }
+   .ngb-dp-weekdays {
+     border-bottom: 1px solid $transparent-color;
+   }
+   .ngb-dp-day,
+   .ngb-dp-week-number,
+   .ngb-dp-weekday,
+   .ngb-dp-arrow {
+     width: 100%;
+     height: 30px;
+     line-height: 30px;
+     font-style: inherit;
+     [ngbDatepickerDayView] {
+       width: 100%;
+       height: 30px;
+       line-height: 30px;
+     }
+     .btn-light {
+       background-color: $white !important;
+       border-color: $white !important;
+       font-size: 14px;
+       color: $black !important;
+       &:hover,
+       &:focus,
+       &:active,
+       &.active {
+         background-color: $primary-color !important;
+         color: $white !important;
+       }
+     }
+     .btn-link {
+       color: $theme-body-font-color;
+       .ngb-dp-navigation-chevron {
+         width: 9px;
+         height: 9px;
+       }
+     }
+   }
+   .ngb-dp-navigation-select {
+     .form-select {
+       width: 100px;
+       &:first-child {
+         margin-right: 15px;
+       }
+     }
+   }
+   .bg-light {
+     background-color: $white !important;
+   }
+   .ngb-dp-month {
+     &:first-child {
+       .ngb-dp-week {
+         padding-left: 15px;
+       }
+     }
+     &:last-child {
+       .ngb-dp-week {
+         padding-right: 15px;
+       }
+     }
+     .ngb-dp-week {
+       &:last-child {
+         padding-bottom: 15px;
+       }
+     }
+   }
+ }
+ .mutliple-datepicker {
+   border: 1px solid $transparent-color !important;
+   .custom-day {
+     text-align: center;
+     padding: 0.185rem 0.25rem;
+     border-radius: 0.25rem;
+     display: inline-block;
+     width: 2rem;
+     &.range,
+     &:hover {
+       background-color: $primary-color;
+       color: white;
+     }
+   }
+   ngb-datepicker,
+   .dropdown-menu {
+     border: none;
+     box-shadow: 0 4px 14px rgba($primary-color, 0.15);
+     border-radius: 8px;
+     width: 483px;
+     .ngb-dp-month {
+       width: 50%;
+       + .ngb-dp-month {
+         > .ngb-dp-month-name,
+         > ngb-datepicker-month-view > .ngb-dp-week {
+           padding-left: 6px;
+         }
+       }
+     }
+   }
+   .ngb-dp-month-name {
+     font-size: initial;
+   }
+   .ngb-dp-header {
+     padding: 20px 0 10px 0;
+   }
+   .ngb-dp-weekday {
+     color: $theme-body-font-color;
+     font-weight: 600;
+     text-transform: uppercase;
+     font-style: unset;
+     font-size: 11.2px;
+   }
+   .ngb-dp-weekdays {
+     border-bottom: 1px solid $transparent-color;
+   }
+   .ngb-dp-day,
+   .ngb-dp-week-number,
+   .ngb-dp-weekday,
+   .ngb-dp-arrow {
+     .ngb-dp-day,
+     .ngb-dp-week-number,
+     .ngb-dp-weekday,
+     .ngb-dp-arrow {
+       width: 95%;
+       font-style: inherit;
+       [ngbDatepickerDayView] {
+         width: 95%;
+       }
+     }
+     .btn-light {
+       background-color: $white !important;
+       border-color: $white !important;
+       color: $theme-body-font-color !important;
+       font-size: 14px;
+       &:hover,
+       &:focus,
+       &:active,
+       &.active {
+         background-color: $primary-color !important;
+         color: $white !important;
+       }
+     }
+     .btn-link {
+       color: $theme-body-font-color;
+       .ngb-dp-navigation-chevron {
+         width: 9px;
+         height: 9px;
+       }
+     }
+   }
+   .ngb-dp-navigation-select {
+     .form-select {
+       width: 100px;
+       &:first-child {
+         margin-right: 15px;
+       }
+     }
+   }
+   .bg-light {
+     background-color: $white !important;
+     color: $theme-body-font-color;
+   }
+   .ngb-dp-month {
+     &:first-child {
+       .ngb-dp-week {
+         padding-left: 15px;
+       }
+     }
+     &:last-child {
+       .ngb-dp-week {
+         padding-right: 15px;
+       }
+     }
+     .ngb-dp-week {
+       &:last-child {
+         padding-bottom: 15px;
+       }
+     }
+   }
+ }
+ .custom-datepicker-dropdown {
+   .form-group {
+     .input-group {
+       .input-group-append {
+         .btn {
+           background-color: #e9ecef;
+           border: 1px solid #ced4da;
+         }
+       }
+     }
+   }
+ }
+ .time-picker-custom{
+   .ngb-tp{
+     margin-bottom: 10px;
+   }
+ }
+ .custom-datepicker-dropdown {
+   .form-group {
+     .input-group {
+       .input-group-append {
+         .btn {
+           background-color: #e9ecef;
+           border: 1px solid #ced4da;
+           line-height: 1.7;
+           border-radius: 0 6px 6px 0;
+         }
+       }
+     }
+   }
+ }
+ select {
+   &.form-select {
+     font-size: 14px;
+     width: auto;
+     margin: 6px 6px 0 0;
+     color: $theme-body-font-color;
+   }
+ }
+ .time-picker-custom {
+   .ngb-tp {
+     .ngb-tp-input-container {
+       .btn-link {
+         color: $primary-color;
+       }
+     }
+   }
+ }
+ bs-datepicker-container,
+ bs-daterangepicker-container {
+   z-index: 7;
+ }
+ .bs-datepicker {
+   box-shadow: none;
+ }
+ .bs-datepicker-container {
+   padding: 0;
+ }
+ .theme-green {
+   .bs-datepicker-head {
+     background-color: $primary-color;
+   }
+   .bs-datepicker-body {
+     table {
+       td {
+         span,
+         &.selected,
+         span[class*="select-"],
+         &[class*="select-"] {
+           &.selected,
+           span,
+           &:after,
+           span:after {
+             background-color: $primary-color;
+           }
+         }
+         &.week {
+           span {
+             color: $primary-color;
+           }
+         }
+       }
+     }
+   }
+ }
+ .ngb-tp-input-container {
+   border: 1px solid #ddd;
+   padding: 5px;
+   border-radius: 5px;
+ }

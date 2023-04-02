@@ -1,90 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, PLATFORM_ID, Inject } from '@angular/core';
+// import { isPlatformBrowser } from '@angular/common';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { map, delay, withLatestFrom } from 'rxjs/operators';
+// import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Jobilee';
-  model: any[] = [];
-  hideMenu = false;
-  constructor(){
-    
-  }
-
   
-  ngOnInit() {
-    this.model = [
-      {
-          label: 'Actions',
-          items: [
-              { label: 'Catalog', icon: 'fa-solid fa-circle-play', routerLink: ['/catalog'] }
-          ]
-      },
-      {
-        label: 'Jobs',
-        items: [
-            {
-                label: 'Manage',
-                icon: 'fa-solid fa-list-check',
-                routerLink: ['/jobs']
-            },
-            {
-                label: 'Create',
-                icon: 'fa-solid fa-plug-circle-plus',
-                routerLink: ['/jobs/add']
-            }
-        ]
-      },
-      {
-        label: 'Visualize',
-        items: [
-            {
-                label: 'Components',
-                icon: 'fa-solid fa-magnifying-glass-chart',
-                routerLink: ['/charts']
-            },
-            {
-                label: 'Dashboards',
-                icon: 'fa-solid fa-chart-column',
-                routerLink: ['/dashboards']
-            },
-            {
-                label: 'Create',
-                icon: 'fa-solid fa-plus',
-                items: [
-                    {
-                        label: 'Component',
-                        icon: 'fa-solid fa-magnifying-glass-plus',
-                        routerLink: ['/charts/add']
-                    },
-                    {
-                        label: 'Dashboard',
-                        icon: 'fa-solid fa-square-poll-vertical',
-                        routerLink: ['/dashboards/add']
-                    }
-                ]
-            }
-        ]
-      },      
-      {
-                label: 'Integrations',
-                items: [
-                    {
-                        label: 'Manage',
-                        icon: 'fa-solid fa-list-ol',
-                        routerLink: ['/integrations']
-                    },
-                    {
-                        label: 'Create',
-                        icon: 'fa-solid fa-diagram-predecessor',
-                        routerLink: ['/integrations/add']
-                    }
-                ]
-      }
-  ];
-
+  // For Progressbar
+  loaders = this.loader?.progress$.pipe(
+    delay(1000),
+    withLatestFrom(this.loader?.progress$),
+    map(v => v[1]),
+  );
+  
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,
+    private loader: LoadingBarService) {
   }
 
 }

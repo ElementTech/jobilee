@@ -1,0 +1,8 @@
+<svg class="stroke-icon" *ngIf="getSvgType(); else fill">
+  <use attr.xlink:href="assets/svg/icon-sprite.svg#stroke-{{icon}}"></use>
+</svg>
+<ng-template  #fill>
+  <svg class="fill-icon">
+    <use attr.xlink:href="assets/svg/icon-sprite.svg#fill-{{icon}}"></use>
+  </svg>
+</ng-template>

@@ -1,0 +1,3 @@
+<app-breadcrumb [title]="'Job Response'" [items]="['Jobs',(job | async)?.name,task_id,step]" [active_item]="this.attribute"></app-breadcrumb>
+
+<ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>

@@ -1,3 +1,8 @@
+/***************************************************************************************************
+ * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
+ */
+import '@angular/localize/init';
+(window as any).global = window;
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.
@@ -16,7 +21,7 @@
 
 /***************************************************************************************************
  * BROWSER POLYFILLS
- */
+ */  // Run `npm install --save classlist.js`.  // Run `npm install --save web-animations-js`.
 
 /**
  * By default, zone.js will patch all possible macroTask and DomEvents
@@ -47,9 +52,7 @@
  */
 import 'zone.js';  // Included with Angular CLI.
 
-import 'brace';
-import 'brace/mode/markdown';
-import 'brace/mode/json';
+
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */

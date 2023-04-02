@@ -1,0 +1,72 @@
+
+<!-- Container-fluid starts -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>{{title}}</h5>
+        </div>
+        <div class="card-body custom-datatable noscroll">
+          <div class="custom-datatable table-responsive">
+
+            <form>
+              <div class="form-group form-inline">
+                  <input class="form-control ml-2" type="text" name="searchTerm" placeholder="Search..." [formControl]="filter"/>
+                  <span class="ml-3" *ngIf="isLoadingResults">Loading...</span>
+              </div>
+            
+              <table class="table">
+                <thead>
+                <tr>
+                  <th scope="col" *ngFor="let header of tableHeaders" [sortable]="header" (sort)="onSort($event)">{{header}}</th>
+                  <th scope="col"  *ngIf="customTemplates.hasOwnProperty('actions')">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let element of elements$ | async">
+
+                    <td *ngFor="let prop of tableProperties">
+                      <ng-container *ngIf="customTemplates.hasOwnProperty(prop)">
+                        <ng-container 
+                        [ngTemplateOutlet]="customTemplates[prop]"
+                        [ngTemplateOutletContext]="{ element : element, prop: prop, templateContext }">
+                        </ng-container>
+                      </ng-container>
+                      <ngb-highlight *ngIf="!customTemplates.hasOwnProperty(prop)" [result]="element[prop]" [term]="filter?.value"></ngb-highlight>
+                      
+                    </td>
+                    <td *ngIf="customTemplates.hasOwnProperty('actions')">
+                      <ng-container 
+                      [ngTemplateOutlet]="customTemplates['actions']"
+                      [ngTemplateOutletContext]="{ element : element, prop: prop, templateContext }">
+                      </ng-container>                      
+                
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            
+              <div class="d-flex justify-content-between p-2">
+                <ngb-pagination
+                  [collectionSize]="total" [page]="page" (pageChange)="page=$event;pag.next($event)" [pageSize]="pageSize">
+                </ngb-pagination>
+            
+                <select class="form-select" style="width: auto" name="pageSize" [ngModel]="pageSize" (ngModelChange)="pageSize=$event;pag.next(-pageSize)">
+                  <option [ngValue]="5">5 items per page</option>
+                  <option [ngValue]="10">10 items per page</option>
+                  <option [ngValue]="20">20 items per page</option>
+                  <option [ngValue]="100">100 items per page</option>
+                </select>
+              </div>
+            
+            </form>
+            
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Container-fluid Ends -->

@@ -1,0 +1,20 @@
+<div class="container-fluid">
+  <div class="page-title">
+    <div class="row">
+      <div class="col-6">
+        <h3>{{ title }}</h3>
+      </div>
+      <div class="col-6">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [routerLink]="'/dashboard/default'">
+              <app-svg-icon [icon]="'home'"></app-svg-icon>
+            </a>
+          </li>
+          <li class="breadcrumb-item" *ngFor="let item of items">{{ item }}</li>
+          <li class="breadcrumb-item active">{{ active_item }}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+/* ---------------------
+ *** Vendors Scss ***
+-----------------------*/
+
+@import "vendors/chartist";
+@import "vendors/dropzone";
+@import "vendors/scrollable";
+@import "vendors/sticky";
+@import "vendors/todo";
+
+/* Ngx-owl-carousel-o */
+@import "../../../node_modules/ngx-owl-carousel-o/lib/styles/scss/owl.carousel.scss";
+@import "../../../node_modules/ngx-owl-carousel-o/lib/styles/scss/owl.theme.default.scss";
+// @import '~ngx-owl-carousel-o/lib/styles/scss/owl.carousel';
+// @import '~ngx-owl-carousel-o/lib/styles/scss/owl.theme.default';
+
+/* Toastr */
+@import "/node_modules/ngx-toastr/toastr.css";
+
+// Ngx-Tabset
+@import "/node_modules/ngx-tabset/ngx-tabset.scss";
+
+/* Dragula */
+@import "~dragula/dist/dragula.css";
+
+/* Dropzone */
+@import "~dropzone/dist/min/dropzone.min.css";
+
+/* Leaflet Map */
+@import "~leaflet/dist/leaflet.css";
+
+/* Scrollbar */
+@import "~perfect-scrollbar/css/perfect-scrollbar.css";
+
+/* Emoji */
+@import "/node_modules/@ctrl/ngx-emoji-mart/picker.css";
+// overlay
+@import "@angular/cdk/overlay-prebuilt.css";
+@import "../../../node_modules/angular-archwizard/styles/archwizard.scss";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+@import 'swiper/scss';
+@import 'swiper/scss/navigation';
+@import 'swiper/scss/pagination';
+/* ---------------------
+	*** Theme Scss ***
+-----------------------*/
+@import "~animate.css/animate.min.css";
+@import "/node_modules/bootstrap/scss/bootstrap";
+@import "../scss/vendors/themify.scss";
+@import "style";
+@import "responsive";
+
+
+@import "~jsoneditor/dist/jsoneditor.min.css";
+
+@import '~highlight.js/styles/arduino-light.css';

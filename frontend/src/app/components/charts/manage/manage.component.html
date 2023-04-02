@@ -1,0 +1,25 @@
+
+<app-breadcrumb [title]="'Manage Charts'" [items]="['Charts']" [active_item]="'Manage'"></app-breadcrumb>
+<!-- Container-fluid starts -->
+<app-manage *ngIf="data"
+  [title]="'charts'" 
+  [tableHeaders]="['Name','Type','Jobs']"
+  [tableProperties]="['name','type','jobs']"
+  [data]="data"
+  [customTemplates]="customTemplates"
+></app-manage>
+
+<ng-template #actions let-element="element" let-prop="prop">
+  <div class="action">
+    <li class="edit">
+      <a placement="top" ngbTooltip="Edit" [routerLink]="['/'+title+'/edit', element?._id]"><i class="icon-pencil-alt"></i></a>
+    </li>
+    <li class="">
+      <a placement="top" ngbTooltip="View Code" [routerLink]="['/'+title+'/code', element?._id]"><i class="icon-shortcode"></i></a>
+    </li>        
+    <li class="delete">
+  
+      <a placement="top" ngbTooltip="Delete" (click)="deleteItem(element?._id)" style="cursor:pointer;"><i class="icon-trash"></i></a>
+    </li>              
+  </div>
+</ng-template>

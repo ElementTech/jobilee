@@ -1,0 +1,25 @@
+<!-- page-wrapper Start-->
+<div [ngClass]="layout.config.settings.layout_type">
+  <div class="page-wrapper" id="canvas-bookmark" [ngClass]="layoutClass">
+    <app-header></app-header>
+    <!-- Page Body Start-->
+    <div class="page-body-wrapper">
+      <div class="sidebar-wrapper" [attr.sidebar-layout]="layout.config.settings.sidebar_type" [attr.icon]="layout.config.settings.icon" [class.close_icon]="navServices.collapseSidebar">
+        <app-sidebar></app-sidebar>
+      </div>
+      <div class="page-body">
+        <main [@fadeInAnimation]="getRouterOutletState(o)">
+          <router-outlet #o="outlet"></router-outlet>
+        </main>
+      </div>
+      <!-- footer start-->
+      <!-- <footer class="footer">
+        <app-footer></app-footer>
+      </footer> -->
+      <!-- footer End-->
+    </div>
+    <!-- Page Body End-->
+  </div>
+</div>
+<div class="bg-overlay1"></div>
+<!-- page-wrapper End-->

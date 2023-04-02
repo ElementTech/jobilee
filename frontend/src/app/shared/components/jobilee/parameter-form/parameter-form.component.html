@@ -1,0 +1,282 @@
+<div class="d-flex border">
+
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="param.type"  class="nav-pills border-end" orientation="vertical">
+  <li ngbNavItem="text">
+    <a ngbNavLink class="rounded-0 inline-block"><i class="fa fa-font" aria-hidden="true"></i> Text</a>
+    <ng-template ngbNavContent class="w-100">
+        <div class="mt-1 row">
+          <label class="col-sm-3 col-form-label" for="name">Name</label>
+          <div class="col-sm-9">
+            <input class="form-control" name="name" type="text" [(ngModel)]="param.name" placeholder="name">
+          </div>
+        </div>
+        <div class="mt-1 row">
+          <label class="col-sm-3 col-form-label" for="name">Default</label>
+          <div class="col-sm-9">
+            <input class="form-control" name="default" type="text" [(ngModel)]="param.default" placeholder="default">
+          </div>
+        </div>        
+        <div class="mt-1">
+
+          <div class="media">
+            <label class="col-form-label m-r-10">Hidden</label>
+            <div class="media-body text-end icon-state switch-outline">
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="param.hidden" name="hidden"><span class="switch-state bg-primary"></span>
+              </label>
+            </div>
+          </div>
+
+
+        </div>                      
+    </ng-template>
+  </li>
+  <li ngbNavItem="number">
+    <a ngbNavLink class="rounded-0  inline-block"><i class="fa fa-hashtag" aria-hidden="true"></i> Number</a>
+    <ng-template ngbNavContent>
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name">Name</label>
+        <div class="col-sm-9">
+          <input class="form-control" name="name" type="text" [(ngModel)]="param.name" placeholder="name">
+        </div>
+      </div>
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name">Default</label>
+        <div class="col-sm-9">
+          <input class="touchspin-vertical form-control" type="number" name="default" placeholder=1
+          [(ngModel)]="param.default">
+        </div>
+      </div>        
+      <div class="mt-1">
+
+        <div class="media">
+          <label class="col-form-label m-r-10">Hidden</label>
+          <div class="media-body text-end icon-state switch-outline">
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="param.hidden" name="hidden"><span class="switch-state bg-primary"></span>
+            </label>
+          </div>
+        </div>
+
+
+      </div>     
+    </ng-template>
+  </li>
+  <li ngbNavItem="choice">
+    <a ngbNavLink class="rounded-0 inline-block"><i class="fa fa-list" aria-hidden="true"></i> Choice</a>
+    <ng-template ngbNavContent>
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name">Name</label>
+        <div class="col-sm-9">
+          <input class="form-control" name="name" type="text" [(ngModel)]="param.name" placeholder="name">
+        </div>
+      </div>
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name">Choices</label>
+        <div class="col-sm-9">
+          <ng-select [searchable]="true" [multiple]="true"    addTagText="Add Option" 
+          [addTag]="true" [items]="param?.choices"  [(ngModel)]="param.choices"
+          class="" >
+          </ng-select>
+        </div>
+      </div>       
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name">Default</label>
+        <div class="col-sm-9">
+          <ng-select [searchable]="true"  [items]="param?.choices" [(ngModel)]="param.default"
+          class="" >
+          </ng-select>
+        </div>
+      </div>        
+      <div class="mt-1">
+
+        <div class="media">
+          <label class="col-form-label m-r-10">Hidden</label>
+          <div class="media-body text-end icon-state switch-outline">
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="param.hidden" name="hidden"><span class="switch-state bg-primary"></span>
+            </label>
+          </div>
+        </div>
+
+
+      </div>     
+    </ng-template>
+  </li>         
+  <li ngbNavItem="multi-choice">
+    <a ngbNavLink class="rounded-0 inline-block"><i class="fa fa-check-square" aria-hidden="true"></i> Multi</a>
+    <ng-template ngbNavContent>
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name"> Name</label>
+        <div class="col-sm-9">
+          <input class="form-control" name="name" type="text" [(ngModel)]="param.name" placeholder="name">
+        </div>
+      </div>
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name">Choices</label>
+        <div class="col-sm-9">
+          <ng-select  [multiple]="true"    addTagText="Add Option" 
+          [addTag]="true" [items]="param?.choices"  [(ngModel)]="param.choices"
+          class="" >
+          </ng-select>
+        </div>
+      </div>       
+      <div class="mt-1 row">
+        <label class="col-sm-3 col-form-label" for="name">Default</label>
+        <div class="col-sm-9">
+          <ng-select  [multiple]="true"    [items]="param?.choices" [(ngModel)]="param.default"
+          class="" >
+          </ng-select>
+        </div>
+      </div>        
+      <div class="mt-1">
+
+        <div class="media">
+          <label class="col-form-label m-r-10">Hidden</label>
+          <div class="media-body text-end icon-state switch-outline">
+            <label class="switch">
+              <input type="checkbox" [(ngModel)]="param.hidden" name="hidden"><span class="switch-state bg-primary"></span>
+            </label>
+          </div>
+        </div>
+
+
+      </div>     
+    </ng-template>
+  </li>                 
+  <li ngbNavItem="dynamic">
+    <a ngbNavLink class="rounded-0 inline-block"><i class="fa fa-bolt" aria-hidden="true"></i> Dynamic</a>
+    <ng-template ngbNavContent>
+  
+        <div class="mt-1 row">
+          <label class="col-sm-3 col-form-label" for="name">Name</label>
+          <div class="col-sm-9">
+            <input class="form-control" name="name" type="text" [(ngModel)]="param.name" placeholder="name">
+          </div>
+        </div>
+        <div class="mt-1">
+          <div class="media">
+            <label class="col-form-label m-r-10">Hidden</label>
+            <div class="media-body text-end icon-state switch-outline">
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="param.hidden" name="hidden"><span class="switch-state bg-primary"></span>
+              </label>
+            </div>
+          </div>
+        </div>    
+        <div class="mt-1 row">
+          <label class="col-sm-3 col-form-label" for="name">Default</label>
+          <div class="col-sm-9">
+            <ng-select  [multiple]="true"    addTagText="Add Option" 
+            [addTag]="true" [items]="param?.default"  [(ngModel)]="param.default"
+            class="" >
+            </ng-select>
+          </div>
+        </div>            
+        <div class="row mt-1">
+          <label class="col-sm-3 col-form-label" for="name">Job</label>
+          <div class="col-sm-9" *ngIf="param?.job">
+            <ng-select *ngIf="param?.job?.id"
+            
+            [(ngModel)]="param?.job.id" [searchable]="true"
+            placeholder="Select Job"  name="jobID"
+            [virtualScroll]="true" 
+            [items]="jobs$ | async"
+                bindLabel="name"
+                bindValue="name"
+               
+            [loading]="!(jobs$ | async)" >
+          </ng-select>
+          
+
+
+          </div>
+        </div>      
+        <div class="row mt-1">
+            <table class="table table-sm" *ngIf="param?.job">
+              <thead>
+                <tr>
+                  <th scope="col">Param</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of getParams(param?.job?.id)">
+                  <td> {{p?.name}} </td>
+                  <td>
+                    <input type="text" class="form-control form-control-sm" style="height:9px"
+                    [(ngModel)]="p.default" (ngModelChange)="param?.job?.parameters[p?.name] =p?.default"
+                   name="{{param?.job?.id}}{{i}}" placeholder="{{ p?.default }}">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </div>        
+        <div class="mt-1 mb-1 border p-2 card rounded-0 shadow-none"  *ngIf="param?.job">
+
+            <div class="card-header p-1">
+              <button  class="btn btn-light btn-sm" (click)="addDynamicFrom()" type="button" role="button"><i class="fa fa-plus" aria-hidden="true"></i> From Step</button>
+                <button type="button" class="btn btn-outline-primary btn-sm pull-right" (click)="isCollapsed = !isCollapsed"
+                [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+                Toggle
+              </button>
+            </div>
+            <div class="card-body rounded-0 pt-3 pb-0">
+              <div id="collapseExample" [ngbCollapse]="isCollapsed">
+                    <div class="mb-2 border-bottom pb-2" *ngFor="let from of param?.job?.from; let i = index">
+                      <div class="text-center mb-2">
+                        <button type="button" type="button" (click)="removeJobBock(i)" class="btn btn-light btn-sm"><i class="fa fa-times" aria-hidden="true"></i></button>
+                      </div>
+
+                      <div class="row mt-1">
+                        <label class="col-sm-3 col-form-label" for="step">Step</label>
+                        <div class="col-sm-9">
+                          <ng-select   
+                          
+                          [(ngModel)]="from.step" [searchable]="true"
+                          placeholder="Select Step"  name="step{{i}}"
+                          [virtualScroll]="true" 
+                          [items]="getSteps(param?.job?.id)"
+                            bindLabel="name"
+                            bindValue="name"
+                          >
+                        </ng-select>
+                        
+             
+
+                        </div>
+                      </div>  
+                      <div class="row mt-1">
+                        <label class="col-sm-3 col-form-label" for="outputs">Outputs</label>
+                        <div class="col-sm-9">
+                          <ng-select   
+                          
+                          [multiple]="true"
+                          [(ngModel)]="from.outputs" [searchable]="true"
+                          placeholder="Select Outputs"  name="outputs{{i}}"
+                          [items]="getOutputs(param?.job?.id,from.step)"
+                          >
+                        </ng-select>
+                        
+             
+
+                        </div>
+                      </div>  
+                    </div>
+              </div>
+            </div>
+
+  
+  
+        </div>
+   
+
+ 
+    </ng-template>
+  </li>      
+</ul>
+
+<div [ngbNavOutlet]="nav" class="m-3 w-100"></div>
+
+</div>
