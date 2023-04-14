@@ -6,32 +6,34 @@ default: help
 help: ## list makefile targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-dev: web back worker-api celery-worker mongodb redis
+export CELERY_BROKER_URL := redis://localhost:6379/0
+export CELERY_RESULT_BACKEND := redis://localhost:6379/0
+export APP_SETTINGS := project.server.config.DevelopmentConfig
+export MONGODB_URI := mongodb://localhost:27017/jobilee
+export FLASK_DEBUG := 1
 
+.PHONY: dev # Run the jobilee application in development mode.
+dev:
+	$(MAKE) -j web backend worker-api worker
+
+.PHONY: web
 web: ## Run Angular Frontend
-	@echo cd frontend
-	@echo ng serve
+	cd frontend && ng serve
 
-back: ## Run Flask Backend
-	@echo cd backend
-	@echo CELERY_BROKER_URL=redis://localhost:6379/0 \
-		CELERY_RESULT_BACKEND=redis://localhost:6379/0 \
-		APP_SETTINGS=project.server.config.DevelopmentConfig \
-		reload python3 manage.py run -h 0.0.0.0 -p 5001
+.PHONY: worker-api
+worker-api: ## Run Flask Backend
+	cd api && reload python3 manage.py run -h 0.0.0.0 -p 5001
 
-worker-api: ## Run Celery Workers Flask API
-	@echo cd api
-	@echo nodemon --exec python3 run.py --host=0.0.0.0
+.PHONY: backend
+backend: ## Run Celery Workers Flask API
+	cd backend && reload python3 run.py --host=0.0.0.0
 
-celery-worker: ## Run Celery Worker
-	@echo cd api
-	@echo nodemon --exec CELERY_BROKER_URL=redis://localhost:6379/0 \
-	CELERY_RESULT_BACKEND=redis://localhost:6379/0 \
-	FLASK_DEBUG=1 APP_SETTINGS=project.server.config.DevelopmentConfig \
-	reload celery --app project.server.tasks worker --loglevel=info --logfile=project/logs/celery.log
+.PHONY: worker
+worker: ## Run Celery Worker
+	cd api && reload celery --app project.server.tasks worker --loglevel=info --logfile=project/logs/celery.log
 
-mongodb: ## Run MongoDB
-	@echo docker run -p 27017:27017 -v /data/db:/data/db --name mongodb mongo	
+# mongodb: ## Run MongoDB
+# 	@echo docker run -p 27017:27017 -v /data/db:/data/db --name mongodb mongo	
 
-redis: ## Run Redis
-	@echo redis-server		
+# redis: ## Run Redis
+# 	@echo redis-server		

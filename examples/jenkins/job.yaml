@@ -1,0 +1,38 @@
+name: Jenkins
+group: Jenkins
+parameters:
+  - default: mytext
+    name: string-param
+    type: text
+  - default: 0
+    name: number-param
+    type: number
+  - choices:
+      - a
+      - b
+      - c
+      - d
+    default: b
+    name: choice-param
+    type: choice
+  - choices:
+      - e
+      - f
+      - g
+      - h
+    default: f,h
+    name: multi-choice-param
+    type: multi-choice
+  - default:
+      - name
+    job:
+      from:
+        - outputs:
+            - first_name
+            - last_name
+          step: Query
+      id: Random Users
+      parameters:
+        size: Query
+    name: dynamic-param
+    type: dynamic
